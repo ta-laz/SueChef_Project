@@ -1,8 +1,21 @@
-﻿@{
+﻿@using SueChef.Models
+@using SueChef.Controllers
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (var recipe in ViewBag.Recipes)
+{
+  <div class="mb-6">
+    <h3 class="font-semibold">@recipe.Title</h3>
+
+    <ul class="list-disc ml-6">
+      @foreach (var ri in recipe.RecipeIngredients)
+      {
+        <p>
+          @ri.Ingredient.Name;
+        </p>
+      }
+    </ul>
+  </div>
+}
