@@ -45,11 +45,18 @@
         }
       </section>
 
+      @{
+        var method = Model.Method;
+        var steps = method.Split(new[] {"Step "}, StringSplitOptions.RemoveEmptyEntries);
+      }
       <section>
         <h2 class="text-xl font-semibold mb-2">Method</h2>
-        <p class="leading-relaxed text-gray-700">
-        @Model.Method
-        </p>
+        <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
+        @foreach(var step in steps)
+        {
+          <p class="">Step @step.Trim()</p>
+        }
+        </ul>
       </section>
 
       <div class="text-center p-4 border-t">
