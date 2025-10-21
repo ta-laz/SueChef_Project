@@ -41,55 +41,38 @@
                 </div>
             </div>
 
-            <!-- Categories and tags -->
-            <div class="flex items-center mt-4 text-xs text-gray-600 justify-between mb-2 gap-4 px-2">
+            <!-- Categories bar -->
+            <div class="flex justify-around items-center text-center mt-4 mb-2 gap-4 pt-2 h-20">
                 <!-- Category -->
-                <div class="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
-                        stroke="currentColor" class="w-5 h-5 text-blue-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                    </svg>
-                    <span>@Model.Category</span>
+                <div class="flex flex-col items-center w-1/4">
+                    <img src="images/globe.png" alt="Category" class="w-10 h-10 object-contain mb-1" />
+                    <span class="text-xs text-gray-600 truncate">@Model.Category</span>
                 </div>
 
                 <!-- Vegetarian -->
                 @if (@Model.IsVegetarian)
                 {
-                    <div class="flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
-                            class="w-5 h-5 text-green-600">
-                            <path
-                                d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2c1.74 0 3.41.5 4.84 1.44L12 11l-4.84-5.56A8.004 8.004 0 0112 4z" />
-                        </svg>
-                        <span>Vegetarian</span>
+                    <div class="flex flex-col items-center w-1/4">
+                        <img src="images/vegetarian.png" alt="Vegetarian" class="w-10 h-10 object-contain mb-1" />
+                        <span class="text-xs text-gray-600 truncate">Vegetarian</span>
                     </div>
                 }
 
                 <!-- Dairy Free -->
                 @if (@Model.IsDairyFree)
                 {
-                    <div class="flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
-                            stroke="currentColor" class="w-5 h-5 text-sky-600">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 2a8 8 0 00-8 8v8a2 2 0 002 2h12a2 2 0 002-2v-8a8 8 0 00-8-8z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8" />
-                        </svg>
-                        <span>Dairy Free</span>
+                    <div class="flex flex-col items-center w-1/4">
+                        <img src="images/dairyfree.png" alt="Dairy Free" class="w-10 h-10 object-contain mb-1" />
+                        <span class="text-xs text-gray-600 truncate">Dairy Free</span>
                     </div>
                 }
 
                 <!-- Difficulty -->
-                <div class="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
-                        class="w-5 h-5 text-gray-800">
-                        <path
-                            d="M12 2a5 5 0 015 5c0 1.657-1.343 3-3 3H10a3 3 0 01-3-3 5 5 0 015-5zm-3 8h6l1 12H8l1-12z" />
-                    </svg>
-                    <span>
+                <div class="flex flex-col items-center w-1/4">
+                    <img src="~/images/chefhat.png" alt="Difficulty" class="w-10 h-10 object-contain mb-1" />
+                    <span class="text-xs text-gray-700">
                         @(Model.DifficultyLevel == 1 ? "Easy" :
-                                                Model.DifficultyLevel == 2 ? "Medium" :
-                                                "Hard")
+                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                     </span>
                 </div>
             </div>
