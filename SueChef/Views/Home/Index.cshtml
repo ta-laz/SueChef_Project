@@ -4,7 +4,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var recipe in ViewBag.Recipes)
+@* @foreach (var recipe in ViewBag.Recipes)
 {
   <div class="mb-6">
     <h3 class="font-semibold">@recipe.Title</h3>
@@ -18,8 +18,9 @@
       }
     </ul>
   </div>
-}
+} *@
 
+<!-- Defines the Model variable and what type it should be -->
 @model IEnumerable<SueChef.ViewModels.RecipeCardViewModel>
 
 <h2>All Recipes</h2>

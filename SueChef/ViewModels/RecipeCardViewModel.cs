@@ -3,9 +3,11 @@ namespace SueChef.ViewModels
 
     public class RecipeCardViewModel
     {
-        public int Id { get; set; } // To link to the full recipe
-        public string Title { get; set; }
-        public string ImageUrl { get; set; }
-        public string ShortDescription { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string? ShortDescription { get; set; }
+        public string? RecipePicturePath { get; set; }
+        public string? Category { get; set; }
+        public int DifficultyLevel { get; set; }
     }
 }

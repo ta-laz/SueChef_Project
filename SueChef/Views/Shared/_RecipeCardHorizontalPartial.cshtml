@@ -2,23 +2,30 @@
 
 <div class="RecipeCard flex justify-center">
     <div class="w-full max-w-4xl bg-orange-100 mb-10 p-2 rounded-lg hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between gap-4 p-2 ">
+        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.Id">
+            <div class="flex items-center justify-between gap-4 p-2 ">
 
-                <!-- Left side: picture -->
-                <div class="w-2/3 h-2/3">
-                    <img src="@Model.ImageUrl" alt="@Model.Title" class="recipe-card__image" />
-                </div>
-
-                <!-- Right side: text -->
-                <div class="w-full">
-                    <div class="">
-                        <h3 class="recipe-card__title text-red-600">@Model.Title</h3>
-                        <p class="recipe-card__description line-clamp-3 break-words">@Model.ShortDescription</p>
+                    <!-- Left side: picture -->
+                    <div class="w-2/3 h-2/3">
+                        <img src="@Model.RecipePicturePath" alt="@Model.Title" class="recipe-card__image" />
                     </div>
+
+                    <!-- Right side: text -->
+                    <div class="w-full">
+                        <div class="">
+                            <h3 class="recipe-card__title text-red-600">@Model.Title</h3>
+                            <p class="recipe-card__description line-clamp-3 break-words">@Model.ShortDescription</p>
+                        </div>
+                    </div>
+            </div>
+            <div class="flex items-center justify-between gap-4 p-2">
+                <div class="p-2 bg-orange-300">
+                    Category: @Model.Category
                 </div>
-        </div>
-        <div class="p-2">
-            Hello World
-        </div>
+                <div class="p-2 bg-orange-300">
+                    Difficulty Level: @Model.DifficultyLevel
+                </div>
+            </div>
+        </a>
     </div>
 </div>
