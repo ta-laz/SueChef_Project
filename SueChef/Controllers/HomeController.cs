@@ -22,14 +22,16 @@ public class HomeController : Controller
 
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
         var recipeCards = await _db.Recipes.Select(r => new RecipeCardViewModel
-            {
-                Id = r.Id,
-                Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
-                ShortDescription = r.Description,
-                RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
-                Category = r.Category ?? "Uncategorized",
-                DifficultyLevel = r.DifficultyLevel
-            })
+        {
+            Id = r.Id,
+            Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
+            Description = r.Description,
+            RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
+            Category = r.Category ?? "Uncategorized",
+            DifficultyLevel = r.DifficultyLevel,
+            IsVegetarian = r.IsVegetarian,
+            IsDairyFree = r.IsDairyFree
+        })
             .ToListAsync();
         // Pass the list of view models into the View for this controller action
         return View(recipeCards);

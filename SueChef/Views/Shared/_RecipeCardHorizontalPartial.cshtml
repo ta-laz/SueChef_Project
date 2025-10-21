@@ -19,16 +19,28 @@
                         <span class="flex items-center gap-1 text-gray-700">
                             ⭐⭐⭐⭐⭐ 947 ratings
                         </span>
-                        <p class="recipe-card__description line-clamp-3 break-words">@Model.ShortDescription
-                            @Model.ShortDescription</p>
+                        <p class="recipe-card__description text-gray-700 line-clamp-3 break-words">@Model.Description
+                            @Model.Description</p>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-between gap-4 px-2">
-                <div class="mb-2">
+            <div class="flex items-center mt-2 text-sm text-gray-700 justify-between mb-2 gap-4 px-2">
+                <div class="">
                     @Model.Category
                 </div>
-                <div class="mb-2">
+                @if (@Model.IsVegetarian)
+                {
+                    <div class="">
+                        Vegetarian
+                    </div>
+                }
+                @if (@Model.IsDairyFree)
+                {
+                    <div class="">
+                        Dairy Free
+                    </div>
+                }
+                <div class="">
                     Difficulty: @Model.DifficultyLevel
                 </div>
             </div>
