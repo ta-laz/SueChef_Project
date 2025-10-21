@@ -1,21 +1,24 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
 <div class="RecipeCard flex justify-center">
-    <div class="w-full max-w-4xl bg-orange-100 p-4 mb-10 rounded-lg hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between gap-10 p-4 bg-white">
+    <div class="w-full max-w-4xl bg-orange-100 mb-10 p-2 rounded-lg hover:shadow-md transition-all duration-300">
+        <div class="flex items-center justify-between gap-4 p-2 ">
 
                 <!-- Left side: picture -->
-                <div class="flex gap-10">
+                <div class="w-2/3 h-2/3">
                     <img src="@Model.ImageUrl" alt="@Model.Title" class="recipe-card__image" />
                 </div>
 
                 <!-- Right side: text -->
-                <div class="flex gap-10">
-                    <div class="flex flex-col">
+                <div class="w-full">
+                    <div class="">
                         <h3 class="recipe-card__title text-red-600">@Model.Title</h3>
-                        <p class="recipe-card__description">@Model.ShortDescription</p>
+                        <p class="recipe-card__description line-clamp-3 break-words">@Model.ShortDescription</p>
                     </div>
                 </div>
+        </div>
+        <div class="p-2">
+            Hello World
         </div>
     </div>
 </div>
