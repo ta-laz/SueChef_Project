@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using SueChef.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<SueChefDbContext>(options =>
+{
+    options.UseNpgsql("Host=localhost;Database=suechef_test;Username=postgres;Password=yourpassword", npg => npg.EnableRetryOnFailure());
+});
 
 var app = builder.Build();
 
