@@ -25,17 +25,20 @@ public class SueChefDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         // --- RecipeIngredient (many-to-many link between Recipe and Ingredient)
-        modelBuilder.Entity<RecipeIngredient>()
-            .HasOne(ri => ri.Recipe)
-            .WithMany()
+        modelBuilder.Entity<RecipeIngredient>(b =>
+        {
+            b.HasOne(ri => ri.Recipe)
+            .WithMany(r => r.RecipeIngredients)
             .HasForeignKey(ri => ri.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<RecipeIngredient>()
-            .HasOne(ri => ri.Ingredient)
+            b.HasOne(ri => ri.Ingredient)
             .WithMany(i => i.RecipeIngredients)
             .HasForeignKey(ri => ri.IngredientId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasIndex(ri => new { ri.RecipeId, ri.IngredientId }).IsUnique();
+        });
 
         // --- Recipe table configuration
         modelBuilder.Entity<Recipe>()
