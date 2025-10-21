@@ -84,7 +84,6 @@ namespace SueChef.Tests
 
                     var method = string.Join("\n", methodSteps);
 
-                    var serving = 2 + (i % 5);        // 2–6
                     var difficulty = 1 + (i % 3);     // 1–3 simple scale
 
                     // Compute dietary flags from ingredient categories
@@ -95,7 +94,6 @@ namespace SueChef.Tests
                     {
                         Title = title,
                         Description = desc,
-                        Serving = serving,
                         DifficultyLevel = difficulty,
                         IsVegetarian = isVeg,
                         IsDairyFree = isDairyFree,

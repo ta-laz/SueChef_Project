@@ -10,7 +10,6 @@ public class Recipe
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? Method { get; set; }
-    public int Serving { get; set; }
     public int DifficultyLevel { get; set; }
     public bool IsVegetarian { get; set; }
     public bool IsDairyFree { get; set; }
