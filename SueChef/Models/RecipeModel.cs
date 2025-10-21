@@ -9,6 +9,7 @@ public class Recipe
     public int Id { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
+    public string? Method { get; set; }
     public int Serving { get; set; }
     public int DifficultyLevel { get; set; }
     public bool IsVegetarian { get; set; }
