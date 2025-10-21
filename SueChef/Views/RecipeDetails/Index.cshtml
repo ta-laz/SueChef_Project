@@ -11,7 +11,7 @@
         </header>
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
-        <div><strong>Serves:</strong> 4</div>
+        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
         <div><strong>Difficulty:</strong> @Model.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
         <div><strong>Prep Time:</strong> NOT IN TABLE MINS</div>
@@ -35,12 +35,14 @@
       </section>
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
-        <h2 class="text-xl font-semibold mb-2">Ingredients / Nutrition</h2>
-        <p>
-        @foreach(var i in Model.RecipeIngredients){
-              <p>@i.Quantity @i.Unit @i.Ingredient.Name</p> 
+        <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
+          <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
+          <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
+        </div>
+        @foreach(var i in Model.RecipeIngredients)
+        {
+              <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Quantity@i.Unit @i.Ingredient.Name</p> 
         }
-        </p>
       </section>
 
       <section>
