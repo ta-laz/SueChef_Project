@@ -19,11 +19,6 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // // Retrieve the recipes from the db:
-        // var recipes = await _db.Recipes
-        // .Include(r => r.RecipeIngredients)
-        //     .ThenInclude(ri => ri.Ingredient)
-        // .ToListAsync();
 
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
         var recipeCards = await _db.Recipes.Select(r => new RecipeCardViewModel
@@ -35,7 +30,7 @@ public class HomeController : Controller
                 Category = r.Category ?? "Uncategorized",
                 DifficultyLevel = r.DifficultyLevel
             })
-            .ToListAsync(); 
+            .ToListAsync();
         // Pass the list of view models into the View for this controller action
         return View(recipeCards);
     }

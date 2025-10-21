@@ -22,12 +22,16 @@
 
 <!-- Defines the Model variable and what type it should be -->
 @model IEnumerable<SueChef.ViewModels.RecipeCardViewModel>
-
-<h2>All Recipes</h2>
-
-<div class="RecipeCard">
-    @foreach (var recipe in Model)
-    {
-        <partial name="_RecipeCardHorizontalPartial" model="recipe" />
-    }
+<body class="bg-orange-100">
+<div class="flex flex-col text-orange-700 justify-center items-center text-4xl font-bold mb-2 ">
+<h1>Cook Bold. Eat Happy</h1>
 </div>
+<div class="bg-orange-100">
+    <div class="RecipeCard">
+        @foreach (var recipe in Model)
+        {
+            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+        }
+    </div>
+</div>
+</body>
