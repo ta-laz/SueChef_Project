@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SueChef.Models;
 using SueChef.ViewModels;
 
@@ -8,13 +9,25 @@ namespace SueChef.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly SueChefDbContext _db;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, SueChefDbContext db)
     {
         _logger = logger;
+        _db = db;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index2()
+    {
+        var recipes = await _db.Recipes
+        .Include(r => r.RecipeIngredients)
+            .ThenInclude(ri => ri.Ingredient)
+        .ToListAsync();
+        ViewBag.Recipes = recipes;
+        return View();
+    }
+
+    public async Task<IActionResult> Index()
     {
         var recipes = new List<RecipeCardViewModel>
         {
