@@ -5,8 +5,8 @@ First, clone this repository. Then:
 - Install the .NET Entity Framework CLI
   * `dotnet tool install --global dotnet-ef`
 - Create the database/s in `psql`
-  * `CREATE DATABASE sue_chef_development;`
-  * `CREATE DATABASE sue_chef_test;`
+  * `CREATE DATABASE suechef_development;`
+  * `CREATE DATABASE suechef_test;`
 - Run the migration to create the tables
   * `cd` into `/SueChef`
   * `dotnet ef database update`
@@ -97,6 +97,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 ```shell
 ; dotnet ef database update CreatePostsAndUsers
 ```
+
 
 
 
