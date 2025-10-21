@@ -1,9 +1,0 @@
-@model SueChef.ViewModels.RecipeCardViewModel
-
-<div class="RecipeCard">
-    <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.Id">
-        <img src="@Model.ImageUrl" alt="@Model.Title" class="recipe-card__image" />
-        <h3 class="recipe-card__title">@Model.Title</h3>
-        <p class="recipe-card__description">@Model.ShortDescription</p>
-    </a>
-</div>
