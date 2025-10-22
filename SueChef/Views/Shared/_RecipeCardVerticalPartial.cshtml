@@ -40,10 +40,10 @@
 
             <!-- Row five: categories bar -->
             <div
-                class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-2">
+                class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-1">
                 <div class="flex w-full">
                     <!-- Category -->
-                    <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-2">
                         <img src="images/flag.png" alt="Category"
                             class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
                         <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
@@ -52,7 +52,7 @@
                     <!-- Vegetarian -->
                     @if (@Model.IsVegetarian)
                     {
-                        <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                        <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-2">
                             <img src="images/vegetariancartoon.png" alt="Vegetarian"
                                 class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
                             <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
@@ -64,7 +64,7 @@
                     <!-- Dairy Free -->
                     @if (@Model.IsDairyFree)
                     {
-                        <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                        <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-2">
                             <img src="images/dairyfree.png" alt="Dairy Free"
                                 class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
                             <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
@@ -72,7 +72,7 @@
                     }
 
                     <!-- Difficulty -->
-                    <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-2">
                         <img src="~/images/chefshat.png" alt="Difficulty"
                             class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
                         <span
