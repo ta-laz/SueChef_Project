@@ -2,33 +2,33 @@
 
 <div class="RecipeCard flex justify-center">
     <div
-        class="w-full max-w-6xl bg-orange-100 rounded-md overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-700 p-3 md:p-6">
+        class="w-full max-w-4xl bg-orange-100 rounded-md overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-700 p-3 md:p-6 mb-2">
         <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="block">
 
             <!-- Top Section: picture and details -->
             <div class="flex md:items-start gap-3"
 
                 <!-- Left side: picture -->
-                <div class="w-[40%]">
+                <div class="w-[40%] lg:w-[25%]">
                     <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                        class="w-full md:h-64 lg:h-72 object-cover rounded-md border border-gray-300" />
+                        class="w-full md:h-36 lg:h-48 object-cover rounded-md border border-gray-300" />
                 </div>
 
                 <!-- Right side: text -->
                 <div class="flex flex-col justify-between md:w-[65%] w-full">
                     <div>
                         <!-- Recipe Title -->
-                        <h3 class="text-2xl text-gray-700 md:text-3xl lg:text-4xl hover:text-orange-800 transition mb-1">
+                        <h3 class="text-2xl text-gray-700 md:text-2xl lg:text-3xl font-medium hover:text-orange-800 transition mb-1">
                             @Model.Title
                         </h3>
 
                         <!-- Stars -->
-                        <div class="flex gap-4 mb-1">
+                        <div class="flex gap-4 md:mt-1 lg:mt-2 mb-1">
                             <div class="flex items-center gap-1 text-gray-800 mb-2">
                                 @for (int i = 0; i < 5; i++)
                                 {
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-5 h-5 md:w-10 md:h-10 lg:w-15 lg:h-15 text-yellow-400">
+                                        class="w-5 h-5 md:w-8 md:h-8 lg:w-8 lg:h-8 text-yellow-400">
                                         <path
                                             d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.95.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
                                     </svg>
@@ -38,7 +38,7 @@
                                 947 ratings
                             </div>
                         </div>
-                        <p class="recipe-card__description text-gray-600 line-clamp-3 break-words md:text-xl lg:text-2xl">@Model.Description
+                        <p class="recipe-card__description text-gray-600 line-clamp-3 break-words md:text-xl lg:text-2xl md:mt-1 lg:mt-2">@Model.Description
                             @Model.Description @Model.Description @Model.Description
                         </p>
                     </div>
@@ -46,10 +46,10 @@
             </div>
 
             <!-- Categories bar -->
-            <div class="flex rounded-md justify-around items-center text-center mt-4 gap-4 py-4 h-14">
+            <div class="flex rounded-md justify-around items-center text-center mt-3 gap-4 h-10">
                 <!-- Category -->
                 <div class="flex flex-col items-center w-1/4">
-                    <img src="images/flag2.png" alt="Category" class="w-8 h-8 object-fill mb-1" />
+                    <img src="images/flag.png" alt="Category" class="w-8 h-8 object-fill" />
                     <span class="text-xs md:text-sm lg:text-md text-gray-600 truncate">@Model.Category</span>
                 </div>
 
@@ -57,7 +57,7 @@
                 @if (@Model.IsVegetarian)
                 {
                     <div class="flex flex-col items-center w-1/4">
-                        <img src="images/vegetariancartoon.png" alt="Vegetarian" class="w-8 h-8 object-fill mb-1" />
+                        <img src="images/vegetariancartoon.png" alt="Vegetarian" class="w-8 h-8 object-fill" />
                         <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Vegetarian</span>
                     </div>
                 }
@@ -66,14 +66,14 @@
                 @if (@Model.IsDairyFree)
                 {
                     <div class="flex flex-col items-center w-1/4">
-                        <img src="images/dairyfreecartoon.png" alt="Dairy Free" class="w-8 h-8 object-fill mb-1" />
+                        <img src="images/dairyfree.png" alt="Dairy Free" class="w-8 h-8 object-fill" />
                         <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
                     </div>
                 }
 
                 <!-- Difficulty -->
                 <div class="flex flex-col items-center w-1/4">
-                    <img src="~/images/chefshat.png" alt="Difficulty" class="w-8 h-8 bg-orange-100 object-contain bg-orange-100 mix-blend-normal mb-1" />
+                    <img src="~/images/chefshat.png" alt="Difficulty" class="w-8 h-8 bg-orange-100 object-contain bg-orange-100 mix-blend-normal" />
                     <span class="text-xs font-medium
                     @(Model.DifficultyLevel == 1
                                               ? "text-green-600 md:text-sm lg:text-md"
