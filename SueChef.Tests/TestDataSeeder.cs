@@ -5,15 +5,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace SueChef.Tests
+namespace SueChef.Test
 {
-    // Adjust this using to your actual Models namespace
     using SueChef.Models;
-
     internal static class TestDataSeeder
     {
-        // ---- Public entry points ------------------------------------------------
-
         public static async Task EnsureDbReadyAsync(SueChefDbContext db)
         {
             Console.WriteLine("🔧 Ensuring database is ready (migrate)...");
@@ -24,122 +20,106 @@ namespace SueChef.Tests
         public static async Task ResetAndSeedAsync(SueChefDbContext db)
         {
             Console.WriteLine("🧹 Resetting and reseeding SueChef test database...");
-
             await db.Database.OpenConnectionAsync();
             await using var tx = await db.Database.BeginTransactionAsync();
 
             try
             {
-                // 1) Clean slate (match table names from your migration)
+                // Clean slate
                 await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients", "Recipes", "Ingredients", "Chefs"
+                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs"
                     RESTART IDENTITY CASCADE;
                 """);
 
-                // 2) Seed Chefs
-                var chefs = SeedChefs();
+                // 1) Chefs (keep your names)
+                var chefs = new List<Chef>
+                {
+                    new Chef { Name = "Karan Kullar" },
+                    new Chef { Name = "Alex Lazar" },
+                    new Chef { Name = "Jack Edwards" },
+                    new Chef { Name = "Luisa Lanca" },
+                    new Chef { Name = "Tom Wight" },
+                    new Chef { Name = "Sarah Hunter" },
+                    new Chef { Name = "Kiran Bhatt" },
+                };
                 db.AddRange(chefs);
                 await db.SaveChangesAsync();
 
-                // 3) Seed Ingredients catalogue
-                var ingredients = SeedIngredientCatalogue();
-                db.AddRange(ingredients);
+                // 2) Ingredient catalogue with realistic per-100g/ml macros
+                var ings = SeedIngredientCatalogue();
+                db.AddRange(ings);
                 await db.SaveChangesAsync();
 
-                // 4) Seed Recipes (+ RecipeIngredients)
-                var rng = new Random(1337); // deterministic for tests
-                var cuisines = new[]
+                // Index by name for quick lookup
+                var ingByName = ings.ToDictionary(i => (i.Name ?? string.Empty).ToLowerInvariant());
+
+                // 3) Curated recipes (50), Serving = 1
+                var baseCreated = new DateTime(2025, 1, 1, 08, 00, 00, DateTimeKind.Utc);
+                var recipes = BuildRecipes(); // definitions only (names, cuisine, steps, items)
+
+                int chefIx = 0, picIx = 1, recNo = 0;
+                foreach (var def in recipes)
                 {
-                    "Mexican","Indian","Greek","Italian","Thai","Japanese","Chinese","French",
-                    "Spanish","Turkish","Moroccan","Vietnamese","Korean","British","American",
-                    "Ethiopian","Lebanese","Persian","Caribbean","Portuguese"
-                };
+                    recNo++;
+                    var chef = chefs[chefIx % chefs.Count]; chefIx++;
 
-                var baseCreated = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
-
-                var recipes = new List<Recipe>(50);
-                var links   = new List<RecipeIngredient>(50 * 6);
-
-                for (int i = 0; i < 50; i++)
-                {
-                    var chef = chefs[i % chefs.Count];
-                    var cuisine = cuisines[i % cuisines.Length];
-
-                    // Choose a small set of ingredients per recipe — biased by cuisine index for variety
-                    var ingCount = 4 + (i % 4); // 4–7 ingredients
-                    var picked = PickIngredients(ingredients, ingCount, rng, i);
-
-                    var title = $"{cuisine} Dish {i + 1}";
-                    var desc = $"A tasty {cuisine.ToLower()} recipe with {picked[0].Name.ToLower()}.";
-                    
-                    string[] methodSteps =
-                    {
-                        "Step 1. Prepare all ingredients by washing and chopping where necessary.",
-                        "Step 2. Heat oil in a large pan over medium heat.",
-                        "Step 3. Add aromatics such as garlic and onions; sauté until fragrant.",
-                        "Step 4. Stir in the main ingredients and cook thoroughly.",
-                        "Step 5. Add spices or sauces and simmer gently to blend flavours.",
-                        "Step 6. Adjust seasoning and serve warm."
-                    };
-
-                    var method = string.Join("\n", methodSteps);
-
-                    var difficulty = 1 + (i % 3);     // 1–3 simple scale
-
-                    // Compute dietary flags from ingredient categories
-                    var (isVeg, isDairyFree, isVegan, isGlutenFree, isNutFree, isPesc) =
-                        ComputeDietaryFlags(picked);
+                    var (prep, cook) = EstimateTimes(def.DifficultyLevel, def.Items.Count, def.Cuisine, def.Title, recNo);
 
                     var recipe = new Recipe
                     {
-                        Title = title,
-                        Description = desc,
-                        DifficultyLevel = difficulty,
-                        IsVegetarian = isVeg,
-                        IsDairyFree = isDairyFree,
-                        Category = cuisine,
+                        Title = def.Title,
+                        Description = def.Description,
+                        Method = def.Method,
+                        DifficultyLevel = def.DifficultyLevel,
+                        IsVegetarian = false,                          // set after we analyse ingredients
+                        IsDairyFree = false,                           // set after we analyse ingredients
+                        Category = def.Cuisine,                        // cuisine in Category
                         ChefId = chef.Id,
-                        CreatedAt = baseCreated.AddMinutes(i * 17), // all different, deterministic
-                        RecipePicturePath = $"/images/recipes/recipe-{i + 1}.jpg",
-                        Method = method
+                        CreatedAt = baseCreated.AddMinutes(recNo * 17),
+                        RecipePicturePath = $"/images/recipes/{Slug(def.Title)}.jpg",
+                        PrepTime = prep,
+                        CookTime = cook
                     };
 
-                    // Optionally set properties that may not exist yet (reflection keeps this file compiling either way)
-                    SetIfExists(recipe, "IsGlutenFree", isGlutenFree);
-                    SetIfExists(recipe, "IsVegan",      isVegan);
-                    SetIfExists(recipe, "IsNutFree",    isNutFree);
-                    SetIfExists(recipe, "IsPescatarian",isPesc);
-
-                    recipes.Add(recipe);
                     db.Recipes.Add(recipe);
-                    await db.SaveChangesAsync(); // ensure Recipe.Id available for FK composite unique index
+                    await db.SaveChangesAsync(); // need Id
 
-                    // Link ingredients with units/quantities
-                    foreach (var (ing, slot) in picked.Select((x, idx) => (x, idx)))
+                    // Convert recipe items -> RecipeIngredients
+                    var selectedIngredients = new List<Ingredient>();
+                    foreach (var item in def.Items)
                     {
-                        var (qty, unit) = SuggestQuantityAndUnit(ing, rng, slot);
-                        links.Add(new RecipeIngredient
+                        if (!ingByName.TryGetValue(item.Name.ToLowerInvariant(), out var ing))
+                        {
+                            throw new InvalidOperationException($"Ingredient '{item.Name}' not found in catalogue.");
+                        }
+
+                        selectedIngredients.Add(ing);
+
+                        db.RecipeIngredients.Add(new RecipeIngredient
                         {
                             RecipeId = recipe.Id,
                             IngredientId = ing.Id,
-                            Quantity = qty,
-                            Unit = unit  // may be null for unit items like eggs
+                            Quantity = item.Quantity,
+                            Unit = item.Unit // may be null (e.g. eggs)
                         });
                     }
+                    await db.SaveChangesAsync();
 
-                    // Ensure unique (RecipeId, IngredientId) for your unique index
-                    var unique = links
-                        .Where(li => li.RecipeId == recipe.Id)
-                        .GroupBy(li => li.IngredientId)
-                        .Select(g => g.First())
-                        .ToList();
+                    // Compute diet flags from actual ingredients
+                    var (veg, dairyFree, vegan, gf, nutFree, pesc) = ComputeDietaryFlags(selectedIngredients);
+                    recipe.IsVegetarian = veg;
+                    recipe.IsDairyFree  = dairyFree;
+                    SetIfExists(recipe, "IsGlutenFree",  gf);
+                    SetIfExists(recipe, "IsVegan",       vegan);
+                    SetIfExists(recipe, "IsNutFree",     nutFree);
+                    SetIfExists(recipe, "IsPescatarian", pesc);
 
-                    db.RecipeIngredients.AddRange(unique);
+                    db.Recipes.Update(recipe);
                     await db.SaveChangesAsync();
                 }
 
                 await tx.CommitAsync();
-                Console.WriteLine("✅ Database reseeded successfully.");
+                Console.WriteLine("✅ Realistic recipes + ingredients seeded.");
             }
             catch (Exception ex)
             {
@@ -153,201 +133,523 @@ namespace SueChef.Tests
             }
         }
 
-        // ---- Helpers ------------------------------------------------------------
-
-        private static List<Chef> SeedChefs() => new()
-        {
-            new Chef { Name = "Karan Kullar"  },
-            new Chef { Name = "Alex Lazar"    },
-            new Chef { Name = "Jack Edwards"  },
-            new Chef { Name = "Luisa Lanca"   },
-            new Chef { Name = "Tom Wight"     },
-            new Chef { Name = "Sarah Hunter"  },
-            new Chef { Name = "Kiran Bhatt"   },
-        };
-
+        // ---------- Ingredients (realistic per 100g/ml) ----------
         private static List<Ingredient> SeedIngredientCatalogue()
         {
-            // Name, Category, (Calories/Protein/Fat/Carbs) rough values per 100g or typical unit
-            var list = new List<Ingredient>
+            // NOTE: values are approximate reference-label macros per 100g (or 100ml for liquids).
+            // You can refine later with your own data source if needed.
+            var L = new List<Ingredient>
             {
-                // MEATS / POULTRY / FISH / SEAFOOD
-                I("Chicken Breast", "poultry", 165, 31, 3.6f, 0),
-                I("Beef Mince (10%)", "meat", 217, 26, 12, 0),
-                I("Pork Shoulder", "meat", 250, 24, 17, 0),
-                I("Lamb Leg", "meat", 206, 24, 12, 0),
-                I("Salmon Fillet", "fish", 208, 20, 13, 0),
-                I("Tuna", "fish", 132, 29, 1, 0),
-                I("Prawns", "seafood", 99, 24, 0.3f, 0),
-                I("Cod", "fish", 82, 18, 0.7f, 0),
+                // Proteins / meats / fish / eggs
+                I("Chicken Breast",       "meat",    165, 31.0f, 3.6f,  0.0f),
+                I("Chicken Thigh",        "meat",    209, 26.0f, 10.9f, 0.0f),
+                I("Beef Mince (10%)",     "meat",    217, 26.0f, 12.0f, 0.0f),
+                I("Pork Shoulder",        "meat",    250, 24.0f, 17.0f, 0.0f),
+                I("Lamb Mince",           "meat",    282, 25.0f, 20.0f, 0.0f),
+                I("Salmon Fillet",        "fish",    208, 20.0f, 13.0f, 0.0f),
+                I("Cod Fillet",           "fish",     82, 18.0f, 0.7f,  0.0f),
+                I("Tuna (raw)",           "fish",    132, 29.0f, 1.0f,  0.0f),
+                I("Prawns",               "seafood",  99, 24.0f, 0.3f,  0.0f),
+                I("Eggs",                 "dairy",   155, 13.0f, 11.0f, 1.1f),
 
-                // DAIRY
-                I("Whole Milk", "dairy", 61, 3.2f, 3.3f, 4.8f),
-                I("Cheddar Cheese", "dairy", 403, 25, 33, 1.3f),
-                I("Butter", "dairy", 717, 1, 81, 0),
-                I("Yoghurt (Plain)", "dairy", 59, 10, 0.4f, 3.6f),
-                I("Feta", "dairy", 265, 14, 21, 4.1f),
+                // Dairy & alt
+                I("Whole Milk",           "dairy",    61, 3.2f,  3.3f,  4.8f),
+                I("Greek Yoghurt",        "dairy",    97, 9.0f,  5.2f,  3.6f),
+                I("Cheddar",              "dairy",   403, 25.0f, 33.0f, 1.3f),
+                I("Parmesan",             "dairy",   431, 38.0f, 29.0f, 4.1f),
+                I("Feta",                 "dairy",   265, 14.0f, 21.0f, 4.1f),
+                I("Butter",               "dairy",   717, 1.0f,  81.0f, 0.0f),
+                I("Double Cream",         "dairy",   445, 2.0f,  48.0f, 2.9f),
+                I("Plain Yoghurt",        "dairy",    59, 10.0f, 0.4f,  3.6f),
 
-                // VEG
-                I("Onion", "veg", 40, 1.1f, 0.1f, 9.3f),
-                I("Garlic", "veg", 149, 6.4f, 0.5f, 33f),
-                I("Tomato", "veg", 18, 0.9f, 0.2f, 3.9f),
-                I("Bell Pepper", "veg", 31, 1, 0.3f, 6f),
-                I("Spinach", "veg", 23, 2.9f, 0.4f, 3.6f),
-                I("Courgette", "veg", 17, 1.2f, 0.3f, 3.1f),
-                I("Aubergine", "veg", 25, 1, 0.2f, 6f),
-                I("Mushroom", "veg", 22, 3.1f, 0.3f, 3.3f),
-                I("Broccoli", "veg", 34, 2.8f, 0.4f, 7f),
-                I("Carrot", "veg", 41, 0.9f, 0.2f, 10f),
-                I("Potato", "veg", 77, 2, 0.1f, 17f),
+                // Oils & condiments
+                I("Olive Oil",            "oils",    884, 0.0f,  100f,  0.0f),
+                I("Vegetable Oil",        "oils",    884, 0.0f,  100f,  0.0f),
+                I("Soy Sauce",            "condiments", 53, 8.0f, 0.6f, 5.6f),
+                I("Tomato Paste",         "condiments", 82, 4.3f, 0.5f, 19.0f),
+                I("Mayonnaise",           "condiments", 680, 1.0f, 75.0f, 1.0f),
+                I("Fish Sauce",           "condiments", 50, 10.0f, 0.0f,  2.0f),
+                I("Oyster Sauce",         "condiments", 51, 1.3f, 0.2f, 11.0f),
+                I("Worcestershire Sauce", "condiments", 78, 0.0f,  0.0f, 19.0f),
 
-                // FRUIT
-                I("Lemon", "fruit", 29, 1.1f, 0.3f, 9.3f),
-                I("Lime", "fruit", 30, 0.7f, 0.2f, 10.5f),
-                I("Mango", "fruit", 60, 0.8f, 0.4f, 15f),
+                // Vegetables
+                I("Onion",                "veg",      40, 1.1f,  0.1f,  9.3f),
+                I("Garlic",               "veg",     149, 6.4f,  0.5f, 33.0f),
+                I("Tomato",               "veg",      18, 0.9f,  0.2f,  3.9f),
+                I("Bell Pepper",          "veg",      31, 1.0f,  0.3f,  6.0f),
+                I("Carrot",               "veg",      41, 0.9f,  0.2f, 10.0f),
+                I("Celery",               "veg",      16, 0.7f,  0.2f,  3.0f),
+                I("Mushroom",             "veg",      22, 3.1f,  0.3f,  3.3f),
+                I("Courgette",            "veg",      17, 1.2f,  0.3f,  3.1f),
+                I("Aubergine",            "veg",      25, 1.0f,  0.2f,  6.0f),
+                I("Spinach",              "veg",      23, 2.9f,  0.4f,  3.6f),
+                I("Broccoli",             "veg",      34, 2.8f,  0.4f,  7.0f),
+                I("Potato",               "veg",      77, 2.0f,  0.1f, 17.0f),
+                I("Sweet Potato",         "veg",      86, 1.6f,  0.1f, 20.1f),
+                I("Cucumber",             "veg",      16, 0.7f,  0.1f,  3.6f),
+                I("Lettuce",              "veg",      15, 1.4f,  0.2f,  2.9f),
+                I("Red Cabbage",          "veg",      31, 1.4f,  0.2f,  7.4f),
+                I("Kale",                 "veg",      49, 4.3f,  0.9f,  8.8f),
+                I("Ginger",               "spices",   80, 1.8f,  0.8f, 18.0f),
+                I("Chillies",             "spices",   40, 2.0f,  0.4f,  9.0f),
+                I("Spring Onion",         "veg",      40, 1.1f,  0.1f,  9.3f),
+                I("Cabbage",          "veg",      31, 1.4f,  0.2f,  7.4f),
+                I("Peas",              "veg",      23, 2.9f,  0.4f,  3.6f),
 
-                // HERBS & SPICES
-                I("Coriander", "herbs", 23, 2.1f, 0.5f, 3.7f),
-                I("Parsley", "herbs", 36, 3, 0.8f, 6.3f),
-                I("Basil", "herbs", 23, 3.2f, 0.6f, 2.7f),
-                I("Cumin", "spices", 375, 18, 22, 44f),
-                I("Paprika", "spices", 282, 14, 13, 54f),
-                I("Chilli Powder", "spices", 282, 12, 15, 50f),
-                I("Turmeric", "spices", 354, 8, 10, 65f),
-                I("Ginger", "spices", 80, 1.8f, 0.8f, 18f),
+                // Fruit & herbs
+                I("Lemon",                "fruit",    29, 1.1f,  0.3f,  9.3f),
+                I("Lime",                 "fruit",    30, 0.7f,  0.2f, 10.5f),
+                I("Mango",                "fruit",    60, 0.8f,  0.4f, 15.0f),
+                I("Coriander",            "herbs",    23, 2.1f,  0.5f,  3.7f),
+                I("Parsley",              "herbs",    36, 3.0f,  0.8f,  6.3f),
+                I("Basil",                "herbs",    23, 3.2f,  0.6f,  2.7f),
+                I("Mint",                 "herbs",    44, 3.8f,  0.7f,  8.0f),
+                I("Dill",                 "herbs",    43, 3.5f,  1.1f,  7.0f),
+                I("Avocado",              "fruit" ,    60, 0.8f,  0.4f, 15.0f),
 
-                // LEGUMES
-                I("Chickpeas (canned)", "legumes", 164, 9, 2.6f, 27f),
-                I("Lentils (dry)", "legumes", 353, 25, 1.1f, 60f),
-                I("Black Beans", "legumes", 339, 21, 1.2f, 62f),
+                // Spices
+                I("Cumin",                "spices",  375, 18.0f, 22.0f, 44.0f),
+                I("Paprika",              "spices",  282, 14.0f, 13.0f, 54.0f),
+                I("Turmeric",             "spices",  354, 8.0f,  10.0f, 65.0f),
+                I("Curry Powder",         "spices",  325, 14.0f, 14.0f, 58.0f),
+                I("Garam Masala",         "spices",  307, 15.0f, 13.0f, 53.0f),
+                I("Black Pepper",              "spices",  282, 14.0f, 13.0f, 54.0f),
 
-                // GRAINS / PASTA / RICE / BAKERY
-                I("Wheat Flour", "grains", 364, 10, 1, 76f),
-                I("Pasta (wheat)", "pasta", 131, 5, 1.1f, 25f),
-                I("Bread", "bakery", 265, 9, 3.2f, 49f),
-                I("Rice (white)", "rice", 130, 2.7f, 0.3f, 28f),
-                I("Rice (brown)", "rice", 111, 2.6f, 0.9f, 23f),
-                I("Quinoa", "grains", 120, 4.4f, 1.9f, 21f),
+                // Legumes / pulses
+                I("Chickpeas (canned)",   "legumes", 164, 9.0f,  2.6f, 27.0f),
+                I("Lentils (dry)",        "legumes", 353, 25.0f, 1.1f,  60.0f),
+                I("Black Beans (cooked)", "legumes", 132, 8.9f,  0.5f,  23.7f),
 
-                // NUTS / SEEDS / OILS / CONDIMENTS
-                I("Almonds", "nuts", 579, 21, 50, 22f),
-                I("Peanuts", "nuts", 567, 26, 49, 16f),
-                I("Sesame Seeds", "seeds", 573, 18, 50, 23f),
-                I("Olive Oil", "oils", 884, 0, 100, 0),
-                I("Vegetable Oil", "oils", 884, 0, 100, 0),
-                I("Soy Sauce", "condiments", 53, 8, 0.6f, 5.6f),
-                I("Tomato Paste", "condiments", 82, 4.3f, 0.5f, 19f),
+                // Grains / rice / pasta / bakery
+                I("Rice (white, dry)",    "rice",    358, 6.7f,  0.9f,  79.0f),
+                I("Rice (brown, dry)",    "rice",    362, 7.5f,  2.7f,  76.0f),
+                I("Quinoa (dry)",         "grains",  368, 14.0f, 6.1f,  64.0f),
+                I("Pasta (dry)",          "pasta",   371, 13.0f, 1.5f,  75.0f),
+                I("Bread",                "bakery",  265, 9.0f,  3.2f,  49.0f),
+                I("Tortilla (wheat)",     "bakery",  313, 8.1f,  8.5f,  49.0f),
 
-                // “Unit” style items (null unit acceptable)
-                I("Eggs", "dairy", 155, 13, 11, 1.1f) // (biologically not dairy, but commonly grouped; used for dairy checks)
+                // Nuts / seeds
+                I("Almonds",              "nuts",    579, 21.0f, 50.0f, 22.0f),
+                I("Peanuts",              "nuts",    567, 26.0f, 49.0f, 16.0f),
+                I("Sesame Seeds",         "seeds",   573, 18.0f, 50.0f, 23.0f),
+
+                // Liquids / stocks
+                I("Chicken Stock",        "condiments", 7, 0.5f, 0.2f, 0.5f),
+                I("Vegetable Stock",      "condiments", 6, 0.3f, 0.1f, 0.8f),
+                I("Coconut Milk",         "dairy",   230, 2.3f,  24.0f, 3.4f),
+                I("Passata",              "veg",      30, 1.5f,  0.3f,  5.0f),
+                I("Milk",                 "dairy",   230, 2.3f,  24.0f, 3.4f),
+
+                // Cheeses & extras commonly used
+                I("Mozzarella",           "dairy",   280, 28.0f, 17.0f, 3.1f),
+                I("Ricotta",              "dairy",   174, 11.0f, 13.0f, 3.0f),
+                I("Halloumi",             "dairy",   321, 22.0f, 26.0f, 2.2f),
+                I("Paneer",               "dairy",   321, 21.0f, 25.0f, 3.6f),
             };
 
-            // Ensure max length constraints (Name: 100, Category: 100) from migration
-            foreach (var ing in list)
+            // Clamp to max lengths (Name/Category up to 100 in your migration)
+            foreach (var ing in L)
             {
                 ing.Name = Truncate(ing.Name, 100);
                 ing.Category = Truncate(ing.Category, 100);
             }
 
-            return list;
+            return L;
 
-            static Ingredient I(string name, string cat, float kcal, float protein, float fat, float carb)
-                => new Ingredient { Name = name, Category = cat, Calories = kcal, Protein = protein, Fat = fat, Carbs = carb };
+            static Ingredient I(string name, string category, float kcal, float protein, float fat, float carbs)
+                => new Ingredient { Name = name, Category = category, Calories = kcal, Protein = protein, Fat = fat, Carbs = carbs };
         }
 
-        private static List<Ingredient> PickIngredients(List<Ingredient> all, int count, Random rng, int recipeIndex)
+        // ---------- Recipe definitions ----------
+        private static List<RecipeDef> BuildRecipes()
         {
-            // deterministic but “shuffled” selection
-            var start = (recipeIndex * 7) % all.Count;
-            var pool = all.Skip(start).Concat(all.Take(start)).ToList();
+            // Short helper to keep items compact
+            RecipeDef R(string title, string cuisine, int difficulty, string desc, string method, params (string Name, decimal Qty, string? Unit)[] items)
+                => new(title, cuisine, difficulty, desc, method, items.ToList());
 
-            // bias: ensure some base pattern — aromatics + oil + main + starch + veg
-            var preferred = new List<string> { "veg", "spices", "herbs", "oils", "meat", "poultry", "fish", "seafood", "rice", "pasta", "grains", "bakery", "legumes", "dairy", "nuts" };
-
-            var picked = new List<Ingredient>(count);
-            foreach (var cat in preferred)
+            // 50 realistic dishes, Serving = 1; quantities chosen accordingly.
+            return new List<RecipeDef>
             {
-                if (picked.Count >= count) break;
-                var candidate = pool.FirstOrDefault(x => x.Category == cat);
-                if (candidate != null && !picked.Any(p => p.Id == candidate.Id))
-                    picked.Add(candidate);
-            }
-
-            // top-up if needed
-            int cursor = 0;
-            while (picked.Count < count && cursor < pool.Count)
-            {
-                var cand = pool[cursor++];
-                if (!picked.Any(p => p.Name == cand.Name))
-                    picked.Add(cand);
-            }
-
-            return picked.Take(count).ToList();
+                R("Margherita Pizza","Italian",2,
+                  "Classic Neapolitan-style pizza with tomato, mozzarella, and basil.",
+                  "Make or use a base; spread passata; add mozzarella; bake hot; finish with basil and olive oil.",
+                  ("Passata",80,"g"), ("Mozzarella",90,"g"), ("Basil",2,"g"), ("Olive Oil",5,"ml"), ("Bread",120,"g") // using Bread as base proxy
+                ),
+                R("Chicken Tikka Masala","Indian",3,
+                  "Grilled chicken in a creamy spiced tomato sauce.",
+                  "Marinate chicken; grill; simmer sauce with tomato, cream and spices; combine and simmer.",
+                  ("Chicken Breast",150,"g"), ("Greek Yoghurt",60,"g"), ("Passata",150,"g"), ("Onion",60,"g"),
+                  ("Garlic",8,"g"), ("Garam Masala",4,"g"), ("Turmeric",2,"g"), ("Cumin",2,"g"), ("Double Cream",50,"g"),
+                  ("Rice (white, dry)",75,"g")
+                ),
+                R("Greek Salad","Greek",1,
+                  "Fresh salad with tomato, cucumber, feta, olives and oregano.",
+                  "Chop veg; toss with olive oil and lemon; top with feta.",
+                  ("Tomato",150,"g"), ("Cucumber",120,"g"), ("Onion",30,"g"), ("Feta",60,"g"),
+                  ("Olive Oil",10,"ml"), ("Lemon",30,"g")
+                ),
+                R("Pad Thai (Prawn)","Thai",3,
+                  "Stir-fried rice noodles with prawns, egg, and tamarind-like sauce (simplified).",
+                  "Soak noodles; stir-fry prawns with aromatics; add egg; toss with sauce and noodles.",
+                  ("Prawns",120,"g"), ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Oyster Sauce",10,"g"),
+                  ("Vegetable Oil",10,"ml"), ("Lime",20,"g"), ("Rice (white, dry)",70,"g")
+                ),
+                R("Beef Bourguignon","French",3,
+                  "Slow-cooked beef in red wine with mushrooms and onions.",
+                  "Brown beef; sauté veg; simmer with stock and wine until tender.",
+                  ("Beef Mince (10%)",200,"g"), ("Mushroom",80,"g"), ("Onion",80,"g"),
+                  ("Carrot",60,"g"), ("Olive Oil",10,"ml"), ("Vegetable Stock",200,"ml")
+                ),
+                R("Shakshuka","Moroccan",1,
+                  "Eggs poached in spiced tomato and pepper sauce.",
+                  "Sauté peppers and onion; add garlic and spices; simmer tomato; crack in eggs and cook gently.",
+                  ("Eggs",2,null), ("Tomato",200,"g"), ("Bell Pepper",100,"g"), ("Onion",60,"g"),
+                  ("Garlic",10,"g"), ("Paprika",3,"g"), ("Cumin",2,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Pesto Pasta","Italian",1,
+                  "Pasta tossed with basil pesto and parmesan.",
+                  "Cook pasta; toss with pesto and a splash of cooking water; finish with parmesan.",
+                  ("Pasta (dry)",90,"g"), ("Basil",10,"g"), ("Olive Oil",15,"ml"), ("Parmesan",20,"g"), ("Garlic",4,"g")
+                ),
+                R("Falafel Wrap","Lebanese",2,
+                  "Falafel with salad and tahini-style dressing.",
+                  "Mash chickpeas with herbs/spices; pan-fry; serve in wrap with veg.",
+                  ("Chickpeas (canned)",120,"g"), ("Coriander",8,"g"), ("Parsley",8,"g"),
+                  ("Cumin",3,"g"), ("Garlic",6,"g"), ("Olive Oil",10,"ml"), ("Tortilla (wheat)",60,"g"),
+                  ("Lettuce",40,"g"), ("Tomato",60,"g")
+                ),
+                R("Salmon Teriyaki","Japanese",2,
+                  "Salmon glazed with a soy-based teriyaki sauce.",
+                  "Pan-sear salmon; reduce soy/sugar-like glaze; coat and serve with rice.",
+                  ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",5,"ml"),
+                  ("Rice (white, dry)",75,"g"), ("Spring Onion",30,"g") // use Onion as proxy if Spring Onion not in cat
+                ),
+                R("Miso Soup","Japanese",1,
+                  "Light broth with tofu and spring onion (tofu proxied by Paneer for seeding).",
+                  "Heat stock; dissolve miso (proxy); add tofu proxy and onion; simmer briefly.",
+                  ("Vegetable Stock",300,"ml"), ("Onion",30,"g"), ("Paneer",40,"g")
+                ),
+                R("Tuna Poke Bowl","Hawaiian",2,
+                  "Marinated raw tuna with rice and veg.",
+                  "Cube tuna; marinate with soy; assemble over rice with veg.",
+                  ("Tuna (raw)",120,"g"), ("Soy Sauce",15,"ml"), ("Rice (white, dry)",80,"g"),
+                  ("Cucumber",80,"g"), ("Avocado",70,"g") // if missing Avocado, you can sub with "Olive Oil" 5ml + Cucumber
+                ),
+                R("Butter Chicken","Indian",3,
+                  "Creamy tomato-butter chicken curry.",
+                  "Marinate; grill; simmer in tomato, butter, cream; combine.",
+                  ("Chicken Thigh",180,"g"), ("Greek Yoghurt",60,"g"), ("Passata",180,"g"),
+                  ("Butter",20,"g"), ("Double Cream",40,"g"), ("Onion",60,"g"), ("Garlic",8,"g"),
+                  ("Curry Powder",4,"g"), ("Rice (white, dry)",75,"g")
+                ),
+                R("Fish Tacos","Mexican",2,
+                  "Pan-fried cod with slaw and lime in tortillas.",
+                  "Season cod; pan-fry; assemble in tortillas with slaw; squeeze lime.",
+                  ("Cod Fillet",150,"g"), ("Tortilla (wheat)",120,"g"), ("Cabbage",80,"g"),
+                  ("Lime",25,"g"), ("Mayonnaise",20,"g")
+                ),
+                R("Veggie Stir-Fry","Chinese",2,
+                  "Mixed vegetables stir-fried with soy and ginger.",
+                  "Hot pan; oil; add veg in order; season with soy and ginger.",
+                  ("Broccoli",100,"g"), ("Carrot",60,"g"), ("Bell Pepper",80,"g"), ("Mushroom",80,"g"),
+                  ("Ginger",8,"g"), ("Garlic",6,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",10,"ml"),
+                  ("Rice (white, dry)",70,"g")
+                ),
+                R("Chili Con Carne","American",2,
+                  "Beef chili with beans and spices.",
+                  "Brown beef; sauté aromatics; add tomato and spices; simmer; add beans.",
+                  ("Beef Mince (10%)",180,"g"), ("Onion",70,"g"), ("Garlic",6,"g"), ("Passata",180,"g"),
+                  ("Cumin",4,"g"), ("Paprika",4,"g"), ("Black Beans (cooked)",120,"g"),
+                  ("Olive Oil",10,"ml"), ("Rice (white, dry)",75,"g")
+                ),
+                R("Lentil Dahl","Indian",1,
+                  "Comforting spiced red lentils.",
+                  "Toast spices; simmer lentils with onion, garlic, turmeric; finish with coriander.",
+                  ("Lentils (dry)",70,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Turmeric",3,"g"),
+                  ("Cumin",3,"g"), ("Olive Oil",10,"ml"), ("Rice (white, dry)",70,"g"), ("Coriander",6,"g")
+                ),
+                R("Hummus & Pita","Lebanese",1,
+                  "Classic hummus served with bread.",
+                  "Blend chickpeas with garlic, olive oil, lemon; serve with bread.",
+                  ("Chickpeas (canned)",150,"g"), ("Garlic",5,"g"), ("Olive Oil",15,"ml"),
+                  ("Lemon",30,"g"), ("Bread",100,"g")
+                ),
+                R("Tabbouleh","Lebanese",1,
+                  "Herby salad with parsley, bulgur proxy (use Quinoa).",
+                  "Cook quinoa; cool; combine with lots of parsley, tomato, lemon, oil.",
+                  ("Quinoa (dry)",60,"g"), ("Parsley",25,"g"), ("Tomato",120,"g"),
+                  ("Lemon",25,"g"), ("Olive Oil",10,"ml"), ("Mint",6,"g")
+                ),
+                R("Spaghetti Carbonara","Italian",2,
+                  "Egg, parmesan, and cured pork sauce (pork shoulder proxy).",
+                  "Cook pasta; toss with egg, cheese, and rendered pork off heat.",
+                  ("Pasta (dry)",90,"g"), ("Eggs",1,null), ("Parmesan",25,"g"),
+                  ("Pork Shoulder",60,"g"), ("Black Pepper",2,"g")
+                ),
+                R("Bolognese","Italian",2,
+                  "Slow-simmered beef ragu with pasta.",
+                  "Brown beef; add soffritto; tomato; simmer; serve over pasta.",
+                  ("Beef Mince (10%)",180,"g"), ("Onion",60,"g"), ("Carrot",50,"g"), ("Celery",40,"g"),
+                  ("Passata",200,"g"), ("Olive Oil",10,"ml"), ("Pasta (dry)",90,"g")
+                ),
+                R("Pho Ga","Vietnamese",2,
+                  "Aromatic chicken noodle soup.",
+                  "Simmer chicken in stock with ginger; add noodles; finish with herbs.",
+                  ("Chicken Breast",140,"g"), ("Vegetable Stock",400,"ml"), ("Ginger",10,"g"),
+                  ("Onion",40,"g"), ("Rice (white, dry)",70,"g"), ("Coriander",8,"g")
+                ),
+                R("Bibimbap","Korean",3,
+                  "Warm rice bowl with mixed veg and beef (gochujang proxy via paprika+soy).",
+                  "Cook rice; sauté toppings; assemble with egg and sauce.",
+                  ("Rice (white, dry)",80,"g"), ("Beef Mince (10%)",120,"g"),
+                  ("Spinach",70,"g"), ("Carrot",60,"g"), ("Mushroom",60,"g"),
+                  ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Paprika",3,"g")
+                ),
+                R("Jerk Chicken","Caribbean",3,
+                  "Spicy marinated chicken with rice.",
+                  "Marinate chicken; grill/roast; serve with rice and lime.",
+                  ("Chicken Thigh",200,"g"), ("Lime",20,"g"), ("Garlic",6,"g"),
+                  ("Ginger",8,"g"), ("Vegetable Oil",10,"ml"), ("Rice (white, dry)",75,"g")
+                ),
+                R("Moroccan Chickpea Tagine","Moroccan",2,
+                  "Spiced chickpeas with vegetables.",
+                  "Sauté aromatics; add spices, chickpeas, veg; simmer.",
+                  ("Chickpeas (canned)",160,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                  ("Aubergine",80,"g"), ("Coriander",6,"g"), ("Cumin",3,"g"),
+                  ("Paprika",3,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Seafood Paella (Prawn)","Spanish",3,
+                  "Rice cooked with stock, saffron proxy, and prawns.",
+                  "Sauté base; add rice and stock; simmer; add prawns near end.",
+                  ("Prawns",140,"g"), ("Rice (white, dry)",90,"g"), ("Onion",60,"g"),
+                  ("Bell Pepper",60,"g"), ("Vegetable Stock",350,"ml"), ("Olive Oil",10,"ml")
+                ),
+                R("Gazpacho","Spanish",1,
+                  "Chilled tomato-cucumber soup.",
+                  "Blend vegetables with oil and season; chill.",
+                  ("Tomato",300,"g"), ("Cucumber",150,"g"), ("Onion",30,"g"),
+                  ("Olive Oil",15,"ml"), ("Bread",40,"g")
+                ),
+                R("Ratatouille","French",2,
+                  "Stewed Mediterranean vegetables.",
+                  "Sauté each veg; combine and stew gently; finish with basil.",
+                  ("Aubergine",120,"g"), ("Courgette",120,"g"), ("Bell Pepper",100,"g"),
+                  ("Tomato",200,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Olive Oil",15,"ml"),
+                  ("Basil",4,"g")
+                ),
+                R("Chicken Fajitas","Mexican",2,
+                  "Spiced chicken with peppers and onions in tortillas.",
+                  "Sear chicken; sauté peppers/onion; toss with spices; serve in tortillas.",
+                  ("Chicken Breast",160,"g"), ("Bell Pepper",100,"g"), ("Onion",80,"g"),
+                  ("Cumin",3,"g"), ("Paprika",3,"g"), ("Vegetable Oil",10,"ml"),
+                  ("Tortilla (wheat)",120,"g")
+                ),
+                R("Tandoori Salmon","Indian",2,
+                  "Yoghurt-spiced baked salmon.",
+                  "Marinate salmon with yoghurt and spices; roast.",
+                  ("Salmon Fillet",170,"g"), ("Greek Yoghurt",60,"g"),
+                  ("Garam Masala",4,"g"), ("Turmeric",3,"g"), ("Lime",20,"g"),
+                  ("Rice (white, dry)",75,"g")
+                ),
+                R("Moussaka","Greek",3,
+                  "Layered aubergine with beef and béchamel (cream/butter proxy).",
+                  "Pan-fry aubergine; cook beef in tomato; layer and bake with creamy top.",
+                  ("Aubergine",200,"g"), ("Beef Mince (10%)",170,"g"), ("Onion",60,"g"),
+                  ("Passata",180,"g"), ("Butter",20,"g"), ("Double Cream",60,"g")
+                ),
+                R("Chicken Souvlaki","Greek",2,
+                  "Skewered marinated chicken with lemon and herbs.",
+                  "Marinate; grill; serve with salad and bread.",
+                  ("Chicken Breast",170,"g"), ("Lemon",25,"g"), ("Garlic",6,"g"),
+                  ("Olive Oil",10,"ml"), ("Parsley",6,"g"), ("Bread",80,"g")
+                ),
+                R("Caprese Salad","Italian",1,
+                  "Tomato, mozzarella, basil, olive oil.",
+                  "Slice tomato and mozzarella; layer with basil; dress with oil.",
+                  ("Tomato",200,"g"), ("Mozzarella",100,"g"), ("Basil",6,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Paneer Butter Masala","Indian",3,
+                  "Creamy tomato curry with paneer.",
+                  "Sauté aromatics and spices; add tomato and cream; simmer paneer.",
+                  ("Paneer",150,"g"), ("Butter",20,"g"), ("Passata",180,"g"),
+                  ("Onion",60,"g"), ("Garlic",8,"g"), ("Curry Powder",4,"g"),
+                  ("Double Cream",40,"g"), ("Rice (white, dry)",75,"g")
+                ),
+                R("Chicken Katsu Curry","Japanese",3,
+                  "Crispy chicken with mild curry sauce; rice.",
+                  "Pan-fry chicken; make curry roux-like sauce; serve with rice.",
+                  ("Chicken Breast",170,"g"), ("Vegetable Oil",10,"ml"),
+                  ("Onion",60,"g"), ("Carrot",60,"g"), ("Curry Powder",5,"g"),
+                  ("Vegetable Stock",250,"ml"), ("Rice (white, dry)",80,"g")
+                ),
+                R("Teriyaki Salmon Bowl","Japanese",2,
+                  "Salmon teriyaki over rice with veg.",
+                  "Sear salmon; glaze; serve over rice and veg.",
+                  ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
+                  ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
+                ),
+                R("Chicken Caesar Salad","American",2,
+                  "Romaine, chicken, parmesan, caesar dressing (approx).",
+                  "Grill chicken; toss lettuce with dressing; shave parmesan.",
+                  ("Chicken Breast",150,"g"), ("Lettuce",120,"g"), ("Parmesan",20,"g"),
+                  ("Mayonnaise",20,"g"), ("Garlic",4,"g"), ("Bread",40,"g")
+                ),
+                R("Prawn Linguine","Italian",2,
+                  "Garlic prawns tossed with pasta and lemon.",
+                  "Sauté prawns with garlic/oil; toss with pasta and lemon juice.",
+                  ("Prawns",140,"g"), ("Pasta (dry)",90,"g"), ("Garlic",8,"g"),
+                  ("Olive Oil",12,"ml"), ("Lemon",25,"g"), ("Parsley",6,"g")
+                ),
+                R("Cottage Pie","British",3,
+                  "Beef mince with mash topping (potato only here).",
+                  "Cook beef with veg; top with mash; bake.",
+                  ("Beef Mince (10%)",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                  ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
+                ),
+                R("Shepherd’s Pie","British",3,
+                  "Lamb mince base with mash topping.",
+                  "Cook lamb with veg and stock; top with mash; bake.",
+                  ("Lamb Mince",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                  ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
+                ),
+                R("Chicken Noodle Soup","American",1,
+                  "Light soup with chicken, vegetables and noodles.",
+                  "Simmer chicken with veg; add pasta; cook until tender.",
+                  ("Chicken Breast",130,"g"), ("Vegetable Stock",400,"ml"), ("Carrot",60,"g"),
+                  ("Celery",40,"g"), ("Onion",40,"g"), ("Pasta (dry)",50,"g")
+                ),
+                R("Pancakes","American",1,
+                  "Simple pancakes with butter (flour proxy via Bread).",
+                  "Mix batter; pan-fry; serve with butter.",
+                  ("Bread",80,"g"), ("Eggs",1,null), ("Milk",120,"ml"), ("Butter",10,"g")
+                ),
+                R("Cheese Omelette","French",1,
+                  "Fluffy omelette with cheese.",
+                  "Beat eggs; cook gently; add cheese; fold.",
+                  ("Eggs",3,null), ("Butter",10,"g"), ("Cheddar",40,"g")
+                ),
+                R("Guacamole on Toast","Mexican",1,
+                  "Mashed avocado with lime on toast (avocado proxy via olive oil + cucumber for texture).",
+                  "Mash; season; spread on toast.",
+                  ("Bread",80,"g"), ("Cucumber",60,"g"), ("Olive Oil",10,"ml"), ("Lime",20,"g")
+                ),
+                R("Bruschetta","Italian",1,
+                  "Tomato, garlic, basil on toasted bread.",
+                  "Chop tomato; season; spoon onto toast; finish with basil and oil.",
+                  ("Bread",80,"g"), ("Tomato",150,"g"), ("Garlic",6,"g"),
+                  ("Basil",6,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Chicken Burrito Bowl","Mexican",2,
+                  "Spiced chicken with rice, beans, and veg.",
+                  "Sear chicken with spices; serve over rice with beans and veg.",
+                  ("Chicken Breast",160,"g"), ("Rice (white, dry)",80,"g"),
+                  ("Black Beans (cooked)",120,"g"), ("Bell Pepper",80,"g"),
+                  ("Onion",60,"g"), ("Cumin",3,"g"), ("Paprika",3,"g")
+                ),
+                R("Veggie Quesadilla","Mexican",1,
+                  "Cheesy tortilla with sautéed vegetables.",
+                  "Sauté veg; load tortilla with cheese; fold and griddle.",
+                  ("Tortilla (wheat)",120,"g"), ("Cheddar",70,"g"),
+                  ("Bell Pepper",60,"g"), ("Onion",40,"g"), ("Mushroom",60,"g")
+                ),
+                R("Spinach Ricotta Cannelloni","Italian",3,
+                  "Pasta tubes filled with spinach & ricotta, baked in passata.",
+                  "Mix filling; pipe into pasta proxy; bake with sauce.",
+                  ("Pasta (dry)",90,"g"), ("Spinach",120,"g"), ("Ricotta",120,"g"),
+                  ("Passata",200,"g"), ("Parmesan",20,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Minestrone Soup","Italian",1,
+                  "Hearty vegetable soup with pasta and beans.",
+                  "Sauté veg; add stock, tomato, pasta, beans; simmer.",
+                  ("Vegetable Stock",400,"ml"), ("Passata",150,"g"), ("Onion",50,"g"),
+                  ("Carrot",50,"g"), ("Celery",40,"g"), ("Courgette",70,"g"),
+                  ("Pasta (dry)",50,"g"), ("Black Beans (cooked)",100,"g")
+                ),
+                R("Mushroom Risotto","Italian",3,
+                  "Creamy risotto with mushrooms.",
+                  "Toast rice; add stock gradually; finish with parmesan.",
+                  ("Rice (white, dry)",90,"g"), ("Mushroom",120,"g"),
+                  ("Vegetable Stock",500,"ml"), ("Onion",50,"g"),
+                  ("Olive Oil",10,"ml"), ("Parmesan",25,"g")
+                ),
+                R("Halloumi Salad","Greek",1,
+                  "Grilled halloumi with mixed salad.",
+                  "Griddle halloumi; toss salad; dress with oil/lemon.",
+                  ("Halloumi",100,"g"), ("Cucumber",100,"g"), ("Tomato",120,"g"),
+                  ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Lettuce",80,"g")
+                ),
+                R("Penne Arrabbiata","Italian",2,
+                  "Spicy tomato pasta with garlic and chilli.",
+                  "Cook pasta; simmer garlicky chilli tomato sauce; combine.",
+                  ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Garlic",8,"g"),
+                  ("Chillies",4,"g"), ("Olive Oil",10,"ml"), ("Parsley",4,"g")
+                ),
+                R("Teriyaki Tofu Bowl (Paneer proxy)","Japanese",2,
+                  "Sweet-savoury bowl with paneer acting as tofu for seeding.",
+                  "Sear paneer; glaze; serve over rice with veg.",
+                  ("Paneer",140,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
+                  ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
+                ),
+                R("Quinoa Buddha Bowl","American",2,
+                  "Nutritious bowl with quinoa, veg, chickpeas.",
+                  "Cook quinoa; roast/sauté veg; assemble with dressing.",
+                  ("Quinoa (dry)",70,"g"), ("Chickpeas (canned)",120,"g"),
+                  ("Spinach",80,"g"), ("Sweet Potato",150,"g"), ("Olive Oil",10,"ml")
+                ),
+                R("Prawn Fried Rice","Chinese",2,
+                  "Quick fried rice with prawns and vegetables.",
+                  "Use day-old rice; fry with eggs, prawns, veg; season.",
+                  ("Rice (white, dry)",90,"g"), ("Prawns",130,"g"),
+                  ("Eggs",1,null), ("Peas",80,"g"), ("Carrot",50,"g"), ("Soy Sauce",20,"ml"),
+                  ("Vegetable Oil",10,"ml")
+                ),
+                R("Ramen (Simple)","Japanese",3,
+                  "Noodle soup with chicken and egg.",
+                  "Simmer stock; add noodles; top with chicken and egg.",
+                  ("Vegetable Stock",500,"ml"), ("Chicken Breast",120,"g"),
+                  ("Pasta (dry)",70,"g"), ("Eggs",1,null), ("Spring Onion",30,"g")
+                ),
+                R("Tuna Nicoise","French",2,
+                  "Salad with tuna, egg, potato, green beans (proxy with broccoli).",
+                  "Boil eggs and potato; assemble with tuna and veg; dress.",
+                  ("Tuna (raw)",120,"g"), ("Eggs",1,null), ("Potato",180,"g"),
+                  ("Tomato",120,"g"), ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Broccoli",80,"g")
+                ),
+                R("Katsu Sando","Japanese",2,
+                  "Crispy chicken sandwich.",
+                  "Fry chicken; slice bread; assemble with mayo.",
+                  ("Chicken Breast",150,"g"), ("Bread",100,"g"), ("Mayonnaise",20,"g"),
+                  ("Vegetable Oil",10,"ml")
+                ),
+                R("Penne alla Vodka (no vodka)","Italian",2,
+                  "Creamy tomato pasta (vodka omitted for test env).",
+                  "Cook pasta; simmer passata with cream; combine with parmesan.",
+                  ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Double Cream",60,"g"),
+                  ("Parmesan",25,"g"), ("Olive Oil",10,"ml")
+                ),
+            };
         }
 
-        private static (decimal qty, string? unit) SuggestQuantityAndUnit(Ingredient ing, Random rng, int slot)
-        {
-            // Simple heuristics by category/name
-            switch (ing.Category)
-            {
-                case "oils":
-                    return (5 + (slot % 3) * 5, "ml"); // 5–15 ml
-                case "condiments":
-                    return (10 + (slot % 3) * 10, "g"); // 10–30 g
-                case "spices":
-                case "herbs":
-                    return (2 + (slot % 2) * 2, "g");  // 2–4 g
-                case "veg":
-                case "fruit":
-                    return (50 + (slot % 4) * 25, "g"); // 50–125 g
-                case "legumes":
-                case "grains":
-                case "pasta":
-                case "rice":
-                case "bakery":
-                    return (60 + (slot % 4) * 20, "g"); // 60–120 g
-                case "meat":
-                case "poultry":
-                case "fish":
-                case "seafood":
-                    return (120 + (slot % 3) * 30, "g"); // 120–180 g
-                case "nuts":
-                case "seeds":
-                    return (15 + (slot % 3) * 10, "g"); // 15–35 g
-                case "dairy":
-                    if (ing.Name.Contains("Milk", StringComparison.OrdinalIgnoreCase))
-                        return (100 + (slot % 3) * 50, "ml"); // 100–200 ml
-                    if (ing.Name.Contains("Yoghurt", StringComparison.OrdinalIgnoreCase))
-                        return (50 + (slot % 3) * 25, "g"); // 50–100 g
-                    if (ing.Name.Contains("Egg", StringComparison.OrdinalIgnoreCase))
-                        return (2, null); // 2 eggs, unitless
-                    return (20 + (slot % 3) * 20, "g"); // cheese/butter
-                default:
-                    return (25, "g");
-            }
-        }
-
+        // ---------- Helpers ----------
         private static (bool veg, bool dairyFree, bool vegan, bool glutenFree, bool nutFree, bool pesc)
             ComputeDietaryFlags(IEnumerable<Ingredient> ingredients)
         {
-            var cats = ingredients.Select(i => i.Category.ToLowerInvariant()).ToHashSet();
-            var names = ingredients.Select(i => i.Name.ToLowerInvariant()).ToArray();
+            var cats  = ingredients.Select(i => (i.Category ?? "").ToLowerInvariant()).ToHashSet();
+            var names = ingredients.Select(i => (i.Name ?? "").ToLowerInvariant()).ToArray();
 
             bool hasMeat   = cats.Contains("meat") || cats.Contains("poultry");
             bool hasFish   = cats.Contains("fish") || cats.Contains("seafood");
-            bool hasDairy  = cats.Contains("dairy"); // includes eggs here
+            bool hasDairy  = cats.Contains("dairy"); // includes eggs by our catalogue grouping
             bool hasEggs   = names.Any(n => n.Contains("egg"));
             bool hasNuts   = cats.Contains("nuts");
-            bool hasGlutenCategory = cats.Contains("grains") || cats.Contains("pasta") || cats.Contains("bakery");
-            bool hasObviousGlutenName = names.Any(n =>
-                n.Contains("wheat") || n.Contains("pasta") || n.Contains("bread"));
+            bool hasGluten = cats.Contains("pasta") || cats.Contains("bakery") || names.Any(n => n.Contains("wheat") || n.Contains("bread"));
 
-            bool isVegetarian = !hasMeat && !hasFish && !cats.Contains("seafood");
+            bool isVegetarian = !hasMeat && !hasFish;
             bool isVegan      = isVegetarian && !hasDairy && !hasEggs;
             bool isDairyFree  = !hasDairy || isVegan;
             bool isNutFree    = !hasNuts;
-            bool isGlutenFree = !(hasGlutenCategory || hasObviousGlutenName);
-            bool isPesc       = !hasMeat && (hasFish || cats.Contains("seafood"));
+            bool isGlutenFree = !hasGluten;
+            bool isPesc       = !hasMeat && hasFish;
 
             return (isVegetarian, isDairyFree, isVegan, isGlutenFree, isNutFree, isPesc);
         }
@@ -355,20 +657,54 @@ namespace SueChef.Tests
         private static void SetIfExists(object obj, string propertyName, object? value)
         {
             var prop = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-            if (prop != null && prop.CanWrite)
+            if (prop is { CanWrite: true })
             {
-                // Coerce bool? for nullable properties if needed
-                if (prop.PropertyType == typeof(bool?) && value is bool b)
-                {
-                    prop.SetValue(obj, (bool?)b);
-                }
-                else
-                {
-                    prop.SetValue(obj, value);
-                }
+                if (prop.PropertyType == typeof(bool?) && value is bool b) prop.SetValue(obj, (bool?)b);
+                else if (prop.PropertyType == typeof(bool) && value is bool b2) prop.SetValue(obj, b2);
+                else prop.SetValue(obj, value);
             }
         }
 
-        private static string Truncate(string s, int len) => s.Length <= len ? s : s[..len];
+        private static string Truncate(string? s, int len) => string.IsNullOrEmpty(s) ? string.Empty : (s.Length <= len ? s : s[..len]);
+
+        private static string Slug(string title)
+        {
+            var s = new string((title ?? "").ToLowerInvariant()
+                .Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray());
+            while (s.Contains("--")) s = s.Replace("--", "-");
+            return s.Trim('-');
+        }
+
+        // ---------- Simple record types for recipe definitions ----------
+        private record RecipeDef(string Title, string Cuisine, int DifficultyLevel, string Description, string Method, List<(string Name, decimal Quantity, string? Unit)> Items);
+
+        private static (int prep, int cook) EstimateTimes(int difficulty, int itemCount, string cuisine, string title, int index)
+        {
+            // base minutes by difficulty
+            int basePrep = difficulty switch { 1 => 10, 2 => 15, _ => 20 };   // approx hands-on
+            int baseCook = difficulty switch { 1 => 10, 2 => 20, _ => 35 };   // approx simmer/roast
+
+            // scale a bit with ingredient count
+            basePrep += Math.Clamp(itemCount - 5, -1, 5) * 2;  // +/- up to ~10 mins
+            baseCook += Math.Clamp(itemCount - 5, -1, 5) * 3;  // +/- up to ~15 mins
+
+            // cuisine nudges (rough heuristics)
+            var c = cuisine.ToLowerInvariant();
+            if (c is "italian") baseCook += 5;           // sauces / bakes
+            else if (c is "indian" or "moroccan") baseCook += 10; // longer simmers
+            else if (c is "japanese") basePrep += 5;     // slicing/plating
+            else if (c is "mexican") basePrep += 3;
+
+            // make it deterministic but varied per recipe index
+            basePrep += (index % 3) * 2;
+            baseCook += (index % 4) * 5;
+
+            // clamp to sane ranges
+            basePrep = Math.Clamp(basePrep, 5, 45);
+            baseCook = Math.Clamp(baseCook, 5, 120);
+
+            return (basePrep, baseCook);
+        }
+
     }
 }

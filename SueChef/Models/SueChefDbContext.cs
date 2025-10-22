@@ -8,6 +8,7 @@ public class SueChefDbContext : DbContext
     public DbSet<Recipe>? Recipes { get; set; }
     public DbSet<Ingredient>? Ingredients { get; set; }
     public DbSet<RecipeIngredient>? RecipeIngredients { get; set; }
+    public DbSet<User>? Users { get; set; }
 
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {

@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using SueChef.Services;
+using DotNetEnv;
 
 namespace SueChef.Models
 {
@@ -7,12 +10,21 @@ namespace SueChef.Models
     {
         public SueChefDbContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<SueChefDbContext>();
+            var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+            if (File.Exists(envPath)) { Env.Load(envPath); }
 
-            // Replace with your actual connection string
-            optionsBuilder.UseNpgsql("Host=localhost;Database=suechef_test;Username=postgres;Password=yourpassword");
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
 
-            return new SueChefDbContext(optionsBuilder.Options);
+            var cs = ConnectionStringResolver.ResolveNpgsql(config);
+
+            var options = new DbContextOptionsBuilder<SueChefDbContext>()
+                .UseNpgsql(cs)
+                .Options;
+
+            return new SueChefDbContext(options);
         }
     }
 }

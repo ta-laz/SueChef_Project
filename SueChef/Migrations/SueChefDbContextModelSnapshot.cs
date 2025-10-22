@@ -86,6 +86,9 @@ namespace SueChef.Migrations
                     b.Property<int>("ChefId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CookTime")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -103,6 +106,9 @@ namespace SueChef.Migrations
 
                     b.Property<string>("Method")
                         .HasColumnType("text");
+
+                    b.Property<int>("PrepTime")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RecipePicturePath")
                         .HasColumnType("text");
@@ -146,6 +152,34 @@ namespace SueChef.Migrations
                         .IsUnique();
 
                     b.ToTable("RecipeIngredients");
+                });
+
+            modelBuilder.Entity("SueChef.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly?>("DOB")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("DateJoined")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
