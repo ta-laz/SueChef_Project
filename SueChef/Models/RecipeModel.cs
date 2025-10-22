@@ -13,6 +13,8 @@ public class Recipe
     public bool IsVegetarian { get; set; }
     public bool IsDairyFree { get; set; }
     public string? Category { get; set; }
+    public int PrepTime { get; set; }
+    public int CookTime { get; set; }
 
     public int ChefId { get; set; }
     public Chef? Chef { get; set; }
