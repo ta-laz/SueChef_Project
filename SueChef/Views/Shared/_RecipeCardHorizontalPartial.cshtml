@@ -3,7 +3,7 @@
 <div class="RecipeCard flex justify-center">
     <div
         class="w-full max-w-6xl bg-orange-100 rounded-md overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-700 p-3 md:p-6">
-        <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.Id" class="block">
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="block">
 
             <!-- Top Section: picture and details -->
             <div class="flex md:items-start gap-3"
