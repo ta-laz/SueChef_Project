@@ -33,8 +33,29 @@ public class HomeController : Controller
             IsDairyFree = r.IsDairyFree
         })
             .ToListAsync();
+
+        // Only retrieve the data you want from the Recipes table and convert them into 1 FeaturedRecipeViewModel Object:
+        var featuredRecipe = await _db.Recipes
+            .Where(r => r.Id == 8)
+            .Select(r => new FeaturedRecipeViewModel
+        {
+            Id = r.Id,
+            Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
+            Description = r.Description,
+            RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
+            Category = r.Category ?? "Uncategorized"
+        })
+            .FirstOrDefaultAsync();
+
+        // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
+        var AllViewModels = new HomePageViewModel
+        {
+            RecipeCards = recipeCards,
+            FeaturedRecipe = featuredRecipe
+        };
+
         // Pass the list of view models into the View for this controller action
-        return View(recipeCards);
+        return View(AllViewModels);
     }
 
     // OLD CODE:
