@@ -18,7 +18,7 @@
                 <div class="flex flex-col justify-between md:w-[65%] w-full">
                     <div>
                         <!-- Recipe Title -->
-                        <h3 class="text-2xl md:text-3xl lg:text-4xl hover:text-orange-800 transition mb-1">
+                        <h3 class="text-2xl text-gray-700 md:text-3xl lg:text-4xl hover:text-orange-800 transition mb-1">
                             @Model.Title
                         </h3>
 
@@ -38,7 +38,7 @@
                                 947 ratings
                             </div>
                         </div>
-                        <p class="recipe-card__description text-gray-700 line-clamp-3 break-words md:text-xl lg:text-2xl">@Model.Description
+                        <p class="recipe-card__description text-gray-600 line-clamp-3 break-words md:text-xl lg:text-2xl">@Model.Description
                             @Model.Description @Model.Description @Model.Description
                         </p>
                     </div>
@@ -46,11 +46,11 @@
             </div>
 
             <!-- Categories bar -->
-            <div class="flex bg-gray-100 rounded-md justify-around items-center text-center mt-4 gap-4 py-4 h-14">
+            <div class="flex rounded-md justify-around items-center text-center mt-4 gap-4 py-4 h-14">
                 <!-- Category -->
                 <div class="flex flex-col items-center w-1/4">
                     <img src="images/flag2.png" alt="Category" class="w-8 h-8 object-fill mb-1" />
-                    <span class="text-xs text-gray-600 truncate">@Model.Category</span>
+                    <span class="text-xs md:text-sm lg:text-md text-gray-600 truncate">@Model.Category</span>
                 </div>
 
                 <!-- Vegetarian -->
@@ -58,7 +58,7 @@
                 {
                     <div class="flex flex-col items-center w-1/4">
                         <img src="images/vegetariancartoon.png" alt="Vegetarian" class="w-8 h-8 object-fill mb-1" />
-                        <span class="text-xs text-gray-600 truncate">Vegetarian</span>
+                        <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Vegetarian</span>
                     </div>
                 }
 
@@ -67,19 +67,19 @@
                 {
                     <div class="flex flex-col items-center w-1/4">
                         <img src="images/dairyfreecartoon.png" alt="Dairy Free" class="w-8 h-8 object-fill mb-1" />
-                        <span class="text-xs text-gray-600 truncate">Dairy Free</span>
+                        <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
                     </div>
                 }
 
                 <!-- Difficulty -->
                 <div class="flex flex-col items-center w-1/4">
-                    <img src="~/images/chefshatsymbol.png" alt="Difficulty" class="w-8 h-8 object-fill mb-1" />
+                    <img src="~/images/chefshat.png" alt="Difficulty" class="w-8 h-8 bg-orange-100 object-contain bg-orange-100 mix-blend-normal mb-1" />
                     <span class="text-xs font-medium
                     @(Model.DifficultyLevel == 1
-                                              ? "text-green-600"
+                                              ? "text-green-600 md:text-sm lg:text-md"
                                               : Model.DifficultyLevel == 2
-                                              ? "text-orange-500"
-                                              : "text-red-600")">
+                                              ? "text-orange-500 md:text-sm lg:text-md"
+                                              : "text-red-600 md:text-sm lg:text-md")">
                         @(Model.DifficultyLevel == 1 ? "Easy" :
                                                 Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                     </span>
