@@ -6,19 +6,24 @@
 
 <!-- Defines the Model variable and what type it should be -->
 @model IEnumerable<SueChef.ViewModels.RecipeCardViewModel>
+
 <body class="bg-orange-50">
 
     <div class="">
-        @foreach (var recipe in Model)
+        @{
+            var horizontalRecipes = Model.Take(5);
+        }
+
+        @foreach (var recipe in horizontalRecipes)
         {
-            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+        <partial name="_RecipeCardHorizontalPartial" model="recipe" />
         }
     </div>
 
-    <div class="">
+    @* <div class="">
         @foreach (var recipe in Model)
         {
             <partial name="_RecipeCardHorizontalPartial" model="recipe" />
         }
-    </div>
+    </div> *@
 </body>

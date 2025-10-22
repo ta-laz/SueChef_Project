@@ -17,11 +17,11 @@ public class HomeController : Controller
         _db = db;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int count = 0)
     {
 
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
-        var recipeCards = await _db.Recipes.Select(r => new RecipeCardViewModel
+        var query = _db.Recipes.Select(r => new RecipeCardViewModel
         {
             Id = r.Id,
             Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
@@ -31,9 +31,16 @@ public class HomeController : Controller
             DifficultyLevel = r.DifficultyLevel,
             IsVegetarian = r.IsVegetarian,
             IsDairyFree = r.IsDairyFree
-        })
-            .ToListAsync();
-        // Pass the list of view models into the View for this controller action
+        });
+
+        // If a specific count is requested, take only that many random recipes
+        if (count > 0)
+        {
+            query = query.OrderBy(r => EF.Functions.Random()).Take(count);
+        }
+
+        var recipeCards = await query.ToListAsync();
+
         return View(recipeCards);
     }
 
