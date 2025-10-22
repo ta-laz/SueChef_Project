@@ -1,0 +1,47 @@
+using System.ComponentModel.DataAnnotations;
+namespace SueChef.ViewModels;
+
+public class SignUpViewModel : IValidatableObject
+{
+
+    [Required(ErrorMessage = "Username is required")]
+    public string UserName { get; set; } = "";
+
+
+    [Required(ErrorMessage = "Date of birth is required")]
+    public DateOnly DOB { get; set; }
+
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Enter a valid email address")]
+    [DataType(DataType.EmailAddress)]
+    public string Email { get; set; } = "";
+
+    [Required(ErrorMessage = "Password is required")]
+    [DataType(DataType.Password)]
+    [RegularExpression(@"^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$",
+        ErrorMessage = "Password must be ≥ 8 characters and include an uppercase letter and a special character.")]
+    public string Password { get; set; } = "";
+
+    [Required(ErrorMessage = "Confirmation is required")]
+    [DataType(DataType.Password)]
+    [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
+    public string ConfirmPassword { get; set; } = "";
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (DOB == default) yield break; // Required handles empty
+
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            int age = today.Year - DOB.Year;
+            if (DOB > today.AddYears(-age)) age--; // adjust if birthday not reached
+
+            if (age < 12)
+            {
+                yield return new ValidationResult(
+                    "You must be at least 12 years old.",
+                    new[] { nameof(DOB) }  // attach the error to the DOB field
+                );
+            }
+        }
+}
+
