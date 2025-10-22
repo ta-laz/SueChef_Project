@@ -14,20 +14,7 @@ namespace SueChef.Services
             if (!string.IsNullOrWhiteSpace(url))
                 return FromDatabaseUrl(url);
 
-            // 2) appsettings (optional) with DB_NAME override
-            var fromConfig = config.GetConnectionString("DefaultConnection");
-            if (!string.IsNullOrWhiteSpace(fromConfig))
-            {
-                var nameOverride = Environment.GetEnvironmentVariable("DB_NAME");
-                if (!string.IsNullOrWhiteSpace(nameOverride))
-                {
-                    var b = new NpgsqlConnectionStringBuilder(fromConfig) { Database = nameOverride };
-                    return b.ToString();
-                }
-                return fromConfig;
-            }
-
-            // 3) Build from env vars (default to suechef_test)
+            // 2) Build from env vars (default to suechef_test)
             var host = Environment.GetEnvironmentVariable("DB_HOST");
             var db   = Environment.GetEnvironmentVariable("DB_NAME");
             var user = Environment.GetEnvironmentVariable("DB_USER");
