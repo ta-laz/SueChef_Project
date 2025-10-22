@@ -2,49 +2,52 @@
 
 <div class=" flex justify-center">
     <div
-        class="hover:shadow-xl w-full max-w-4xl bg-white rounded-md overflow-hidden transition-all duration-300 border-2 border-gray-200 p-3 md:p-6 mb-2">
+        class="hover:shadow-xl w-full max-w-6xl bg-white rounded-md overflow-hidden transition-all duration-300 border-2 border-gray-200 p-3 md:p-6 mb-2 h-full">
         <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id"
-            class="block transition-all duration-300">
+            class="block transition-all duration-300 h-full">
 
-            <!-- Top Section: picture and details -->
-            <div class="flex md:items-start gap-3" <!-- Left side: picture -->
-                <div class="w-[40%] lg:w-[25%]">
+            <!-- Left side: picture -->
+            <div class="flex md:items-start gap-3 h-full">
+                <!-- Left side: picture -->
+                <div class="w-24 h-24 md:w-48 lg:w-56 flex-shrink-0">
                     <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                        class="w-full md:h-36 lg:h-48 object-cover rounded-md border border-gray-300" />
+                        class="w-full h-full md:h-36 lg:h-40 object-cover rounded-md border border-gray-300" />
                 </div>
 
                 <!-- Right side: text -->
-                <div class="flex flex-col justify-between md:w-[65%] w-full">
-                    <div>
-                        <!-- Recipe Title -->
-                        <h3
-                            class="text-2xl text-gray-700 md:text-2xl lg:text-3xl font-medium hover:text-orange-800 transition mb-1">
-                            @Model.Title
-                        </h3>
+                <div class="flex flex-col justify-between md:w-[65%] lg:flex-grow h-full">
 
-                        <!-- Stars -->
-                        <div class="flex gap-4 md:mt-1 lg:mt-2 mb-1">
-                            <div class="flex items-center gap-1 text-gray-800 mb-2">
-                                @for (int i = 0; i < 5; i++)
-                                {
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-5 h-5 md:w-8 md:h-8 lg:w-8 lg:h-8 text-yellow-400">
-                                        <path
-                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.95.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
-                                    </svg>
-                                }
-                            </div>
-                            <div class="flex items-center gap-1 text-gray-700 mb-1 md:text-xl lg:text-2xl">
-                                947 ratings
-                            </div>
+                    <!-- Recipe Title -->
+                    <h3
+                        class="text-2xl text-gray-700 md:text-2xl lg:text-2xl font-medium hover:text-orange-800 transition ">
+                        @Model.Title
+                    </h3>
+
+                    <!-- Stars -->
+                    <div class="flex gap-4 items-center mt-2">
+                        <div class="flex items-center gap-1 text-gray-800">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-5 h-5 md:w-7 md:h-7 lg:w-7 lg:h-7 text-yellow-400">
+                                    <path
+                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.95.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
+                                </svg>
+                            }
                         </div>
-                        <p
-                            class="recipe-card__description text-gray-600 line-clamp-3 break-words md:text-xl lg:text-2xl md:mt-1 lg:mt-2">
-                            @Model.Description
-                        </p>
+                        <div class="flex items-center gap-1 text-gray-700 md:text-xl lg:text-lg">
+                            947 ratings
+                        </div>
                     </div>
+
+                    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
+                        @Model.Description
+                    </p>
+
+                    <div class="flex-grow"></div>
+
                     <!-- Categories bar -->
-                    <div class="flex rounded-md justify-around items-center text-center mt-3 gap-4 h-10">
+                    <div class="flex rounded-md justify-around items-center text-center gap-4 mt-2">
                         <!-- Category -->
                         <div class="flex flex-col items-center w-1/4">
                             <img src="images/flag.png" alt="Category"
@@ -76,12 +79,13 @@
                         <div class="flex flex-col items-center w-1/4">
                             <img src="~/images/chefshat.png" alt="Difficulty"
                                 class="w-8 h-8 object-contain rounded-full border-1 border-gray-500" />
-                            <span class="text-xs font-medium
+                            <span
+                                class="text-xs font-medium
                     @(Model.DifficultyLevel == 1
-                                                                                ? "text-green-600 md:text-sm lg:text-md"
-                                                                                : Model.DifficultyLevel == 2
-                                                                                ? "text-orange-500 md:text-sm lg:text-md"
-                                                                                : "text-red-600 md:text-sm lg:text-md")">
+                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
+                                                                                                                                                                                                        : Model.DifficultyLevel == 2
+                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
+                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
                                 @(Model.DifficultyLevel == 1 ? "Easy" :
                                                                 Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                             </span>
@@ -89,7 +93,6 @@
                     </div>
                 </div>
             </div>
-
         </a>
     </div>
 </div>
