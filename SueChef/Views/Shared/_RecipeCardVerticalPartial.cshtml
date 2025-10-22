@@ -2,7 +2,7 @@
 
 <div class="flex justify-center">
     <div
-        class="flex flex-col hover:shadow-xl w-full max-w-xs bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2">
+        class="flex flex-col hover:shadow-xl w-full sm:max-w-[20%] md:max-w-[20%] lg:max-w-[15%] bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2">
 
         <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col h-full">
 
@@ -10,14 +10,14 @@
             <!-- Row one: picture -->
             <div class="w-full">
                 <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                    class="w-full h-56 md:h-64 lg:h-72 object-cover" />
+                    class="w-full sm:h-48 md:h-48 lg:h-52/4 object-cover" />
             </div>
 
             <div class="flex-1 flex flex-col justify-between p-3">
                 <!-- Row two: title -->
                 <h3
-                    class="text-xl text-gray-700 md:text-xl lg:text-2xl font-medium hover:text-orange-800 transition mb-1">
-                    @Model.Title
+                    class="text-xl text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition mb-1">
+                    @Model.Title @Model.Title
                 </h3>
 
                 <!-- Row three: stars -->
@@ -40,46 +40,51 @@
 
             <!-- Row five: categories bar -->
             <div
-                class="flex rounded-md justify-around items-center text-center gap-4 border-t-2 border-gray-200 py-2 px-2">
-                <!-- Category -->
-                <div class="flex flex-col items-center w-1/4">
-                    <img src="images/flag.png" alt="Category"
-                        class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                    <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.Category</span>
+                class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-2">
+                <div class="flex w-full">
+                    <!-- Category -->
+                    <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                        <img src="images/flag.png" alt="Category"
+                            class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
+                    </div>
+
+                    <!-- Vegetarian -->
+                    @if (@Model.IsVegetarian)
+                    {
+                        <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                            <img src="images/vegetariancartoon.png" alt="Vegetarian"
+                                class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                            <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
+                        </div>
+                    }
                 </div>
 
-                <!-- Vegetarian -->
-                @if (@Model.IsVegetarian)
-                {
-                    <div class="flex flex-col items-center w-1/4">
-                        <img src="images/vegetariancartoon.png" alt="Vegetarian"
-                            class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                        <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Vegetarian</span>
-                    </div>
-                }
+                <div class="flex w-full">
+                    <!-- Dairy Free -->
+                    @if (@Model.IsDairyFree)
+                    {
+                        <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                            <img src="images/dairyfree.png" alt="Dairy Free"
+                                class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                            <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
+                        </div>
+                    }
 
-                <!-- Dairy Free -->
-                @if (@Model.IsDairyFree)
-                {
-                    <div class="flex flex-col items-center w-1/4">
-                        <img src="images/dairyfree.png" alt="Dairy Free"
-                            class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                        <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
+                    <!-- Difficulty -->
+                    <div class="flex flex-col items-center flex-1 min-w-[25%] max-w-[50%] p-1">
+                        <img src="~/images/chefshat.png" alt="Difficulty"
+                            class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                        <span
+                            class="text-xs font-medium
+                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs" : "text-red-600 md:text-xs lg:text-xs")">
+                            @(Model.DifficultyLevel == 1 ? "Easy" :
+                                                        Model.DifficultyLevel == 2 ? "Medium" : "Hard")
+                        </span>
                     </div>
-                }
-
-                <!-- Difficulty -->
-                <div class="flex flex-col items-center w-1/4">
-                    <img src="~/images/chefshat.png" alt="Difficulty"
-                        class="w-8 h-8 object-contain rounded-full border-1 border-gray-500" />
-                    <span
-                        class="text-xs font-medium
-                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-sm lg:text-md" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-sm lg:text-md" : "text-red-600 md:text-sm lg:text-md")">
-                        @(Model.DifficultyLevel == 1 ? "Easy" :
-                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
-                    </span>
                 </div>
             </div>
         </a>
     </div>
+
 </div>
