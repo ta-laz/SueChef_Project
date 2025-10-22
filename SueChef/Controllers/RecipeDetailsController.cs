@@ -87,6 +87,10 @@ public class RecipeDetailsController : Controller
                 //Unit = ri.Unit
             }).ToList()
         };
-        return View(viewModel);
+        var AllViewModels = new IndividualRecipePageViewModel
+        {
+            IndividualRecipe = viewModel
+        };
+        return View(AllViewModels);
     }
 }

@@ -1,18 +1,18 @@
-@model SueChef.ViewModels.IndividualRecipeViewModel
+@model SueChef.ViewModels.IndividualRecipePageViewModel
   <body class="bg-orange-50 text-gray-700">
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       
       <header class="text-center space-y-2">
-        <img src="@Model.RecipePicturePath" alt="" class="w-full rounded-lg shadow md:w-[75%] md:mx-auto"/>
+        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full rounded-lg shadow md:w-[75%] md:mx-auto"/>
         <!-- <div class="border border-orange-700 w-[75%] mx-auto my-auto rounded-lg items-center">  -->
-            <h1 class="text-3xl font-bold mt-4">@Model.Title</h1>
-            <h2 class="text-lg text-gray-700">By @Model.ChefName</h2>
+            <h1 class="text-3xl font-bold mt-4">@Model.IndividualRecipe.Title</h1>
+            <h2 class="text-lg text-gray-700">By @Model.IndividualRecipe.ChefName</h2>
         <!-- </div> -->
         </header>
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
         <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
-        <div><strong>Difficulty:</strong> @Model.DifficultyLevel</div>
+        <div><strong>Difficulty:</strong> @Model.IndividualRecipe.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
         <div><strong>Prep Time:</strong> NOT IN TABLE MINS</div>
         <div><strong>Cook Time:</strong> NOT IN TABLE MINS </div>
@@ -30,7 +30,7 @@
 
       <section class="leading-relaxed text-gray-700">
         <p>
-        @Model.Description
+        @Model.IndividualRecipe.Description
         </p>
       </section>
 
@@ -39,14 +39,14 @@
           <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
           <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
-        @foreach(var i in Model.Ingredients)
+        @foreach(var i in Model.IndividualRecipe.Ingredients)
         {
               <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Name @i.Calories @i.Carbs @i.Protein @i.Fats</p> 
         }
       </section>
 
       @{
-        var method = Model.Method;
+        var method = Model.IndividualRecipe.Method;
         var steps = method.Split(new[] {"Step "}, StringSplitOptions.RemoveEmptyEntries);
       }
       <section>
