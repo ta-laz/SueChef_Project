@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SueChef.Models;
@@ -11,9 +12,11 @@ using SueChef.Models;
 namespace SueChef.Migrations
 {
     [DbContext(typeof(SueChefDbContext))]
-    partial class SueChefDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251021154549_RemoveServings")]
+    partial class RemoveServings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,7 +171,7 @@ namespace SueChef.Migrations
                         .IsRequired();
 
                     b.HasOne("SueChef.Models.Recipe", "Recipe")
-                        .WithMany("RecipeIngredients")
+                        .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -184,11 +187,6 @@ namespace SueChef.Migrations
                 });
 
             modelBuilder.Entity("SueChef.Models.Ingredient", b =>
-                {
-                    b.Navigation("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
                     b.Navigation("RecipeIngredients");
                 });
