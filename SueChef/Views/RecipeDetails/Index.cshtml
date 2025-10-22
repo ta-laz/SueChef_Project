@@ -1,4 +1,4 @@
-@model SueChef.Models.Recipe
+@model SueChef.ViewModels.IndividualRecipeViewModel
   <body class="bg-orange-50 text-gray-700">
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       
@@ -6,7 +6,7 @@
         <img src="@Model.RecipePicturePath" alt="" class="w-full rounded-lg shadow md:w-[75%] md:mx-auto"/>
         <!-- <div class="border border-orange-700 w-[75%] mx-auto my-auto rounded-lg items-center">  -->
             <h1 class="text-3xl font-bold mt-4">@Model.Title</h1>
-            <h2 class="text-lg text-gray-700">By @Model.Chef.Name</h2>
+            <h2 class="text-lg text-gray-700">By @Model.ChefName</h2>
         <!-- </div> -->
         </header>
 
@@ -39,9 +39,9 @@
           <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
           <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
-        @foreach(var i in Model.RecipeIngredients)
+        @foreach(var i in Model.Ingredients)
         {
-              <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Quantity@i.Unit @i.Ingredient.Name</p> 
+              <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Name @i.Calories @i.Carbs @i.Protein @i.Fats</p> 
         }
       </section>
 

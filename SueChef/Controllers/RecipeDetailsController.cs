@@ -72,6 +72,7 @@ public class RecipeDetailsController : Controller
             Id = recipe.Id,
             Title = recipe.Title,
             Description = recipe.Description,
+            Method = recipe.Method,
             DifficultyLevel = recipe.DifficultyLevel,
             RecipePicturePath = recipe.RecipePicturePath,
             ChefName = recipe.Chef?.Name,
