@@ -1,0 +1,69 @@
+@model SueChef.Models.Recipe
+  <body class="bg-orange-50 text-gray-700">
+    <main class="max-w-3xl mx-auto p-6 space-y-8">
+      
+      <header class="text-center space-y-2">
+        <img src="@Model.RecipePicturePath" alt="" class="w-full rounded-lg shadow md:w-[75%] md:mx-auto"/>
+        <!-- <div class="border border-orange-700 w-[75%] mx-auto my-auto rounded-lg items-center">  -->
+            <h1 class="text-3xl font-bold mt-4">@Model.Title</h1>
+            <h2 class="text-lg text-gray-700">By @Model.Chef.Name</h2>
+        <!-- </div> -->
+        </header>
+
+      <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
+        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
+        <div><strong>Difficulty:</strong> @Model.DifficultyLevel</div>
+        <div><strong>Rating:</strong> *****</div>
+        <div><strong>Prep Time:</strong> NOT IN TABLE MINS</div>
+        <div><strong>Cook Time:</strong> NOT IN TABLE MINS </div>
+      </section>
+
+      <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
+        <p class="font-medium">Add to Meal Plan</p>
+        <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
+          Add to Plan
+        </button>
+        <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
+          Select Plan
+        </button>
+      </section>
+
+      <section class="leading-relaxed text-gray-700">
+        <p>
+        @Model.Description
+        </p>
+      </section>
+
+      <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
+        <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
+          <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
+          <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
+        </div>
+        @foreach(var i in Model.RecipeIngredients)
+        {
+              <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Quantity@i.Unit @i.Ingredient.Name</p> 
+        }
+      </section>
+
+      @{
+        var method = Model.Method;
+        var steps = method.Split(new[] {"Step "}, StringSplitOptions.RemoveEmptyEntries);
+      }
+      <section>
+        <h2 class="text-xl font-semibold mb-2">Method</h2>
+        <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
+        @foreach(var step in steps)
+        {
+          <p class="">Step @step.Trim()</p>
+        }
+        </ul>
+      </section>
+
+      <div class="text-center p-4 border-t">
+        <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
+        <p>* * * * *</p> <!-- Chefs hats? Spoons? -->
+      </div>
+
+    </main>
+  </body>
+</html>
