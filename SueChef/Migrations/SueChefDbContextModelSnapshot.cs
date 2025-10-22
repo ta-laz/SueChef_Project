@@ -86,6 +86,9 @@ namespace SueChef.Migrations
                     b.Property<int>("ChefId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CookTime")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -103,6 +106,9 @@ namespace SueChef.Migrations
 
                     b.Property<string>("Method")
                         .HasColumnType("text");
+
+                    b.Property<int>("PrepTime")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RecipePicturePath")
                         .HasColumnType("text");
