@@ -17,6 +17,7 @@ public class RecipeDetailsController : Controller
         _logger = logger;
         _db = db;
     }
+    
     [Route("/Recipe/{id}")]
     [HttpGet]
     public async Task<IActionResult> Index(int id) 
@@ -26,8 +27,10 @@ public class RecipeDetailsController : Controller
                                 .Include(r => r.RecipeIngredients)
                                     .ThenInclude(ri => ri.Ingredient)
                                 .FirstOrDefaultAsync(r => r.Id == id);
+
         if (recipe == null)
-            return NotFound();
+            return NotFound();//Return not found page if no recipe is found 
+
         //Calories per serving logic, Dividing calories by 100 so we have the calorie per g and then multiplying by the quantity in the recipe. 
         decimal caloriesPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Calories / 100m) * ri.Quantity); 
         decimal proteinPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Protein / 100m) * ri.Quantity);
@@ -35,7 +38,7 @@ public class RecipeDetailsController : Controller
         decimal fatsPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Fat / 100m) * ri.Quantity);
 
 
-        var viewModel = new IndividualRecipeViewModel
+        var viewModel = new IndividualRecipeViewModel //Creating the viewmodel data
         {
             Id = recipe.Id,
             Title = recipe.Title,
@@ -54,7 +57,7 @@ public class RecipeDetailsController : Controller
                 Quantity = ri.Quantity,
                 Unit = ri.Unit
             }).ToList(), 
-            CaloriesPerServing = caloriesPerServing,
+            CaloriesPerServing = caloriesPerServing,//Per serving calculations passed into the var
             ProteinPerServing = proteinPerServing,
             CarbsPerServing = carbsPerServing,
             FatsPerServing = fatsPerServing
