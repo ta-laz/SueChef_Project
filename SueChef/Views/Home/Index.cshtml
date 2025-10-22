@@ -10,28 +10,30 @@
 <body class="bg-orange-50">
 
     <section class="mb-8">
-    <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
+        <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
         @{
             var verticalRecipes = Model.Take(5);
         }
 
-        @foreach (var recipe in verticalRecipes)
-        {
-        <partial name="_RecipeCardVerticalPartial" model="recipe" />
-        }
+        <div class="flex flex-wrap justify-center gap-4">
+            @foreach (var recipe in verticalRecipes)
+            {
+                <partial name="_RecipeCardVerticalPartial" model="recipe" />
+            }
+        </div>
     </section>
 
     <section class="mb-8">
-    <h2 class="text-2xl text-center font-bold mb-4">HORIZONTAL RECIPES</h2>
+        <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
         @{
-            var horizontalRecipes = Model.Take(5);
+            var horizontalRecipes = Model.Skip(5).Take(5);
         }
 
         @foreach (var recipe in horizontalRecipes)
         {
-        <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
         }
     </section>
 
-    
+
 </body>
