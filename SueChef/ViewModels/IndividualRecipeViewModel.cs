@@ -9,5 +9,6 @@ namespace SueChef.ViewModels
         public string? RecipePicturePath { get; set; }
         public string? ChefName { get; set; }
         public List<IndividualRecipeIngredientViewModel>? Ingredients { get; set; }
+        
     }
 }
