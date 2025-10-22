@@ -47,6 +47,8 @@ public class RecipeDetailsController : Controller
             DifficultyLevel = recipe.DifficultyLevel,
             RecipePicturePath = recipe.RecipePicturePath,
             ChefName = recipe.Chef?.Name,
+            PrepTime = recipe.PrepTime, 
+            CookTime = recipe.CookTime, 
             Ingredients = recipe.RecipeIngredients.Select(ri => new IndividualRecipeIngredientViewModel
             {
                 Name = ri.Ingredient.Name,

@@ -16,8 +16,8 @@
         <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="@Model.IndividualRecipe.Servings" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
         <div><strong>Difficulty:</strong> @Model.IndividualRecipe.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
-        <div><strong>Prep Time:</strong> NOT IN TABLE MINS</div>
-        <div><strong>Cook Time:</strong> NOT IN TABLE MINS </div>
+        <div><strong>Prep Time:</strong> @Model.IndividualRecipe.PrepTime minutes</div>
+        <div><strong>Cook Time:</strong> @Model.IndividualRecipe.CookTime minutes </div>
       </section>
 
             <!-- Add to plan / Select Plan placeholders -->
