@@ -83,8 +83,8 @@ public class RecipeDetailsController : Controller
                 Carbs = ri.Ingredient.Carbs,
                 Protein = ri.Ingredient.Protein,
                 Fats = ri.Ingredient.Fat,
-                //Quantity = ri.Quantity,
-                //Unit = ri.Unit
+                Quantity = ri.Quantity,
+                Unit = ri.Unit
             }).ToList()
         };
         var AllViewModels = new IndividualRecipePageViewModel

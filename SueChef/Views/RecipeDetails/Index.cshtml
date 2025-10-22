@@ -39,10 +39,14 @@
           <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
           <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
-        @foreach(var i in Model.IndividualRecipe.Ingredients)
-        {
-              <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Name @i.Calories @i.Carbs @i.Protein @i.Fats</p> 
-        }
+          @foreach(var i in Model.IndividualRecipe.Ingredients)
+          {
+                <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Name @i.Quantity @i.Unit</p> 
+          }
+          @* @foreach(var i in Model.IndividualRecipe.Ingredients)
+          {
+                <p class="hidden mb-1 text-center border-t-2 border-orange-700 italic">@i.Name Calories: @i.Calories Carbs: @i.Carbs Protein: @i.Protein Fats: @i.Fats</p> 
+          } *@
       </section>
 
       @{
