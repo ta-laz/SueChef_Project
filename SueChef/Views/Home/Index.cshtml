@@ -8,7 +8,14 @@
 @model IEnumerable<SueChef.ViewModels.RecipeCardViewModel>
 <body class="bg-orange-50">
 
-    <div class="RecipeCard">
+    <div class="">
+        @foreach (var recipe in Model)
+        {
+            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+        }
+    </div>
+
+    <div class="">
         @foreach (var recipe in Model)
         {
             <partial name="_RecipeCardHorizontalPartial" model="recipe" />
