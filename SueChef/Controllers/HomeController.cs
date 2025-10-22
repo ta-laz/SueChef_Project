@@ -36,7 +36,7 @@ public class HomeController : Controller
 
         // Only retrieve the data you want from the Recipes table and convert them into 1 FeaturedRecipeViewModel Object:
         var featuredRecipe = await _db.Recipes
-            .Where(r => r.Id == 8)
+            .Where(r => r.Id == 27)
             .Select(r => new FeaturedRecipeViewModel
         {
             Id = r.Id,
