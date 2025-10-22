@@ -3,7 +3,7 @@
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       
       <header class="text-center space-y-2">
-        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full rounded-lg shadow md:w-[75%] md:mx-auto"/>
+        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 object-cover rounded-lg shadow md:w-[75%] md:mx-auto"/>
         <!-- <div class="border border-orange-700 w-[75%] mx-auto my-auto rounded-lg items-center">  -->
             <h1 class="text-3xl font-bold mt-4">@Model.IndividualRecipe.Title</h1>
             <h2 class="text-lg text-gray-700">By @Model.IndividualRecipe.ChefName</h2>
@@ -11,7 +11,7 @@
         </header>
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
-        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
+        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="@Model.IndividualRecipe.Servings" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
         <div><strong>Difficulty:</strong> @Model.IndividualRecipe.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
         <div><strong>Prep Time:</strong> NOT IN TABLE MINS</div>
@@ -36,13 +36,21 @@
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
         <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
-          <button id="" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
-          <button id="" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
+          <button id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
+          <button id="nutritionButton" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
+          <div id = "ingredientsToggle">
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class=" mb-1 text-center border-t-2 border-orange-700 italic">@i.Name @i.Quantity @i.Unit</p> 
+                <p class="mb-1 border-t-2 border-orange-700 italic">@i.Name @i.Quantity@i.Unit</p> 
           }
+          </div>
+          <div id="nutritionToggle" style="display:none">
+              <p class="mb-1 border-t-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0.00") Kcal</span></p>
+              <p class="mb-1 border-t-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p class="mb-1 border-t-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p class="mb-1 border-t-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+          </div>
           @* @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
                 <p class="hidden mb-1 text-center border-t-2 border-orange-700 italic">@i.Name Calories: @i.Calories Carbs: @i.Carbs Protein: @i.Protein Fats: @i.Fats</p> 
@@ -51,14 +59,16 @@
 
       @{
         var method = Model.IndividualRecipe.Method;
-        var steps = method.Split(new[] {"Step "}, StringSplitOptions.RemoveEmptyEntries);
+        var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
+        var counter = 1;
       }
       <section>
         <h2 class="text-xl font-semibold mb-2">Method</h2>
         <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
         @foreach(var step in steps)
-        {
-          <p class="">Step @step.Trim()</p>
+        { 
+          <p class="">Step @counter: @step.Trim()</p>
+          counter++;
         }
         </ul>
       </section>
@@ -71,3 +81,37 @@
     </main>
   </body>
 </html>
+
+<script>
+  //Saving all the IDs to variables so it knows where to go
+    const ingredientsBtn = document.getElementById('ingredientsButton');
+    const nutritionBtn = document.getElementById('nutritionButton');
+    const ingredientsTab = document.getElementById('ingredientsToggle');
+    const nutritionTab = document.getElementById('nutritionToggle');
+    const servingInput = document.getElementById('serving');
+
+    // JS waiting for the button to be clicked 
+    ingredientsBtn.addEventListener('click', () => {
+        ingredientsTab.style.display = 'block'; //Logic so when its clicked it either hides or shows. 
+        nutritionTab.style.display = 'none';
+
+        // Logic so that when clicked it is adding or removing styling based on whats active 
+        ingredientsBtn.classList.add('bg-orange-700', 'text-white');
+        ingredientsBtn.classList.remove('bg-orange-100', 'text-orange-700');
+
+        // This resets the othe button - Logic repeats below so it goes both ways 
+        nutritionBtn.classList.remove('bg-orange-700', 'text-white');
+        nutritionBtn.classList.add('bg-orange-100', 'text-orange-700');
+    });
+
+    nutritionBtn.addEventListener('click', () => {
+        ingredientsTab.style.display = 'none';
+        nutritionTab.style.display = 'block';
+        nutritionBtn.classList.add('bg-orange-700', 'text-white');
+        nutritionBtn.classList.remove('bg-orange-100', 'text-orange-700');
+        ingredientsBtn.classList.remove('bg-orange-700', 'text-white');
+        ingredientsBtn.classList.add('bg-orange-100', 'text-orange-700');
+        //see above notes if unsure 
+    });
+</script>
+
