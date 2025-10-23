@@ -14,6 +14,6 @@ public class User
     public DateOnly? DateJoined { get; set; }
     public DateOnly? DOB { get; set; }
 
-    public ICollection<MealPlan> MealPlan { get; set; } = new List<MealPlan>();
+    public ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
 
 }

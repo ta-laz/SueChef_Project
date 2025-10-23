@@ -22,7 +22,7 @@ public class SueChefDbContext : DbContext
 
         // --- Chef → Recipe (one-to-many)
         modelBuilder.Entity<Chef>()
-            .HasMany(c => c.Recipe)
+            .HasMany(c => c.Recipes)
             .WithOne(r => r.Chef)
             .HasForeignKey(r => r.ChefId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -61,10 +61,34 @@ public class SueChefDbContext : DbContext
             .Property(i => i.Category)
             .HasMaxLength(100);
 
-        // --- RecipeIngredient composite uniqueness
-        modelBuilder.Entity<RecipeIngredient>()
-            .HasIndex(ri => new { ri.RecipeId, ri.IngredientId })
-            .IsUnique();
-        
+        // --- User → MealPlan (one-to-many)
+        modelBuilder.Entity<MealPlan>(b =>
+        {
+            b.Property(mp => mp.MealPlanTitle).HasMaxLength(200);
+            b.Property(mp => mp.CreatedOn).HasDefaultValueSql("CURRENT_DATE");
+            b.Property(mp => mp.UpdatedOn).HasDefaultValueSql("CURRENT_DATE");
+            b.HasOne(mp => mp.User)
+             .WithMany(u => u.MealPlans)             // rename property on User
+             .HasForeignKey(mp => mp.UserId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // --- MealPlanRecipe (join)
+        modelBuilder.Entity<MealPlanRecipe>(b =>
+        {
+            b.HasOne(mpr => mpr.MealPlan)
+             .WithMany(mp => mp.MealPlanRecipes)
+             .HasForeignKey(mpr => mpr.MealPlanId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(mpr => mpr.Recipe)
+             .WithMany(r => r.MealPlanRecipes)
+             .HasForeignKey(mpr => mpr.RecipeId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasIndex(mpr => new { mpr.MealPlanId, mpr.RecipeId }).IsUnique();
+        });
     }
+
 }
+
