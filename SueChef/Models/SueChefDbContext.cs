@@ -45,7 +45,7 @@ public class SueChefDbContext : DbContext
         // --- rating table 
         modelBuilder.Entity<Rating>(r =>
         {
-            r.HasOne(ra => ra.Recipes)
+            r.HasOne(ra => ra.Recipe)
             .WithMany(r => r.Ratings)
             .HasForeignKey(ri => ri.RecipeId)
             .HasForeignKey(ri => ri.UserId);
