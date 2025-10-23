@@ -8,4 +8,5 @@ public class HomePageViewModel
     // Updated properties for distinct carousels
     public RecipeCarouselViewModel AllRecipesCarousel { get; set; } 
     public RecipeCarouselViewModel VegetarianRecipesCarousel { get; set; }
+    public RecipeCarouselViewModel DairyFreeRecipesCarousel { get; set; }
 }

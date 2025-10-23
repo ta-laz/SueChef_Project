@@ -28,7 +28,7 @@
                 <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
                     @Model.FeaturedRecipe.Title
                 </h2>
-                <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
+                <p class="text-gray-800 text-md line-clamp-3 mb-2 drop-shadow-sm">
                     @Model.FeaturedRecipe.Description
                 </p>
                 <button
@@ -39,18 +39,22 @@
         </a>
     </section>
 
+    <!-- DAIRY FREE RECIPES CAROUSEL SECTION -->
 
+    <section class="mb-8">
+        <partial name="_RecipeCarouselPartial" model="Model.DairyFreeRecipesCarousel" />
+    </section>
+    
+    <!-- VEGETARIAN RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-8">
+        <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
+    </section>
 
     <!-- ALL VERTICAL RECIPES CAROUSEL SECTION -->
 
     <section class="mb-8">
         <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
-    </section>
-
-    <!-- VEGETARIAN RECIPES CAROUSEL SECTION -->
-
-    <section class="mb-8">
-        <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
     </section>
 
     <!-- HORIZONTAL RECIPES SECTION -->
