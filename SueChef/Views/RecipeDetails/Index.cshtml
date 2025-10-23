@@ -13,8 +13,8 @@
             <!-- Recipe Specific details  -->
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
+        <div class="@(Model.IndividualRecipe.DifficultyLevel == 1 ? "text-green-600 text-sm font-semibold" : Model.IndividualRecipe.DifficultyLevel == 2 ? "text-orange-500 text-sm font-semibold" : "text-red-600 text-sm font-semibold")"><strong class="text-gray-700">Difficulty:</strong> @(Model.IndividualRecipe.DifficultyLevel == 1 ? "Easy" : Model.IndividualRecipe.DifficultyLevel == 2 ? "Medium" : "Hard")</div>
         <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
-        <div><strong>Difficulty:</strong> @Model.IndividualRecipe.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
         <div><strong>Prep Time:</strong> @Model.IndividualRecipe.PrepTime minutes</div>
         <div><strong>Cook Time:</strong> @Model.IndividualRecipe.CookTime minutes </div>
