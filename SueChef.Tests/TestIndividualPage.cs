@@ -90,8 +90,27 @@ public class PlaywrightRecipeTests : PageTest
     }
 
 
+    [Test]
+    public async Task IndividualPage_ShowsRatingForm_WhenRateTheRecipeClicked()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-    
+        // Scroll to the bottom to make sure the "Rate the Recipe" button is visible
+        await Page.EvaluateAsync("window.scrollTo(0, document.body.scrollHeight)");
+
+        // Click the "Rate the Recipe" button or link
+        await Page.GetByText("Rate this recipe").ClickAsync();
+
+        // Expect the rating form or modal to appear
+        await Expect(Page.Locator("body")).ToContainTextAsync("Rating");
+
+        // check if rating input is visible
+        await Expect(Page.Locator("input[type='number'], .star-rating, .rating-stars"))
+        .ToBeVisibleAsync();
+
+
+    }
 }
 
 
