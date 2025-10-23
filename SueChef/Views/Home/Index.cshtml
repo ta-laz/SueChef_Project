@@ -5,62 +5,76 @@
 }
 
 <!-- Defines the Model variable and what type it should be -->
-@model IEnumerable<SueChef.ViewModels.RecipeCardViewModel>
+@model SueChef.ViewModels.HomePageViewModel
 
 <body class="bg-orange-50">
 
-    <section class="mb-8">
-        <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
-        @{
-            var verticalRecipes = Model;
-        }
-
-        <div id="batchCarousel" data-carousel class="relative bg-white max-w-6xl mx-auto">
-
-            <!-- Left Button (&#8592 is the left arrow symbol) -->
-            <button type="button"
-                class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
-                &#8592;
-            </button> 
-
-            <!-- Carousel Track -->
-            <div class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[10%]">
-                @foreach (var recipe in verticalRecipes)
-                {
-                    <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.5%]">
-                        <partial name="_RecipeCardVerticalPartial" model="recipe" />
-                    </div>
-                }
-            </div>
-
-            <!-- Right Button (&#8594 is the right arrow symbol) -->
-            <button type="button" class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
-            </button>
+    <div class="flex flex-col items-center justify-center">
+        <div
+            class="hover:shadow-xl w-full max-w-4xl bg-white rounded-md overflow-hidden transition-all duration-300 border-2 border-gray-200 p-3 md:p-6 mb-2">
+            <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
+                class="block transition-all duration-300">
+                <div class="w-full">
+                    <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
+                        class="w-full h-56 md:h-64 lg:h-80 object-cover rounded-md border border-gray-300" />
+                </div>
+            </a>
         </div>
-    </section>
 
-    <!-- Hide scrollbar utility -->
-    <style>
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
+        <section class="mb-8">
+            <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
+            @{
+                var verticalRecipes = Model.RecipeCards;
+            }
 
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+            <div id="batchCarousel" data-carousel class="relative bg-white max-w-6xl mx-auto">
 
-    <section class="mb-8">
-        <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
-        @{
-            var horizontalRecipes = Model.Skip(5).Take(5);
-        }
+                <!-- Left Button (&#8592 is the left arrow symbol) -->
+                <button type="button"
+                    class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
+                    &#8592;
+                </button>
 
-        @foreach (var recipe in horizontalRecipes)
-        {
-            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
-        }
-    </section>
+                <!-- Carousel Track -->
+                <div
+                    class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[10%]">
+                    @foreach (var recipe in verticalRecipes)
+                    {
+                        <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.5%]">
+                            <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                        </div>
+                    }
+                </div>
+
+                <!-- Right Button (&#8594 is the right arrow symbol) -->
+                <button type="button"
+                    class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
+                </button>
+            </div>
+        </section>
+
+        <!-- Hide scrollbar utility -->
+        <style>
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .hide-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        </style>
+
+        <section class="mb-8">
+            <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
+            @{
+                var horizontalRecipes = Model.RecipeCards.Skip(5).Take(5);
+            }
+
+            @foreach (var recipe in horizontalRecipes)
+            {
+                <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+            }
+        </section>
 
 </body>
