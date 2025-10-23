@@ -1,40 +1,65 @@
 <!-- VIEW FOR ALL MEAL PLANS -->
 
+<div class="justify-center">
+    @* Error messages to display if post request unsuccessful *@
+    <div asp-validation-summary="All"
+                    class="bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+                </div>
 
-<form asp-action="Create" asp-controller="MealPlan" method="post" id="newplan-form"
-    data-testid="newplan-form" label="newplan form" class="hidden">
-    @Html.AntiForgeryToken()
-    <input type="text" name="MealPlanTitle" label="newplan name" id="newplan-name-input" data-testid="newplan-name-input"
-        class="border border-gray-300 rounded-md p-2 w-full" placeholder="New Meal Plan" />
-    <button type="button" id="cancel-newplan"
-        class="bg-gray-300 text-gray-800 text-sm w-36 px-4 py-2 rounded-md hover:bg-gray-400 mt-2"> Cancel
+
+                <style>
+                    /* Hides the errors until there are errors */
+                    .validation-summary-valid {
+                        display: none;
+                    }
+
+                    .validation-summary-errors {
+                        display: block;
+                        /* adds the errors */
+                    }
+                </style>
+    </div>
+
+    @* Form to Create a new meal plan *@
+    <form asp-action="Create" asp-controller="MealPlan" method="post" id="newplan-form"
+        data-testid="newplan-form" label="newplan form" class="hidden">
+        @Html.AntiForgeryToken()
+
+
+        <input type="text" name="MealPlanTitle" label="newplan name" id="newplan-name-input" data-testid="newplan-name-input"
+            class="border border-gray-300 rounded-md p-2 w-full" placeholder="New Meal Plan" />
+        <button type="button" id="cancel-newplan"
+            class="bg-gray-300 text-gray-800 text-sm w-36 px-4 py-2 rounded-md hover:bg-gray-400 mt-2"> Cancel
+        </button>
+        <button id="submit-newplan" data-testid="submit-newplan" type="submit"
+            class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">Save
+        </button>
+    </form>
+
+    @* Button to send POST request *@
+    <button id="add-newplan" class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">
+        Add Meal Plan
     </button>
-    <button id="submit-newplan" data-testid="submit-newplan" type="submit"
-        class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">Save
-    </button>
-</form>
 
-<button id="add-newplan" class="text-orange-500 text-sm mt-4 rounded-md hover:underline transition">
-    Add Meal Plan
-</button>
+    @* Script to unhide form when Creating new meal plan  *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Create New Meal Plan
+            const button = document.getElementById('add-newplan');
+            const form = document.getElementById('newplan-form');
+            const cancel = document.getElementById("cancel-newplan");
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Create New Meal Plan
-        const button = document.getElementById('add-newplan');
-        const form = document.getElementById('newplan-form');
-        const cancel = document.getElementById("cancel-newplan");
+            if (button && form && cancel) {
+                button.addEventListener('click', () => {
+                    form.classList.remove('hidden');
+                    button.classList.add('hidden');
+                });
 
-        if (button && form && cancel) {
-            button.addEventListener('click', () => {
-                form.classList.remove('hidden');
-                button.classList.add('hidden');
-            });
-
-            cancel.addEventListener('click', () => {
-                form.classList.add('hidden');
-                button.classList.remove('hidden');
-            });
-        }
-    });
-</script>
+                cancel.addEventListener('click', () => {
+                    form.classList.add('hidden');
+                    button.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
+</div>
