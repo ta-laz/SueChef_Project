@@ -9,4 +9,5 @@ public class HomePageViewModel
     public RecipeCarouselViewModel AllRecipesCarousel { get; set; } 
     public RecipeCarouselViewModel VegetarianRecipesCarousel { get; set; }
     public RecipeCarouselViewModel DairyFreeRecipesCarousel { get; set; }
+    public RecipeCarouselViewModel EasyRecipesCarousel { get; set; }
 }
