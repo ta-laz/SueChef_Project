@@ -1,7 +1,7 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
     <div
-        class="flex flex-col hover:shadow-md w-full sm:w-[20%] md:w-[20%] lg:w-[20%] bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0">
+        class="carousel-card flex flex-col hover:shadow-md snap-center w-full sm:w-1/2 lg:w-1/4 lg:w-[22%] bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0">
 
         <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col h-full">
 

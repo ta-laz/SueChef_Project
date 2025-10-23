@@ -15,7 +15,7 @@
             var verticalRecipes = Model;
         }
 
-        <div class="relative">
+        <div class="relative max-w-6xl mx-auto">
 
             <!-- Left Button (&#8592 is the left arrow symbol) -->
             <button type="button" id="carousel-left"
@@ -25,7 +25,7 @@
 
             <!-- Carousel Track -->
             <div id="carousel-track"
-                class="relative flex max-w-6xl mx-auto overflow-hidden scroll-smooth transition-all duration-500 gap-3">
+                class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-3 justify-center hide-scrollbar">
                 @foreach (var recipe in verticalRecipes)
                 {
                     <partial name="_RecipeCardVerticalPartial" model="recipe" />
@@ -38,6 +38,18 @@
             </button>
         </div>
     </section>
+
+    <!-- Hide scrollbar utility -->
+    <style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 
     <section class="mb-8">
         <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
@@ -53,28 +65,38 @@
 
     <!-- JS for carousel buttons -->
     <script>
-
-        // Mobile shows one vertical card only
-        let visibleCards = window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 4;
         document.addEventListener("DOMContentLoaded", function () {
             const track = document.getElementById("carousel-track");
             const btnLeft = document.getElementById("carousel-left");
             const btnRight = document.getElementById("carousel-right");
 
-            // One card width (including gap)
-            const cardWidth = track.querySelector("div").offsetWidth + 16; // adjust gap
+            function getVisibleCards() {
+                if (window.innerWidth < 640) return 1;
+                if (window.innerWidth < 1024) return 2;
+                return 4;
+            }
 
-            const visibleCards = 4;
+            function getCardWidth() {
+                const card = track.querySelector(".carousel-card");
+                return card ? card.offsetWidth + 12 : 0; // add small gap
+            }
 
+            function scrollCarousel(direction) {
+                const cardWidth = getCardWidth();
+                const visibleCards = getVisibleCards();
+                const scrollAmount = cardWidth * visibleCards;
+                track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+            }
 
-            btnRight.addEventListener("click", () => {
-                track.scrollBy({ left: cardWidth * visibleCards, behavior: "smooth" });
-            });
+            btnRight.addEventListener("click", () => scrollCarousel(1));
+            btnLeft.addEventListener("click", () => scrollCarousel(-1));
 
-            btnLeft.addEventListener("click", () => {
-                track.scrollBy({ left: -cardWidth * visibleCards, behavior: "smooth" });
+            window.addEventListener("resize", () => {
+                // Optional: snap realignment on resize
+                track.scrollTo({ left: 0, behavior: "smooth" });
             });
         });
     </script>
+
 
 </body>
