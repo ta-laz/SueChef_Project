@@ -112,7 +112,7 @@
           el.querySelector('.ingredient-quantity').textContent = newQty; //Find the .ingredient-quantity class and update it to the new amount 
       });
     });
-
+    servingInput.dispatchEvent(new Event('input')); //Run the script on load so that it starts as 4 
 
     // JS waiting for the button to be clicked 
     ingredientsBtn.addEventListener('click', () => {
