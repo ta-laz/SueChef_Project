@@ -40,49 +40,42 @@ public class HomeController : Controller
         var featuredRecipe = await _db.Recipes
             .Where(r => r.Id == 41)
             .Select(r => new FeaturedRecipeViewModel
-        {
-            Id = r.Id,
-            Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
-            Description = r.Description,
-            RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
-            Category = r.Category ?? "Uncategorized"
-        })
+            {
+                Id = r.Id,
+                Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
+                Description = r.Description,
+                RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
+                Category = r.Category ?? "Uncategorized"
+            })
             .FirstOrDefaultAsync();
+
+        var allRecipesCarousel = new RecipeCarouselViewModel
+        {
+            Title = "All Recipes",
+            CarouselId = "allRecipesCarousel",
+            Recipes = recipeCards.ToList()
+        };
+
+        var vegetarianRecipesCarousel = new RecipeCarouselViewModel
+        {
+        Title = "Vegetarian Meals",
+        CarouselId = "vegCarousel", // Unique ID
+        // Filter the existing recipeCards list where IsVegetarian is true
+        Recipes = recipeCards.Where(r => r.IsVegetarian).ToList() 
+    };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
         var AllViewModels = new HomePageViewModel
         {
             RecipeCards = recipeCards,
-            FeaturedRecipe = featuredRecipe
+            FeaturedRecipe = featuredRecipe,
+            AllRecipesCarousel = allRecipesCarousel,
+            VegetarianRecipesCarousel = vegetarianRecipesCarousel
         };
 
         // Pass the list of view models into the View for this controller action
         return View(AllViewModels);
     }
-
-    // OLD CODE:
-    // public async Task<IActionResult> Index()
-    // {
-    //     var recipes = new List<RecipeCardViewModel>
-    //     {
-    //         new RecipeCardViewModel
-    //         {
-    //             Id = 1,
-    //             Title = "Classic Lasagna",
-    //             ImageUrl = "/images/bolognese.png",
-    //             ShortDescription = "A comforting Italian classic layered with rich meat sauce."
-    //         },
-    //         new RecipeCardViewModel
-    //         {
-    //             Id = 2,
-    //             Title = "Chocolate Brownies",
-    //             ImageUrl = "/images/bolognese.png",
-    //             ShortDescription = "Deliciously fudgy brownies with a crispy top."
-    //         }
-    //     };
-
-    //     return View(recipes);
-    // }
 
 
     public IActionResult Privacy()

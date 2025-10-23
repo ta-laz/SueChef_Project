@@ -39,55 +39,19 @@
         </a>
     </section>
 
-    <!-- VERTICAL RECIPE CAROUSEL SECTION -->
+
+
+    <!-- ALL VERTICAL RECIPES CAROUSEL SECTION -->
 
     <section class="mb-8">
-
-        @{
-            var verticalRecipes = Model.RecipeCards;
-        }
-        <div class="max-w-6xl mx-auto mb-2">
-            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">All Recipes</h2>
-        </div>
-
-        <div id="batchCarousel" data-carousel class="relative bg-white max-w-6xl mx-auto">
-
-
-            <!-- Left Button (&#8592 is the left arrow symbol) -->
-            <button type="button"
-                class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 shadow-md">
-                &#8592;
-            </button>
-
-            <!-- Carousel Track -->
-            <div
-                class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[10%]">
-                @foreach (var recipe in verticalRecipes)
-                {
-                    <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.5%]">
-                        <partial name="_RecipeCardVerticalPartial" model="recipe" />
-                    </div>
-                }
-            </div>
-
-            <!-- Right Button (&#8594 is the right arrow symbol) -->
-            <button type="button"
-                class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 z-10 shadow-md">&#8594;
-            </button>
-        </div>
+        <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
     </section>
 
-    <!-- Hide scrollbar utility -->
-    <style>
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
+    <!-- VEGETARIAN RECIPES CAROUSEL SECTION -->
 
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    <section class="mb-8">
+        <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
+    </section>
 
     <!-- HORIZONTAL RECIPES SECTION -->
 
