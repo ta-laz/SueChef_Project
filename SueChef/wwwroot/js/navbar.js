@@ -83,4 +83,26 @@ document.addEventListener('DOMContentLoaded', () => {
         closeRight();
         hideOverlay();
     });
+    // Close left/right menus when clicking outside of them (safety net)
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+
+        const clickInMenu =
+            (sideMenu && sideMenu.contains(target)) ||
+            (menuButton && menuButton.contains(target)) ||
+            (sideMenuAccount && sideMenuAccount.contains(target)) ||
+            (accountButton && accountButton.contains(target));
+
+        if (!clickInMenu) {
+            // Close both if open
+            if (sideMenu && !sideMenu.classList.contains('-translate-x-full')) {
+                closeLeft();
+                hideOverlay();
+            }
+            if (sideMenuAccount && !sideMenuAccount.classList.contains('translate-x-full')) {
+                closeRight();
+                hideOverlay();
+            }
+        }
+    });
 });
