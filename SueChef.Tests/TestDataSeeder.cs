@@ -268,366 +268,599 @@ namespace SueChef.Test
                 => new(title, cuisine, difficulty, desc, method, items.ToList());
 
             // 50 realistic dishes, Serving = 1; quantities chosen accordingly.
-            return new List<RecipeDef>
-            {
-                R("Margherita Pizza","Italian",2,
-                  "Classic Neapolitan-style pizza with tomato, mozzarella, and basil.",
-                  "Make or use a base; spread passata; add mozzarella; bake hot; finish with basil and olive oil.",
-                  ("Passata",80,"g"), ("Mozzarella",90,"g"), ("Basil",2,"g"), ("Olive Oil",5,"ml"), ("Bread",120,"g") // using Bread as base proxy
-                ),
-                R("Chicken Tikka Masala","Indian",3,
-                  "Grilled chicken in a creamy spiced tomato sauce.",
-                  "Marinate chicken; grill; simmer sauce with tomato, cream and spices; combine and simmer.",
-                  ("Chicken Breast",150,"g"), ("Greek Yoghurt",60,"g"), ("Passata",150,"g"), ("Onion",60,"g"),
-                  ("Garlic",8,"g"), ("Garam Masala",4,"g"), ("Turmeric",2,"g"), ("Cumin",2,"g"), ("Double Cream",50,"g"),
-                  ("Rice (white, dry)",75,"g")
-                ),
-                R("Greek Salad","Greek",1,
-                  "Fresh salad with tomato, cucumber, feta, olives and oregano.",
-                  "Chop veg; toss with olive oil and lemon; top with feta.",
-                  ("Tomato",150,"g"), ("Cucumber",120,"g"), ("Onion",30,"g"), ("Feta",60,"g"),
-                  ("Olive Oil",10,"ml"), ("Lemon",30,"g")
-                ),
-                R("Pad Thai (Prawn)","Thai",3,
-                  "Stir-fried rice noodles with prawns, egg, and tamarind-like sauce (simplified).",
-                  "Soak noodles; stir-fry prawns with aromatics; add egg; toss with sauce and noodles.",
-                  ("Prawns",120,"g"), ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Oyster Sauce",10,"g"),
-                  ("Vegetable Oil",10,"ml"), ("Lime",20,"g"), ("Rice (white, dry)",70,"g")
-                ),
-                R("Beef Bourguignon","French",3,
-                  "Slow-cooked beef in red wine with mushrooms and onions.",
-                  "Brown beef; sauté veg; simmer with stock and wine until tender.",
-                  ("Beef Mince (10%)",200,"g"), ("Mushroom",80,"g"), ("Onion",80,"g"),
-                  ("Carrot",60,"g"), ("Olive Oil",10,"ml"), ("Vegetable Stock",200,"ml")
-                ),
-                R("Shakshuka","Moroccan",1,
-                  "Eggs poached in spiced tomato and pepper sauce.",
-                  "Sauté peppers and onion; add garlic and spices; simmer tomato; crack in eggs and cook gently.",
-                  ("Eggs",2,null), ("Tomato",200,"g"), ("Bell Pepper",100,"g"), ("Onion",60,"g"),
-                  ("Garlic",10,"g"), ("Paprika",3,"g"), ("Cumin",2,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Pesto Pasta","Italian",1,
-                  "Pasta tossed with basil pesto and parmesan.",
-                  "Cook pasta; toss with pesto and a splash of cooking water; finish with parmesan.",
-                  ("Pasta (dry)",90,"g"), ("Basil",10,"g"), ("Olive Oil",15,"ml"), ("Parmesan",20,"g"), ("Garlic",4,"g")
-                ),
-                R("Falafel Wrap","Lebanese",2,
-                  "Falafel with salad and tahini-style dressing.",
-                  "Mash chickpeas with herbs/spices; pan-fry; serve in wrap with veg.",
-                  ("Chickpeas (canned)",120,"g"), ("Coriander",8,"g"), ("Parsley",8,"g"),
-                  ("Cumin",3,"g"), ("Garlic",6,"g"), ("Olive Oil",10,"ml"), ("Tortilla (wheat)",60,"g"),
-                  ("Lettuce",40,"g"), ("Tomato",60,"g")
-                ),
-                R("Salmon Teriyaki","Japanese",2,
-                  "Salmon glazed with a soy-based teriyaki sauce.",
-                  "Pan-sear salmon; reduce soy/sugar-like glaze; coat and serve with rice.",
-                  ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",5,"ml"),
-                  ("Rice (white, dry)",75,"g"), ("Spring Onion",30,"g") // use Onion as proxy if Spring Onion not in cat
-                ),
-                R("Miso Soup","Japanese",1,
-                  "Light broth with tofu and spring onion (tofu proxied by Paneer for seeding).",
-                  "Heat stock; dissolve miso (proxy); add tofu proxy and onion; simmer briefly.",
-                  ("Vegetable Stock",300,"ml"), ("Onion",30,"g"), ("Paneer",40,"g")
-                ),
-                R("Tuna Poke Bowl","Hawaiian",2,
-                  "Marinated raw tuna with rice and veg.",
-                  "Cube tuna; marinate with soy; assemble over rice with veg.",
-                  ("Tuna (raw)",120,"g"), ("Soy Sauce",15,"ml"), ("Rice (white, dry)",80,"g"),
-                  ("Cucumber",80,"g"), ("Avocado",70,"g") // if missing Avocado, you can sub with "Olive Oil" 5ml + Cucumber
-                ),
-                R("Butter Chicken","Indian",3,
-                  "Creamy tomato-butter chicken curry.",
-                  "Marinate; grill; simmer in tomato, butter, cream; combine.",
-                  ("Chicken Thigh",180,"g"), ("Greek Yoghurt",60,"g"), ("Passata",180,"g"),
-                  ("Butter",20,"g"), ("Double Cream",40,"g"), ("Onion",60,"g"), ("Garlic",8,"g"),
-                  ("Curry Powder",4,"g"), ("Rice (white, dry)",75,"g")
-                ),
-                R("Fish Tacos","Mexican",2,
-                  "Pan-fried cod with slaw and lime in tortillas.",
-                  "Season cod; pan-fry; assemble in tortillas with slaw; squeeze lime.",
-                  ("Cod Fillet",150,"g"), ("Tortilla (wheat)",120,"g"), ("Cabbage",80,"g"),
-                  ("Lime",25,"g"), ("Mayonnaise",20,"g")
-                ),
-                R("Veggie Stir-Fry","Chinese",2,
-                  "Mixed vegetables stir-fried with soy and ginger.",
-                  "Hot pan; oil; add veg in order; season with soy and ginger.",
-                  ("Broccoli",100,"g"), ("Carrot",60,"g"), ("Bell Pepper",80,"g"), ("Mushroom",80,"g"),
-                  ("Ginger",8,"g"), ("Garlic",6,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",10,"ml"),
-                  ("Rice (white, dry)",70,"g")
-                ),
-                R("Chili Con Carne","American",2,
-                  "Beef chili with beans and spices.",
-                  "Brown beef; sauté aromatics; add tomato and spices; simmer; add beans.",
-                  ("Beef Mince (10%)",180,"g"), ("Onion",70,"g"), ("Garlic",6,"g"), ("Passata",180,"g"),
-                  ("Cumin",4,"g"), ("Paprika",4,"g"), ("Black Beans (cooked)",120,"g"),
-                  ("Olive Oil",10,"ml"), ("Rice (white, dry)",75,"g")
-                ),
-                R("Lentil Dahl","Indian",1,
-                  "Comforting spiced red lentils.",
-                  "Toast spices; simmer lentils with onion, garlic, turmeric; finish with coriander.",
-                  ("Lentils (dry)",70,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Turmeric",3,"g"),
-                  ("Cumin",3,"g"), ("Olive Oil",10,"ml"), ("Rice (white, dry)",70,"g"), ("Coriander",6,"g")
-                ),
-                R("Hummus & Pita","Lebanese",1,
-                  "Classic hummus served with bread.",
-                  "Blend chickpeas with garlic, olive oil, lemon; serve with bread.",
-                  ("Chickpeas (canned)",150,"g"), ("Garlic",5,"g"), ("Olive Oil",15,"ml"),
-                  ("Lemon",30,"g"), ("Bread",100,"g")
-                ),
-                R("Tabbouleh","Lebanese",1,
-                  "Herby salad with parsley, bulgur proxy (use Quinoa).",
-                  "Cook quinoa; cool; combine with lots of parsley, tomato, lemon, oil.",
-                  ("Quinoa (dry)",60,"g"), ("Parsley",25,"g"), ("Tomato",120,"g"),
-                  ("Lemon",25,"g"), ("Olive Oil",10,"ml"), ("Mint",6,"g")
-                ),
-                R("Spaghetti Carbonara","Italian",2,
-                  "Egg, parmesan, and cured pork sauce (pork shoulder proxy).",
-                  "Cook pasta; toss with egg, cheese, and rendered pork off heat.",
-                  ("Pasta (dry)",90,"g"), ("Eggs",1,null), ("Parmesan",25,"g"),
-                  ("Pork Shoulder",60,"g"), ("Black Pepper",2,"g")
-                ),
-                R("Bolognese","Italian",2,
-                  "Slow-simmered beef ragu with pasta.",
-                  "Brown beef; add soffritto; tomato; simmer; serve over pasta.",
-                  ("Beef Mince (10%)",180,"g"), ("Onion",60,"g"), ("Carrot",50,"g"), ("Celery",40,"g"),
-                  ("Passata",200,"g"), ("Olive Oil",10,"ml"), ("Pasta (dry)",90,"g")
-                ),
-                R("Pho Ga","Vietnamese",2,
-                  "Aromatic chicken noodle soup.",
-                  "Simmer chicken in stock with ginger; add noodles; finish with herbs.",
-                  ("Chicken Breast",140,"g"), ("Vegetable Stock",400,"ml"), ("Ginger",10,"g"),
-                  ("Onion",40,"g"), ("Rice (white, dry)",70,"g"), ("Coriander",8,"g")
-                ),
-                R("Bibimbap","Korean",3,
-                  "Warm rice bowl with mixed veg and beef (gochujang proxy via paprika+soy).",
-                  "Cook rice; sauté toppings; assemble with egg and sauce.",
-                  ("Rice (white, dry)",80,"g"), ("Beef Mince (10%)",120,"g"),
-                  ("Spinach",70,"g"), ("Carrot",60,"g"), ("Mushroom",60,"g"),
-                  ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Paprika",3,"g")
-                ),
-                R("Jerk Chicken","Caribbean",3,
-                  "Spicy marinated chicken with rice.",
-                  "Marinate chicken; grill/roast; serve with rice and lime.",
-                  ("Chicken Thigh",200,"g"), ("Lime",20,"g"), ("Garlic",6,"g"),
-                  ("Ginger",8,"g"), ("Vegetable Oil",10,"ml"), ("Rice (white, dry)",75,"g")
-                ),
-                R("Moroccan Chickpea Tagine","Moroccan",2,
-                  "Spiced chickpeas with vegetables.",
-                  "Sauté aromatics; add spices, chickpeas, veg; simmer.",
-                  ("Chickpeas (canned)",160,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
-                  ("Aubergine",80,"g"), ("Coriander",6,"g"), ("Cumin",3,"g"),
-                  ("Paprika",3,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Seafood Paella (Prawn)","Spanish",3,
-                  "Rice cooked with stock, saffron proxy, and prawns.",
-                  "Sauté base; add rice and stock; simmer; add prawns near end.",
-                  ("Prawns",140,"g"), ("Rice (white, dry)",90,"g"), ("Onion",60,"g"),
-                  ("Bell Pepper",60,"g"), ("Vegetable Stock",350,"ml"), ("Olive Oil",10,"ml")
-                ),
-                R("Gazpacho","Spanish",1,
-                  "Chilled tomato-cucumber soup.",
-                  "Blend vegetables with oil and season; chill.",
-                  ("Tomato",300,"g"), ("Cucumber",150,"g"), ("Onion",30,"g"),
-                  ("Olive Oil",15,"ml"), ("Bread",40,"g")
-                ),
-                R("Ratatouille","French",2,
-                  "Stewed Mediterranean vegetables.",
-                  "Sauté each veg; combine and stew gently; finish with basil.",
-                  ("Aubergine",120,"g"), ("Courgette",120,"g"), ("Bell Pepper",100,"g"),
-                  ("Tomato",200,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Olive Oil",15,"ml"),
-                  ("Basil",4,"g")
-                ),
-                R("Chicken Fajitas","Mexican",2,
-                  "Spiced chicken with peppers and onions in tortillas.",
-                  "Sear chicken; sauté peppers/onion; toss with spices; serve in tortillas.",
-                  ("Chicken Breast",160,"g"), ("Bell Pepper",100,"g"), ("Onion",80,"g"),
-                  ("Cumin",3,"g"), ("Paprika",3,"g"), ("Vegetable Oil",10,"ml"),
-                  ("Tortilla (wheat)",120,"g")
-                ),
-                R("Tandoori Salmon","Indian",2,
-                  "Yoghurt-spiced baked salmon.",
-                  "Marinate salmon with yoghurt and spices; roast.",
-                  ("Salmon Fillet",170,"g"), ("Greek Yoghurt",60,"g"),
-                  ("Garam Masala",4,"g"), ("Turmeric",3,"g"), ("Lime",20,"g"),
-                  ("Rice (white, dry)",75,"g")
-                ),
-                R("Moussaka","Greek",3,
-                  "Layered aubergine with beef and béchamel (cream/butter proxy).",
-                  "Pan-fry aubergine; cook beef in tomato; layer and bake with creamy top.",
-                  ("Aubergine",200,"g"), ("Beef Mince (10%)",170,"g"), ("Onion",60,"g"),
-                  ("Passata",180,"g"), ("Butter",20,"g"), ("Double Cream",60,"g")
-                ),
-                R("Chicken Souvlaki","Greek",2,
-                  "Skewered marinated chicken with lemon and herbs.",
-                  "Marinate; grill; serve with salad and bread.",
-                  ("Chicken Breast",170,"g"), ("Lemon",25,"g"), ("Garlic",6,"g"),
-                  ("Olive Oil",10,"ml"), ("Parsley",6,"g"), ("Bread",80,"g")
-                ),
-                R("Caprese Salad","Italian",1,
-                  "Tomato, mozzarella, basil, olive oil.",
-                  "Slice tomato and mozzarella; layer with basil; dress with oil.",
-                  ("Tomato",200,"g"), ("Mozzarella",100,"g"), ("Basil",6,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Paneer Butter Masala","Indian",3,
-                  "Creamy tomato curry with paneer.",
-                  "Sauté aromatics and spices; add tomato and cream; simmer paneer.",
-                  ("Paneer",150,"g"), ("Butter",20,"g"), ("Passata",180,"g"),
-                  ("Onion",60,"g"), ("Garlic",8,"g"), ("Curry Powder",4,"g"),
-                  ("Double Cream",40,"g"), ("Rice (white, dry)",75,"g")
-                ),
-                R("Chicken Katsu Curry","Japanese",3,
-                  "Crispy chicken with mild curry sauce; rice.",
-                  "Pan-fry chicken; make curry roux-like sauce; serve with rice.",
-                  ("Chicken Breast",170,"g"), ("Vegetable Oil",10,"ml"),
-                  ("Onion",60,"g"), ("Carrot",60,"g"), ("Curry Powder",5,"g"),
-                  ("Vegetable Stock",250,"ml"), ("Rice (white, dry)",80,"g")
-                ),
-                R("Teriyaki Salmon Bowl","Japanese",2,
-                  "Salmon teriyaki over rice with veg.",
-                  "Sear salmon; glaze; serve over rice and veg.",
-                  ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
-                  ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
-                ),
-                R("Chicken Caesar Salad","American",2,
-                  "Romaine, chicken, parmesan, caesar dressing (approx).",
-                  "Grill chicken; toss lettuce with dressing; shave parmesan.",
-                  ("Chicken Breast",150,"g"), ("Lettuce",120,"g"), ("Parmesan",20,"g"),
-                  ("Mayonnaise",20,"g"), ("Garlic",4,"g"), ("Bread",40,"g")
-                ),
-                R("Prawn Linguine","Italian",2,
-                  "Garlic prawns tossed with pasta and lemon.",
-                  "Sauté prawns with garlic/oil; toss with pasta and lemon juice.",
-                  ("Prawns",140,"g"), ("Pasta (dry)",90,"g"), ("Garlic",8,"g"),
-                  ("Olive Oil",12,"ml"), ("Lemon",25,"g"), ("Parsley",6,"g")
-                ),
-                R("Cottage Pie","British",3,
-                  "Beef mince with mash topping (potato only here).",
-                  "Cook beef with veg; top with mash; bake.",
-                  ("Beef Mince (10%)",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
-                  ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
-                ),
-                R("Shepherd’s Pie","British",3,
-                  "Lamb mince base with mash topping.",
-                  "Cook lamb with veg and stock; top with mash; bake.",
-                  ("Lamb Mince",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
-                  ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
-                ),
-                R("Chicken Noodle Soup","American",1,
-                  "Light soup with chicken, vegetables and noodles.",
-                  "Simmer chicken with veg; add pasta; cook until tender.",
-                  ("Chicken Breast",130,"g"), ("Vegetable Stock",400,"ml"), ("Carrot",60,"g"),
-                  ("Celery",40,"g"), ("Onion",40,"g"), ("Pasta (dry)",50,"g")
-                ),
-                R("Pancakes","American",1,
-                  "Simple pancakes with butter (flour proxy via Bread).",
-                  "Mix batter; pan-fry; serve with butter.",
-                  ("Bread",80,"g"), ("Eggs",1,null), ("Milk",120,"ml"), ("Butter",10,"g")
-                ),
-                R("Cheese Omelette","French",1,
-                  "Fluffy omelette with cheese.",
-                  "Beat eggs; cook gently; add cheese; fold.",
-                  ("Eggs",3,null), ("Butter",10,"g"), ("Cheddar",40,"g")
-                ),
-                R("Guacamole on Toast","Mexican",1,
-                  "Mashed avocado with lime on toast (avocado proxy via olive oil + cucumber for texture).",
-                  "Mash; season; spread on toast.",
-                  ("Bread",80,"g"), ("Cucumber",60,"g"), ("Olive Oil",10,"ml"), ("Lime",20,"g")
-                ),
-                R("Bruschetta","Italian",1,
-                  "Tomato, garlic, basil on toasted bread.",
-                  "Chop tomato; season; spoon onto toast; finish with basil and oil.",
-                  ("Bread",80,"g"), ("Tomato",150,"g"), ("Garlic",6,"g"),
-                  ("Basil",6,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Chicken Burrito Bowl","Mexican",2,
-                  "Spiced chicken with rice, beans, and veg.",
-                  "Sear chicken with spices; serve over rice with beans and veg.",
-                  ("Chicken Breast",160,"g"), ("Rice (white, dry)",80,"g"),
-                  ("Black Beans (cooked)",120,"g"), ("Bell Pepper",80,"g"),
-                  ("Onion",60,"g"), ("Cumin",3,"g"), ("Paprika",3,"g")
-                ),
-                R("Veggie Quesadilla","Mexican",1,
-                  "Cheesy tortilla with sautéed vegetables.",
-                  "Sauté veg; load tortilla with cheese; fold and griddle.",
-                  ("Tortilla (wheat)",120,"g"), ("Cheddar",70,"g"),
-                  ("Bell Pepper",60,"g"), ("Onion",40,"g"), ("Mushroom",60,"g")
-                ),
-                R("Spinach Ricotta Cannelloni","Italian",3,
-                  "Pasta tubes filled with spinach & ricotta, baked in passata.",
-                  "Mix filling; pipe into pasta proxy; bake with sauce.",
-                  ("Pasta (dry)",90,"g"), ("Spinach",120,"g"), ("Ricotta",120,"g"),
-                  ("Passata",200,"g"), ("Parmesan",20,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Minestrone Soup","Italian",1,
-                  "Hearty vegetable soup with pasta and beans.",
-                  "Sauté veg; add stock, tomato, pasta, beans; simmer.",
-                  ("Vegetable Stock",400,"ml"), ("Passata",150,"g"), ("Onion",50,"g"),
-                  ("Carrot",50,"g"), ("Celery",40,"g"), ("Courgette",70,"g"),
-                  ("Pasta (dry)",50,"g"), ("Black Beans (cooked)",100,"g")
-                ),
-                R("Mushroom Risotto","Italian",3,
-                  "Creamy risotto with mushrooms.",
-                  "Toast rice; add stock gradually; finish with parmesan.",
-                  ("Rice (white, dry)",90,"g"), ("Mushroom",120,"g"),
-                  ("Vegetable Stock",500,"ml"), ("Onion",50,"g"),
-                  ("Olive Oil",10,"ml"), ("Parmesan",25,"g")
-                ),
-                R("Halloumi Salad","Greek",1,
-                  "Grilled halloumi with mixed salad.",
-                  "Griddle halloumi; toss salad; dress with oil/lemon.",
-                  ("Halloumi",100,"g"), ("Cucumber",100,"g"), ("Tomato",120,"g"),
-                  ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Lettuce",80,"g")
-                ),
-                R("Penne Arrabbiata","Italian",2,
-                  "Spicy tomato pasta with garlic and chilli.",
-                  "Cook pasta; simmer garlicky chilli tomato sauce; combine.",
-                  ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Garlic",8,"g"),
-                  ("Chillies",4,"g"), ("Olive Oil",10,"ml"), ("Parsley",4,"g")
-                ),
-                R("Teriyaki Tofu Bowl (Paneer proxy)","Japanese",2,
-                  "Sweet-savoury bowl with paneer acting as tofu for seeding.",
-                  "Sear paneer; glaze; serve over rice with veg.",
-                  ("Paneer",140,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
-                  ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
-                ),
-                R("Quinoa Buddha Bowl","American",2,
-                  "Nutritious bowl with quinoa, veg, chickpeas.",
-                  "Cook quinoa; roast/sauté veg; assemble with dressing.",
-                  ("Quinoa (dry)",70,"g"), ("Chickpeas (canned)",120,"g"),
-                  ("Spinach",80,"g"), ("Sweet Potato",150,"g"), ("Olive Oil",10,"ml")
-                ),
-                R("Prawn Fried Rice","Chinese",2,
-                  "Quick fried rice with prawns and vegetables.",
-                  "Use day-old rice; fry with eggs, prawns, veg; season.",
-                  ("Rice (white, dry)",90,"g"), ("Prawns",130,"g"),
-                  ("Eggs",1,null), ("Peas",80,"g"), ("Carrot",50,"g"), ("Soy Sauce",20,"ml"),
-                  ("Vegetable Oil",10,"ml")
-                ),
-                R("Ramen (Simple)","Japanese",3,
-                  "Noodle soup with chicken and egg.",
-                  "Simmer stock; add noodles; top with chicken and egg.",
-                  ("Vegetable Stock",500,"ml"), ("Chicken Breast",120,"g"),
-                  ("Pasta (dry)",70,"g"), ("Eggs",1,null), ("Spring Onion",30,"g")
-                ),
-                R("Tuna Nicoise","French",2,
-                  "Salad with tuna, egg, potato, green beans (proxy with broccoli).",
-                  "Boil eggs and potato; assemble with tuna and veg; dress.",
-                  ("Tuna (raw)",120,"g"), ("Eggs",1,null), ("Potato",180,"g"),
-                  ("Tomato",120,"g"), ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Broccoli",80,"g")
-                ),
-                R("Katsu Sando","Japanese",2,
-                  "Crispy chicken sandwich.",
-                  "Fry chicken; slice bread; assemble with mayo.",
-                  ("Chicken Breast",150,"g"), ("Bread",100,"g"), ("Mayonnaise",20,"g"),
-                  ("Vegetable Oil",10,"ml")
-                ),
-                R("Penne alla Vodka (no vodka)","Italian",2,
-                  "Creamy tomato pasta (vodka omitted for test env).",
-                  "Cook pasta; simmer passata with cream; combine with parmesan.",
-                  ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Double Cream",60,"g"),
-                  ("Parmesan",25,"g"), ("Olive Oil",10,"ml")
-                ),
-            };
+          return new List<RecipeDef>
+          {
+              R("Classic Neapolitan Margherita Pizza","Italian",2,
+                """
+                A timeless pizzeria favourite with a thin, crisp base, rich tomato passata, and soft puddles of mozzarella.
+                Fragrant basil and a final drizzle of olive oil bring fresh aromatics and balance to every slice.
+                Ideal for quick Friday nights or a relaxed weekend bake.
+                """,
+                "Make or use a base; spread passata; add mozzarella; bake hot; finish with basil and olive oil.",
+                ("Passata",80,"g"), ("Mozzarella",90,"g"), ("Basil",2,"g"), ("Olive Oil",5,"ml"), ("Bread",120,"g") // using Bread as base proxy
+              ),
+              R("Authentic Chicken Tikka Masala Curry","Indian",3,
+                """
+                Tender, yoghurt-marinated chicken, charred for smoky depth then simmered in a spiced tomato cream.
+                Velvety, warming, and deeply savoury with notes of garam masala and turmeric throughout.
+                Perfect with steamed rice and a scattering of fresh coriander.
+                """,
+                "Marinate chicken; grill; simmer sauce with tomato, cream and spices; combine and simmer.",
+                ("Chicken Breast",150,"g"), ("Greek Yoghurt",60,"g"), ("Passata",150,"g"), ("Onion",60,"g"),
+                ("Garlic",8,"g"), ("Garam Masala",4,"g"), ("Turmeric",2,"g"), ("Cumin",2,"g"), ("Double Cream",50,"g"),
+                ("Rice (white, dry)",75,"g")
+              ),
+              R("Fresh Mediterranean Greek Salad Bowl","Greek",1,
+                """
+                Crunchy cucumber, juicy tomatoes, and sharp red onion tossed in lemon and olive oil.
+                Creamy feta adds salty richness while herbs keep it bright and refreshing.
+                A vibrant, no-cook classic that’s perfect for lunch or a light supper.
+                """,
+                "Chop veg; toss with olive oil and lemon; top with feta.",
+                ("Tomato",150,"g"), ("Cucumber",120,"g"), ("Onion",30,"g"), ("Feta",60,"g"),
+                ("Olive Oil",10,"ml"), ("Lemon",30,"g")
+              ),
+              R("Spicy Prawn Pad Thai Noodles","Thai",3,
+                """
+                A street-food favourite balancing sweet, salty, sour and heat.
+                Juicy prawns, silky egg, and springy noodles tossed in a glossy, tangy soy-oyster glaze.
+                Finish with lime for brightness and serve immediately while piping hot.
+                """,
+                "Soak noodles; stir-fry prawns with aromatics; add egg; toss with sauce and noodles.",
+                ("Prawns",120,"g"), ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Oyster Sauce",10,"g"),
+                ("Vegetable Oil",10,"ml"), ("Lime",20,"g"), ("Rice (white, dry)",70,"g")
+              ),
+              R("Slow-Cooked French Beef Bourguignon","French",3,
+                """
+                A rustic French stew brimming with tender beef, mushrooms, onions and carrots.
+                Slowly simmered in stock and red wine for deep, layered flavour and silky richness.
+                Comforting, elegant, and even better the next day.
+                """,
+                "Brown beef; sauté veg; simmer with stock and wine until tender.",
+                ("Beef Mince (10%)",200,"g"), ("Mushroom",80,"g"), ("Onion",80,"g"),
+                ("Carrot",60,"g"), ("Olive Oil",10,"ml"), ("Vegetable Stock",200,"ml")
+              ),
+              R("Moroccan Spiced Shakshuka Skillet","Moroccan",1,
+                """
+                Soft-poached eggs nestled in a bubbling sauce of tomatoes, peppers, and warm spices.
+                Smoky paprika and cumin perfume the pan while the yolks stay rich and runny.
+                Serve with crusty bread for scooping every last bite.
+                """,
+                "Sauté peppers and onion; add garlic and spices; simmer tomato; crack in eggs and cook gently.",
+                ("Eggs",2,null), ("Tomato",200,"g"), ("Bell Pepper",100,"g"), ("Onion",60,"g"),
+                ("Garlic",10,"g"), ("Paprika",3,"g"), ("Cumin",2,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Creamy Basil Pesto Pasta","Italian",1,
+                """
+                Al dente pasta swirled through a vivid basil pesto with parmesan and garlic.
+                A silky emulsion of starchy pasta water and olive oil coats every strand.
+                Simple ingredients, huge flavour — Italian comfort in minutes.
+                """,
+                "Cook pasta; toss with pesto and a splash of cooking water; finish with parmesan.",
+                ("Pasta (dry)",90,"g"), ("Basil",10,"g"), ("Olive Oil",15,"ml"), ("Parmesan",20,"g"), ("Garlic",4,"g")
+              ),
+              R("Crispy Falafel Wrap With Tahini","Lebanese",2,
+                """
+                Herby chickpea patties pan-fried until golden and tucked into a soft wrap.
+                Crunchy lettuce, juicy tomatoes, and creamy tahini bring freshness and richness.
+                Great handheld fuel with classic Levantine flavours.
+                """,
+                "Mash chickpeas with herbs/spices; pan-fry; serve in wrap with veg.",
+                ("Chickpeas (canned)",120,"g"), ("Coriander",8,"g"), ("Parsley",8,"g"),
+                ("Cumin",3,"g"), ("Garlic",6,"g"), ("Olive Oil",10,"ml"), ("Tortilla (wheat)",60,"g"),
+                ("Lettuce",40,"g"), ("Tomato",60,"g")
+              ),
+              R("Glazed Salmon Teriyaki Bowl","Japanese",2,
+                """
+                Succulent salmon lacquered in a sweet-savory soy glaze with subtle acidity.
+                Served over fluffy rice and topped with spring onions for brightness and crunch.
+                A speedy, satisfying weeknight bowl.
+                """,
+                "Pan-sear salmon; reduce soy/sugar-like glaze; coat and serve with rice.",
+                ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",5,"ml"),
+                ("Rice (white, dry)",75,"g"), ("Spring Onion",30,"g") // use Onion as proxy if Spring Onion not in cat
+              ),
+              R("Light Japanese Miso Soup","Japanese",1,
+                """
+                A soothing, umami-rich broth that’s gentle and restorative.
+                Soft tofu and fresh spring onions add texture and aroma in every spoonful.
+                Ideal as a starter or a calming lunch.
+                """,
+                "Heat stock; dissolve miso (proxy); add tofu proxy and onion; simmer briefly.",
+                ("Vegetable Stock",300,"ml"), ("Onion",30,"g"), ("Paneer",40,"g")
+              ),
+              R("Fresh Tuna Poke Rice Bowl","Hawaiian",2,
+                """
+                Cubes of raw tuna marinated lightly in soy, paired with cool cucumber and ripe avocado.
+                Served over warm rice for a bowl that balances clean flavours and satisfying textures.
+                Bright, fresh, and endlessly craveable.
+                """,
+                "Cube tuna; marinate with soy; assemble over rice with veg.",
+                ("Tuna (raw)",120,"g"), ("Soy Sauce",15,"ml"), ("Rice (white, dry)",80,"g"),
+                ("Cucumber",80,"g"), ("Avocado",70,"g")
+              ),
+              R("Rich Butter Chicken Curry","Indian",3,
+                """
+                Charred, juicy chicken folded into a silky tomato-butter sauce enriched with cream.
+                Gentle warmth from curry spices keeps it comforting without overpowering.
+                A crowd-pleaser that’s luxurious yet familiar.
+                """,
+                "Marinate; grill; simmer in tomato, butter, cream; combine.",
+                ("Chicken Thigh",180,"g"), ("Greek Yoghurt",60,"g"), ("Passata",180,"g"),
+                ("Butter",20,"g"), ("Double Cream",40,"g"), ("Onion",60,"g"), ("Garlic",8,"g"),
+                ("Curry Powder",4,"g"), ("Rice (white, dry)",75,"g")
+              ),
+              R("Crispy Cod Fish Tacos","Mexican",2,
+                """
+                Lightly seasoned cod tucked into soft tortillas with a crunchy slaw.
+                A squeeze of lime and creamy mayo dressing bring brightness and richness.
+                Perfect for taco night, any night.
+                """,
+                "Season cod; pan-fry; assemble in tortillas with slaw; squeeze lime.",
+                ("Cod Fillet",150,"g"), ("Tortilla (wheat)",120,"g"), ("Cabbage",80,"g"),
+                ("Lime",25,"g"), ("Mayonnaise",20,"g")
+              ),
+              R("Fast Veggie Soy Stir-Fry","Chinese",2,
+                """
+                A colourful medley of broccoli, peppers, mushrooms and carrot tossed hot and fast.
+                Ginger and garlic perfume the wok while soy brings savoury depth.
+                Serve over rice for a complete, speedy plate.
+                """,
+                "Hot pan; oil; add veg in order; season with soy and ginger.",
+                ("Broccoli",100,"g"), ("Carrot",60,"g"), ("Bell Pepper",80,"g"), ("Mushroom",80,"g"),
+                ("Ginger",8,"g"), ("Garlic",6,"g"), ("Soy Sauce",20,"ml"), ("Vegetable Oil",10,"ml"),
+                ("Rice (white, dry)",70,"g")
+              ),
+              R("Hearty Chili Con Carne","American",2,
+                """
+                Savoury beef simmered with tomatoes, beans, and smoky spices until thick and rich.
+                Comforting heat from cumin and paprika builds flavour without blowing your head off.
+                Spoon over rice or pile into bowls with toppings.
+                """,
+                "Brown beef; sauté aromatics; add tomato and spices; simmer; add beans.",
+                ("Beef Mince (10%)",180,"g"), ("Onion",70,"g"), ("Garlic",6,"g"), ("Passata",180,"g"),
+                ("Cumin",4,"g"), ("Paprika",4,"g"), ("Black Beans (cooked)",120,"g"),
+                ("Olive Oil",10,"ml"), ("Rice (white, dry)",75,"g")
+              ),
+              R("Comforting Red Lentil Dahl","Indian",1,
+                """
+                Creamy, spiced lentils gently scented with turmeric, cumin, garlic and onion.
+                A wholesome bowl that’s nourishing, budget-friendly, and deeply satisfying.
+                Serve with rice and fresh coriander.
+                """,
+                "Toast spices; simmer lentils with onion, garlic, turmeric; finish with coriander.",
+                ("Lentils (dry)",70,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Turmeric",3,"g"),
+                ("Cumin",3,"g"), ("Olive Oil",10,"ml"), ("Rice (white, dry)",70,"g"), ("Coriander",6,"g")
+              ),
+              R("Creamy Hummus With Pita","Lebanese",1,
+                """
+                Silky chickpea dip blended with garlic, lemon, and fruity olive oil.
+                Spread generously and scoop with warm bread for the ultimate snack or starter.
+                Simple ingredients, perfect texture.
+                """,
+                "Blend chickpeas with garlic, olive oil, lemon; serve with bread.",
+                ("Chickpeas (canned)",150,"g"), ("Garlic",5,"g"), ("Olive Oil",15,"ml"),
+                ("Lemon",30,"g"), ("Bread",100,"g")
+              ),
+              R("Herby Bulgur Tabbouleh Salad","Lebanese",1,
+                """
+                Bright, zesty salad packed with parsley, mint, tomatoes and lemon.
+                Bulgur adds gentle bite while olive oil brings a rounded, fruity finish.
+                A refreshing side that eats like a light meal.
+                """,
+                "Cook quinoa; cool; combine with lots of parsley, tomato, lemon, oil.",
+                ("Quinoa (dry)",60,"g"), ("Parsley",25,"g"), ("Tomato",120,"g"),
+                ("Lemon",25,"g"), ("Olive Oil",10,"ml"), ("Mint",6,"g")
+              ),
+              R("Classic Spaghetti Carbonara","Italian",2,
+                """
+                Glossy pasta cloaked in a silky emulsion of egg, parmesan and rendered pork.
+                Rich, savoury and deceptively simple when timed just right.
+                Peppery heat ties everything together.
+                """,
+                "Cook pasta; toss with egg, cheese, and rendered pork off heat.",
+                ("Pasta (dry)",90,"g"), ("Eggs",1,null), ("Parmesan",25,"g"),
+                ("Pork Shoulder",60,"g"), ("Black Pepper",2,"g")
+              ),
+              R("Slow-Simmered Beef Bolognese","Italian",2,
+                """
+                A classic ragu built on soffritto, beef, and tomato, simmered until thick and glossy.
+                Deep, savoury flavours cling lovingly to each strand of pasta.
+                Weeknight friendly, weekend worthy.
+                """,
+                "Brown beef; add soffritto; tomato; simmer; serve over pasta.",
+                ("Beef Mince (10%)",180,"g"), ("Onion",60,"g"), ("Carrot",50,"g"), ("Celery",40,"g"),
+                ("Passata",200,"g"), ("Olive Oil",10,"ml"), ("Pasta (dry)",90,"g")
+              ),
+              R("Aromatic Vietnamese Pho Ga","Vietnamese",2,
+                """
+                Fragrant chicken broth infused with ginger and onion, poured over tender meat and noodles.
+                Fresh herbs on top add brightness and perfume in every slurp.
+                Light yet wonderfully satisfying.
+                """,
+                "Simmer chicken in stock with ginger; add noodles; finish with herbs.",
+                ("Chicken Breast",140,"g"), ("Vegetable Stock",400,"ml"), ("Ginger",10,"g"),
+                ("Onion",40,"g"), ("Rice (white, dry)",70,"g"), ("Coriander",8,"g")
+              ),
+              R("Korean Bibimbap Rice Bowl","Korean",3,
+                """
+                A warm bowl layered with rice, seasoned vegetables, and savoury beef.
+                Finished with a fried egg and a spicy, umami-rich sauce for mixing.
+                Textural, colourful, and endlessly satisfying.
+                """,
+                "Cook rice; sauté toppings; assemble with egg and sauce.",
+                ("Rice (white, dry)",80,"g"), ("Beef Mince (10%)",120,"g"),
+                ("Spinach",70,"g"), ("Carrot",60,"g"), ("Mushroom",60,"g"),
+                ("Eggs",1,null), ("Soy Sauce",15,"ml"), ("Paprika",3,"g")
+              ),
+              R("Fiery Caribbean Jerk Chicken","Caribbean",3,
+                """
+                Spicy, aromatic chicken marinated with ginger, garlic, lime and warm spices.
+                Grilled or roasted until charred at the edges and juicy inside.
+                Serve with rice to catch every drop of flavour.
+                """,
+                "Marinate chicken; grill/roast; serve with rice and lime.",
+                ("Chicken Thigh",200,"g"), ("Lime",20,"g"), ("Garlic",6,"g"),
+                ("Ginger",8,"g"), ("Vegetable Oil",10,"ml"), ("Rice (white, dry)",75,"g")
+              ),
+              R("Moroccan Chickpea Vegetable Tagine","Moroccan",2,
+                """
+                A gently spiced stew of chickpeas and seasonal vegetables.
+                Paprika and cumin add warmth while coriander lifts the finish.
+                Serve with couscous or flatbread for a wholesome meal.
+                """,
+                "Sauté aromatics; add spices, chickpeas, veg; simmer.",
+                ("Chickpeas (canned)",160,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                ("Aubergine",80,"g"), ("Coriander",6,"g"), ("Cumin",3,"g"),
+                ("Paprika",3,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Spanish Seafood Paella With Prawns","Spanish",3,
+                """
+                Saffron-style rice cooked slowly with stock until plump and flavourful.
+                Sweet peppers, onions, and juicy prawns make every forkful irresistible.
+                A festive one-pan centrepiece.
+                """,
+                "Sauté base; add rice and stock; simmer; add prawns near end.",
+                ("Prawns",140,"g"), ("Rice (white, dry)",90,"g"), ("Onion",60,"g"),
+                ("Bell Pepper",60,"g"), ("Vegetable Stock",350,"ml"), ("Olive Oil",10,"ml")
+              ),
+              R("Chilled Andalusian Gazpacho Soup","Spanish",1,
+                """
+                A cool, refreshing blend of tomatoes, cucumber and onion with good olive oil.
+                Light, zippy and perfect for hot days or a palate-cleansing starter.
+                Best served well chilled.
+                """,
+                "Blend vegetables with oil and season; chill.",
+                ("Tomato",300,"g"), ("Cucumber",150,"g"), ("Onion",30,"g"),
+                ("Olive Oil",15,"ml"), ("Bread",40,"g")
+              ),
+              R("Provencal Vegetable Ratatouille","French",2,
+                """
+                A rustic stew of aubergine, courgette, peppers and tomatoes, cooked low and slow.
+                Sweet, soft vegetables perfumed with garlic and basil.
+                Delicious as a side or spooned over crusty bread.
+                """,
+                "Sauté each veg; combine and stew gently; finish with basil.",
+                ("Aubergine",120,"g"), ("Courgette",120,"g"), ("Bell Pepper",100,"g"),
+                ("Tomato",200,"g"), ("Onion",60,"g"), ("Garlic",8,"g"), ("Olive Oil",15,"ml"),
+                ("Basil",4,"g")
+              ),
+              R("Sizzling Chicken Fajitas Feast","Mexican",2,
+                """
+                Strips of chicken tossed with peppers and onions, spiced and seared until smoky.
+                Pile into warm tortillas with your favourite toppings.
+                Weeknight-fast and always fun at the table.
+                """,
+                "Sear chicken; sauté peppers/onion; toss with spices; serve in tortillas.",
+                ("Chicken Breast",160,"g"), ("Bell Pepper",100,"g"), ("Onion",80,"g"),
+                ("Cumin",3,"g"), ("Paprika",3,"g"), ("Vegetable Oil",10,"ml"),
+                ("Tortilla (wheat)",120,"g")
+              ),
+              R("Oven-Baked Tandoori Salmon","Indian",2,
+                """
+                Salmon fillets marinated in yoghurt and warm spices, roasted until flaky and tender.
+                Tangy lime keeps the flavour bright while a side of rice completes the plate.
+                Light, quick, and full of character.
+                """,
+                "Marinate salmon with yoghurt and spices; roast.",
+                ("Salmon Fillet",170,"g"), ("Greek Yoghurt",60,"g"),
+                ("Garam Masala",4,"g"), ("Turmeric",3,"g"), ("Lime",20,"g"),
+                ("Rice (white, dry)",75,"g")
+              ),
+              R("Layered Greek Moussaka Bake","Greek",3,
+                """
+                Golden layers of aubergine and savoury beef beneath a creamy, enriched topping.
+                Tomato and onion bring sweetness while butter and cream add indulgence.
+                A hearty, crowd-pleasing casserole.
+                """,
+                "Pan-fry aubergine; cook beef in tomato; layer and bake with creamy top.",
+                ("Aubergine",200,"g"), ("Beef Mince (10%)",170,"g"), ("Onion",60,"g"),
+                ("Passata",180,"g"), ("Butter",20,"g"), ("Double Cream",60,"g")
+              ),
+              R("Lemon Herb Chicken Souvlaki","Greek",2,
+                """
+                Bright, garlicky chicken skewers marinated with lemon and herbs.
+                Grilled for smoky edges and juicy centres, then served simply with salad and bread.
+                Summer on a stick, any time of year.
+                """,
+                "Marinate; grill; serve with salad and bread.",
+                ("Chicken Breast",170,"g"), ("Lemon",25,"g"), ("Garlic",6,"g"),
+                ("Olive Oil",10,"ml"), ("Parsley",6,"g"), ("Bread",80,"g")
+              ),
+              R("Caprese Tomato Mozzarella Salad","Italian",1,
+                """
+                Thick-cut tomatoes and creamy mozzarella layered with fresh basil.
+                A drizzle of olive oil ties together sweet, milky and herbaceous notes.
+                Minimal ingredients, maximum flavour.
+                """,
+                "Slice tomato and mozzarella; layer with basil; dress with oil.",
+                ("Tomato",200,"g"), ("Mozzarella",100,"g"), ("Basil",6,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Paneer Butter Masala Curry","Indian",3,
+                """
+                Cubes of paneer simmered in a gently spiced tomato-butter sauce.
+                Cream adds a lush finish while aromatics build a comforting depth.
+                A vegetarian favourite that feels totally luxurious.
+                """,
+                "Sauté aromatics and spices; add tomato and cream; simmer paneer.",
+                ("Paneer",150,"g"), ("Butter",20,"g"), ("Passata",180,"g"),
+                ("Onion",60,"g"), ("Garlic",8,"g"), ("Curry Powder",4,"g"),
+                ("Double Cream",40,"g"), ("Rice (white, dry)",75,"g")
+              ),
+              R("Crispy Chicken Katsu Curry","Japanese",3,
+                """
+                Crunchy, golden chicken served with a mellow, aromatic curry sauce.
+                Sweet carrot and onion round out the gravy; a bed of rice soaks up every drop.
+                Comforting and irresistibly crisp.
+                """,
+                "Pan-fry chicken; make curry roux-like sauce; serve with rice.",
+                ("Chicken Breast",170,"g"), ("Vegetable Oil",10,"ml"),
+                ("Onion",60,"g"), ("Carrot",60,"g"), ("Curry Powder",5,"g"),
+                ("Vegetable Stock",250,"ml"), ("Rice (white, dry)",80,"g")
+              ),
+              R("Teriyaki Salmon Rice Bowl","Japanese",2,
+                """
+                Flaky salmon glazed in a shiny teriyaki sauce and served over steamed rice.
+                Broccoli adds freshness and bite, making the bowl balanced and complete.
+                Quick to cook, big on flavour.
+                """,
+                "Sear salmon; glaze; serve over rice and veg.",
+                ("Salmon Fillet",160,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
+                ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
+              ),
+              R("Classic Chicken Caesar Salad","American",2,
+                """
+                Charred chicken over crisp romaine with a creamy garlicky dressing.
+                Parmesan brings savoury punch while garlicky croutons add crunch.
+                A timeless staple with serious texture.
+                """,
+                "Grill chicken; toss lettuce with dressing; shave parmesan.",
+                ("Chicken Breast",150,"g"), ("Lettuce",120,"g"), ("Parmesan",20,"g"),
+                ("Mayonnaise",20,"g"), ("Garlic",4,"g"), ("Bread",40,"g")
+              ),
+              R("Garlic Prawn Lemon Linguine","Italian",2,
+                """
+                Sweet prawns sautéed with garlic and olive oil, tossed through silky pasta.
+                A squeeze of lemon and fresh parsley keep things bright and aromatic.
+                Elegant and fast — weeknight luxury.
+                """,
+                "Sauté prawns with garlic/oil; toss with pasta and lemon juice.",
+                ("Prawns",140,"g"), ("Pasta (dry)",90,"g"), ("Garlic",8,"g"),
+                ("Olive Oil",12,"ml"), ("Lemon",25,"g"), ("Parsley",6,"g")
+              ),
+              R("Traditional Cottage Pie Bake","British",3,
+                """
+                Savoury beef and vegetables simmered in stock then blanketed with buttery mash.
+                Baked until golden with just-right crispy peaks on top.
+                Proper comfort food for chilly evenings.
+                """,
+                "Cook beef with veg; top with mash; bake.",
+                ("Beef Mince (10%)",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
+              ),
+              R("Classic Shepherd’s Pie Bake","British",3,
+                """
+                Rich lamb mince base topped with creamy mashed potato and baked until bubbling.
+                Sweet carrots and onion bring balance to the savoury filling.
+                A timeless, family-style casserole.
+                """,
+                "Cook lamb with veg and stock; top with mash; bake.",
+                ("Lamb Mince",200,"g"), ("Onion",60,"g"), ("Carrot",60,"g"),
+                ("Vegetable Stock",200,"ml"), ("Olive Oil",10,"ml"), ("Potato",250,"g")
+              ),
+              R("Homestyle Chicken Noodle Soup","American",1,
+                """
+                A light, restorative broth with tender chicken, vegetables and soft noodles.
+                Gentle flavours that soothe while still feeling nourishing.
+                Ideal for cosy nights or under-the-weather days.
+                """,
+                "Simmer chicken with veg; add pasta; cook until tender.",
+                ("Chicken Breast",130,"g"), ("Vegetable Stock",400,"ml"), ("Carrot",60,"g"),
+                ("Celery",40,"g"), ("Onion",40,"g"), ("Pasta (dry)",50,"g")
+              ),
+              R("Fluffy Buttered Breakfast Pancakes","American",1,
+                """
+                Soft, golden pancakes with a tender crumb and buttery finish.
+                Quick to whisk together and endlessly versatile for toppings.
+                Weekend brunch, sorted.
+                """,
+                "Mix batter; pan-fry; serve with butter.",
+                ("Bread",80,"g"), ("Eggs",1,null), ("Milk",120,"ml"), ("Butter",10,"g")
+              ),
+              R("Cheesy French Omelette","French",1,
+                """
+                A soft, custardy omelette folded around melting cheddar.
+                Buttery, delicate and ready in minutes — a masterclass in simplicity.
+                Add herbs if you fancy.
+                """,
+                "Beat eggs; cook gently; add cheese; fold.",
+                ("Eggs",3,null), ("Butter",10,"g"), ("Cheddar",40,"g")
+              ),
+              R("Avocado Lime Toast Smash","Mexican",1,
+                """
+                Creamy avocado vibes with zesty lime on crunchy toast.
+                A sunshine-bright snack that’s fast, fresh, and endlessly customisable.
+                Breakfast, brunch, or any-time bite.
+                """,
+                "Mash; season; spread on toast.",
+                ("Bread",80,"g"), ("Cucumber",60,"g"), ("Olive Oil",10,"ml"), ("Lime",20,"g")
+              ),
+              R("Tomato Basil Bruschetta Bites","Italian",1,
+                """
+                Toasted bread piled high with juicy tomatoes, garlic, and fresh basil.
+                A drizzle of olive oil ties it all together for peak summer flavour.
+                Ideal as an appetiser or light lunch.
+                """,
+                "Chop tomato; season; spoon onto toast; finish with basil and oil.",
+                ("Bread",80,"g"), ("Tomato",150,"g"), ("Garlic",6,"g"),
+                ("Basil",6,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Chicken Burrito Bowl Supper","Mexican",2,
+                """
+                Spiced chicken served over rice with beans, peppers and onions.
+                Hearty, balanced and perfect for meal-prep or busy weeknights.
+                Add your favourite toppings to finish.
+                """,
+                "Sear chicken with spices; serve over rice with beans and veg.",
+                ("Chicken Breast",160,"g"), ("Rice (white, dry)",80,"g"),
+                ("Black Beans (cooked)",120,"g"), ("Bell Pepper",80,"g"),
+                ("Onion",60,"g"), ("Cumin",3,"g"), ("Paprika",3,"g")
+              ),
+              R("Cheesy Veggie Quesadilla","Mexican",1,
+                """
+                A golden, griddled tortilla stuffed with melty cheddar and sautéed vegetables.
+                Crisp on the outside, oozy in the middle — pure comfort.
+                Serve with salsa or a squeeze of lime.
+                """,
+                "Sauté veg; load tortilla with cheese; fold and griddle.",
+                ("Tortilla (wheat)",120,"g"), ("Cheddar",70,"g"),
+                ("Bell Pepper",60,"g"), ("Onion",40,"g"), ("Mushroom",60,"g")
+              ),
+              R("Spinach Ricotta Cannelloni Bake","Italian",3,
+                """
+                Tender pasta filled with creamy ricotta and wilted spinach, baked under rich tomato sauce.
+                Finished with parmesan for a bronzed, savoury topping.
+                A vegetarian classic that feels special.
+                """,
+                "Mix filling; pipe into pasta proxy; bake with sauce.",
+                ("Pasta (dry)",90,"g"), ("Spinach",120,"g"), ("Ricotta",120,"g"),
+                ("Passata",200,"g"), ("Parmesan",20,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Hearty Italian Minestrone Soup","Italian",1,
+                """
+                A chunky vegetable soup brimming with pasta, beans and tomatoes.
+                Comforting and wholesome with plenty of texture in every spoonful.
+                Perfect for batch-cooking.
+                """,
+                "Sauté veg; add stock, tomato, pasta, beans; simmer.",
+                ("Vegetable Stock",400,"ml"), ("Passata",150,"g"), ("Onion",50,"g"),
+                ("Carrot",50,"g"), ("Celery",40,"g"), ("Courgette",70,"g"),
+                ("Pasta (dry)",50,"g"), ("Black Beans (cooked)",100,"g")
+              ),
+              R("Creamy Mushroom Risotto","Italian",3,
+                """
+                Arborio rice slowly cooked with stock until creamy and tender.
+                Savoury mushrooms and parmesan bring umami depth in every bite.
+                A hug in a bowl, Italian-style.
+                """,
+                "Toast rice; add stock gradually; finish with parmesan.",
+                ("Rice (white, dry)",90,"g"), ("Mushroom",120,"g"),
+                ("Vegetable Stock",500,"ml"), ("Onion",50,"g"),
+                ("Olive Oil",10,"ml"), ("Parmesan",25,"g")
+              ),
+              R("Grilled Halloumi Garden Salad","Greek",1,
+                """
+                Squeaky-salty halloumi seared to golden and served with crisp greens and juicy tomatoes.
+                Lemon and olive oil add bright acidity and fresh fruitiness.
+                A satisfying, protein-rich salad.
+                """,
+                "Griddle halloumi; toss salad; dress with oil/lemon.",
+                ("Halloumi",100,"g"), ("Cucumber",100,"g"), ("Tomato",120,"g"),
+                ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Lettuce",80,"g")
+              ),
+              R("Spicy Penne Arrabbiata","Italian",2,
+                """
+                A fiery tomato sauce scented with garlic and chilli, clinging to every ridge of penne.
+                Bright, punchy and incredibly satisfying with a final gloss of olive oil.
+                Midweek pasta with weekend swagger.
+                """,
+                "Cook pasta; simmer garlicky chilli tomato sauce; combine.",
+                ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Garlic",8,"g"),
+                ("Chillies",4,"g"), ("Olive Oil",10,"ml"), ("Parsley",4,"g")
+              ),
+              R("Teriyaki Tofu Rice Bowl","Japanese",2,
+                """
+                Pan-seared tofu glazed in a sweet-savory sauce, served over warm rice and greens.
+                A satisfying plant-forward bowl with great texture and balance.
+                Add sesame seeds if you like.
+                """,
+                "Sear paneer; glaze; serve over rice with veg.",
+                ("Paneer",140,"g"), ("Soy Sauce",20,"ml"), ("Rice (white, dry)",80,"g"),
+                ("Broccoli",100,"g"), ("Vegetable Oil",5,"ml")
+              ),
+              R("Quinoa Power Buddha Bowl","American",2,
+                """
+                A nourishing bowl built on fluffy quinoa with chickpeas, spinach and sweet potato.
+                Olive oil adds richness while the veg bring colour and crunch.
+                Meal-prep friendly and deeply satisfying.
+                """,
+                "Cook quinoa; roast/sauté veg; assemble with dressing.",
+                ("Quinoa (dry)",70,"g"), ("Chickpeas (canned)",120,"g"),
+                ("Spinach",80,"g"), ("Sweet Potato",150,"g"), ("Olive Oil",10,"ml")
+              ),
+              R("Quick Prawn Fried Rice","Chinese",2,
+                """
+                Day-old rice fried hot with juicy prawns, peas and carrot.
+                Egg adds richness while soy ties everything together with savoury depth.
+                A proper takeaway classic at home.
+                """,
+                "Use day-old rice; fry with eggs, prawns, veg; season.",
+                ("Rice (white, dry)",90,"g"), ("Prawns",130,"g"),
+                ("Eggs",1,null), ("Peas",80,"g"), ("Carrot",50,"g"), ("Soy Sauce",20,"ml"),
+                ("Vegetable Oil",10,"ml")
+              ),
+              R("Simple Chicken Ramen Bowl","Japanese",3,
+                """
+                A comforting noodle soup with tender chicken, rich broth and a soft egg.
+                Spring onions add freshness while noodles make it hearty.
+                Slurpworthy from first sip to last.
+                """,
+                "Simmer stock; add noodles; top with chicken and egg.",
+                ("Vegetable Stock",500,"ml"), ("Chicken Breast",120,"g"),
+                ("Pasta (dry)",70,"g"), ("Eggs",1,null), ("Spring Onion",30,"g")
+              ),
+              R("Classic Tuna Niçoise Salad","French",2,
+                """
+                A composed salad of tuna, egg, potatoes and green veg with a lemony dressing.
+                Briny, bright and beautifully textural — a lunch that eats like a meal.
+                Serve slightly warm or fully chilled.
+                """,
+                "Boil eggs and potato; assemble with tuna and veg; dress.",
+                ("Tuna (raw)",120,"g"), ("Eggs",1,null), ("Potato",180,"g"),
+                ("Tomato",120,"g"), ("Olive Oil",10,"ml"), ("Lemon",20,"g"), ("Broccoli",80,"g")
+              ),
+              R("Crispy Chicken Katsu Sando","Japanese",2,
+                """
+                A Japanese-inspired sandwich of crunchy chicken cutlet and soft bread.
+                Creamy mayo brings richness while the crumb stays audibly crisp.
+                A serious upgrade to lunch.
+                """,
+                "Fry chicken; slice bread; assemble with mayo.",
+                ("Chicken Breast",150,"g"), ("Bread",100,"g"), ("Mayonnaise",20,"g"),
+                ("Vegetable Oil",10,"ml")
+              ),
+              R("Creamy Penne Alla Vodka (Style)","Italian",2,
+                """
+                A blushing tomato-cream sauce that clings beautifully to penne.
+                Silky, comforting and finished with parmesan for savoury depth.
+                Weeknight-easy and restaurant-worthy.
+                """,
+                "Cook pasta; simmer passata with cream; combine with parmesan.",
+                ("Pasta (dry)",90,"g"), ("Passata",220,"g"), ("Double Cream",60,"g"),
+                ("Parmesan",25,"g"), ("Olive Oil",10,"ml")
+              ),
+          };
+
         }
 
         // ---------- Helpers ----------
