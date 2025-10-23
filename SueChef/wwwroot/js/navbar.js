@@ -38,3 +38,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// This bit handles the burger menu opening up 
+const menuButton = document.getElementById('menuButton');
+const sideMenu = document.getElementById('sideMenu');
+const overlay = document.getElementById('overlay');
+
+menuButton.addEventListener('click', () => {
+    const isOpen = !sideMenu.classList.contains('-translate-x-full');
+    if (isOpen) {
+        sideMenu.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    } else {
+        sideMenu.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    }
+});
+
+// Close when clicking outside the menu
+overlay.addEventListener('click', () => {
+    sideMenu.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+});

@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SueChef.styles.css" asp-append-version="true" />
+
 </head>
 
 <body>
@@ -28,7 +29,7 @@
         </a>
 
 
-        <!-- Search on right -->
+        <!-- Search on right with the expanding search for web -->
         <div class="flex items-center ml-auto space-x-2">
             <div id="desktopSearch"
                 class="hidden md:block ml-2 overflow-hidden transition-all duration-300 ease-in-out w-0">
@@ -49,6 +50,18 @@
             </button>
         </div>
     </header>
+
+    <!-- This bit is the burger menu (for mobile in future, both for now) -->
+    <div id="sideMenu"
+        class="fixed top-0 left-0 h-full w-64 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 backdrop-blur-sm bg-white/70">
+        <nav class="flex flex-col mt-20 space-y-4 px-6 text-gray-700">
+            <a href="#" class="hover:bg-gray-200 px-4 py-2 rounded-md" style="color: inherit;">Recipes</a>
+            <a href="#" class="hover:bg-gray-200 px-4 py-2 rounded-md" style="color: inherit;">Chefs</a>
+            <a href="#" class="hover:bg-gray-200 px-4 py-2 rounded-md" style="color: inherit;">Cheeses</a>
+            <a href="#" class="hover:bg-gray-200 px-4 py-2 rounded-md" style="color: inherit;">Food Inspiration</a>
+            <a href="#" class="hover:bg-gray-200 px-4 py-2 rounded-md" style="color: inherit;">Just Food</a>
+        </nav>
+    </div>
 
     <!-- Hidden search bar bit (for mobile) -->
     <div id="mobileSearch"
