@@ -93,7 +93,7 @@ public class RecipeDetailsController : Controller
     [HttpPost]
     public async Task<IActionResult> Rate(int recipeId, int rating)
     {
-        int? currentUserId = HttpContext.Session.GetInt32("user_id"); 
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
 
         if (currentUserId == null) //If user is NOT logged in re-direct to log-in page with error message 
         {

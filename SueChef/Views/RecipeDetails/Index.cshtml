@@ -25,14 +25,14 @@
           <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
             <p class="text-sm font-bold text-gray-700">@Model.IndividualRecipe.AverageRating</p><p class="text-sm font-medium text-gray-700 underline">(@Model.IndividualRecipe.RatingCount)</p>
           </div>
-          <!-- Prep Time -->
+          <!-- Prep Time in mins (do we want hours for longer?)-->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Prep Time:</strong><span>@Model.IndividualRecipe.PrepTime mins</span></div>
-          <!-- Cook Time -->
+          <!-- Cook Time in mins (do we want hours for longer?) -->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Cook Time:</strong><span>@Model.IndividualRecipe.CookTime mins</span></div>
         </section>
 
 
-            <!-- Add to plan / Select Plan placeholders -->
+            <!-- Add to plan / Select Plan placeholders Non functional -->
 
       <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
         <p class="font-medium">Add to Meal Plan</p>
@@ -46,9 +46,7 @@
             <!-- Recipe Description -->
 
       <section class="leading-relaxed text-gray-700">
-        <p>
-        @Model.IndividualRecipe.Description
-        </p>
+        <p>@Model.IndividualRecipe.Description</p>
       </section>
               
             <!-- Toggle buttons for ingredients and nutrition -->
