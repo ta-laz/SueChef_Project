@@ -53,7 +53,7 @@ public class HomeController : Controller
         {
             Title = "All Recipes",
             CarouselId = "allRecipesCarousel",
-            Recipes = recipeCards.ToList()
+            Recipes = recipeCards.Skip(5).ToList()
         };
 
         var vegetarianRecipesCarousel = new RecipeCarouselViewModel
@@ -61,7 +61,7 @@ public class HomeController : Controller
             Title = "Vegetarian Meals",
             CarouselId = "vegCarousel", // Unique ID
                                         // Filter the existing recipeCards list where IsVegetarian is true
-            Recipes = recipeCards.Where(r => r.IsVegetarian).ToList()
+            Recipes = recipeCards.Where(r => r.IsVegetarian).Skip(5).ToList()
         };
 
         var dairyFreeRecipesCarousel = new RecipeCarouselViewModel
@@ -88,6 +88,14 @@ public class HomeController : Controller
             Recipes = recipeCards.Where(r => r.DifficultyLevel == 2).ToList()
         };
 
+        var hardRecipesCarousel = new RecipeCarouselViewModel
+        {
+            Title = "For the real SueChefs!",
+            CarouselId = "hardCarousel", // Unique ID
+                                         // Filter the existing recipeCards list where IsDairyFree is true
+            Recipes = recipeCards.Where(r => r.DifficultyLevel == 3).ToList()
+        };
+
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
         var AllViewModels = new HomePageViewModel
         {
@@ -97,7 +105,8 @@ public class HomeController : Controller
             VegetarianRecipesCarousel = vegetarianRecipesCarousel,
             DairyFreeRecipesCarousel = dairyFreeRecipesCarousel,
             EasyRecipesCarousel = easyRecipesCarousel,
-            MediumRecipesCarousel = mediumRecipesCarousel
+            MediumRecipesCarousel = mediumRecipesCarousel,
+            HardRecipesCarousel = hardRecipesCarousel
         };
 
         // Pass the list of view models into the View for this controller action
