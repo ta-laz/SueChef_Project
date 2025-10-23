@@ -1,7 +1,7 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
     <div
-        class="carousel-card flex flex-col hover:shadow-md snap-center w-full sm:w-1/2 lg:w-1/4 lg:w-[22%] bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0">
+        class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0">
 
         <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col h-full">
 
@@ -9,7 +9,7 @@
             <!-- Row one: picture -->
             <div class="w-full">
                 <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                    class="w-full sm:h-48 md:h-48 lg:h-52/4 object-cover" />
+                    class="w-full sm:h-36 md:h-36 lg:h-52 object-cover" />
             </div>
 
             <div class="flex-1 flex flex-col justify-between p-2">

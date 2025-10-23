@@ -25,10 +25,12 @@
 
             <!-- Carousel Track -->
             <div id="carousel-track"
-                class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-3 justify-center hide-scrollbar">
+                class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-3 justify-start hide-scrollbar px-[10%]">
                 @foreach (var recipe in verticalRecipes)
                 {
-                    <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                    <div class="carousel-card snap-center flex-shrink-0 w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                        <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                    </div>
                 }
             </div>
 
@@ -78,14 +80,22 @@
 
             function getCardWidth() {
                 const card = track.querySelector(".carousel-card");
-                return card ? card.offsetWidth + 12 : 0; // add small gap
+                return card ? card.offsetWidth + 16 : 0; // add small gap
             }
 
             function scrollCarousel(direction) {
                 const cardWidth = getCardWidth();
                 const visibleCards = getVisibleCards();
+
+                const peek = cardWidth / 2;
                 const scrollAmount = cardWidth * visibleCards;
-                track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+                // Calculate new target position
+                const newScrollLeft = Math.round((track.scrollLeft + direction * scrollAmount) / cardWidth) * cardWidth;
+
+                track.scrollTo({
+                    left: newScrollLeft - peek,
+                    behavior: "smooth"
+                });
             }
 
             btnRight.addEventListener("click", () => scrollCarousel(1));
