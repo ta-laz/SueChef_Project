@@ -54,7 +54,7 @@ public class PlaywrightRecipeTests : PageTest
 
         // And confirm its measurement appears as well 
         await Expect(Page.Locator("body"))
-            .ToContainTextAsync("150g");
+            .ToContainTextAsync("600g");
     }
 
 
