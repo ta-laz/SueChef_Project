@@ -4,18 +4,69 @@
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var recipe in ViewBag.Recipes)
-{
-  <div class="mb-6">
-    <h3 class="font-semibold">@recipe.Title</h3>
+<!-- Defines the Model variable and what type it should be -->
+@model SueChef.ViewModels.HomePageViewModel
 
-    <ul class="list-disc ml-6">
-      @foreach (var ri in recipe.RecipeIngredients)
-      {
-        <p>
-          @ri.Ingredient.Name;
-        </p>
-      }
-    </ul>
-  </div>
-}
+<body class="bg-orange-50">
+
+    <!-- FEATURED RECIPE SECTION -->
+    <section class="relative w-full max-w-6xl mx-auto mb-4 rounded-md overflow-hidden shadow-md">
+
+        <!-- Background image -->
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
+            class="block transition-all duration-300">
+            <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
+                class="w-full h-[70vh] object-cover" />
+
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t to-transparent">
+            </div>
+
+            <!-- Text Box -->
+            <div
+                class="absolute bottom-8 translate-x-4 bg-white/30 backdrop-blur-md rounded-md p-6 max-w-xl w-[90%] shadow-lg">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
+                    @Model.FeaturedRecipe.Title
+                </h2>
+                <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
+                    @Model.FeaturedRecipe.Description
+                </p>
+                <button
+                    class="inline-block bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-8 py-2 rounded-full transition">
+                    View Recipe
+                </button>
+            </div>
+        </a>
+    </section>
+
+
+
+    <!-- ALL VERTICAL RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-8">
+        <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
+    </section>
+
+    <!-- VEGETARIAN RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-8">
+        <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
+    </section>
+
+    <!-- HORIZONTAL RECIPES SECTION -->
+
+    <section class="mb-8">
+        <div class="max-w-6xl mx-auto mb-2">
+            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">5 Random Recipes</h2>
+        </div>
+        @{
+            var horizontalRecipes = Model.RecipeCards.Skip(5).Take(5);
+        }
+
+        @foreach (var recipe in horizontalRecipes)
+        {
+            <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+        }
+    </section>
+
+</body>
