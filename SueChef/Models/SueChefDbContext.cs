@@ -9,6 +9,8 @@ public class SueChefDbContext : DbContext
     public DbSet<Ingredient>? Ingredients { get; set; }
     public DbSet<RecipeIngredient>? RecipeIngredients { get; set; }
     public DbSet<User>? Users { get; set; }
+    public DbSet<MealPlan>? MealPlans { get; set; }
+    public DbSet<MealPlanRecipe>? MealPlanRecipes { get; set; }
 
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {
@@ -63,5 +65,6 @@ public class SueChefDbContext : DbContext
         modelBuilder.Entity<RecipeIngredient>()
             .HasIndex(ri => new { ri.RecipeId, ri.IngredientId })
             .IsUnique();
+        
     }
 }

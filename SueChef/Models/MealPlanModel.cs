@@ -11,6 +11,6 @@ public class MealPlan
     public string? MealPlanTitle { get; set; }
     public DateOnly? CreatedOn { get; set; }
     public DateOnly? UpdatedOn { get; set; }
-    public ICollection<MealPlanRecipes> MealPlanRecipes { get; set; } = new List<MealPlanRecipes>();
+    public ICollection<MealPlanRecipe> MealPlanRecipes { get; set; } = new List<MealPlanRecipe>();
 
 }

@@ -23,6 +23,6 @@ public class Recipe
     public string? RecipePicturePath { get; set; }
 
     public ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
-    public ICollection<MealPlanRecipes> MealPlanRecipes { get; set; } = new List<MealPlanRecipes>();
+    public ICollection<MealPlanRecipe> MealPlanRecipes { get; set; } = new List<MealPlanRecipe>();
 
 }

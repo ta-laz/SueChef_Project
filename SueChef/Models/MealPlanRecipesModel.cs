@@ -3,7 +3,7 @@ namespace SueChef.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class MealPlanRecipes
+public class MealPlanRecipe
 {
     public int Id { get; set; }
     public string? MealPlanId { get; set; }
