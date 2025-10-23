@@ -7,6 +7,8 @@ using System.Data;
 public class MealPlanViewModel
 {
     public int Id { get; set; }
+
+    [Required(ErrorMessage = "Title is required"), StringLength(200, ErrorMessage = "Don't be ridiculous, choose a shorter title")]
     public string? MealPlanTitle { get; set; }
     public int RecipeCount { get; set; }
     public DateOnly? UpdatedOn { get; set; }

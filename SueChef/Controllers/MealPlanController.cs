@@ -25,41 +25,74 @@ public class MealPlanController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var MealPlans = await _db.MealPlans.OrderByDescending(mp => mp.UpdatedOn).ToListAsync();
-        List<MealPlanViewModel> AllMealPlans = new List<MealPlanViewModel>();
-        foreach (MealPlan mealPlan in MealPlans)
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        var allMealPlans = await GetMealPlansForUserAsync(currentUserId);
+
+        var mealPlansPageViewModel = new MealPlansPageViewModel
         {
-            var mealPlanVM = new MealPlanViewModel
-            {
-                Id = mealPlan.Id,
-                MealPlanTitle = mealPlan.MealPlanTitle,
-                UpdatedOn = mealPlan.UpdatedOn,
-                RecipeCount = mealPlan.MealPlanRecipes.Count()
-            };
-            AllMealPlans.Add(mealPlanVM);
-        }
-        return View(AllMealPlans);
+            MealPlans = allMealPlans
+        };
+
+        return View(mealPlansPageViewModel);
     }
 
 
     [Route("/MealPlans")]
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(MealPlanViewModel mealPlanViewModel)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-        var mealPlan = new MealPlan();
 
-        if (await _db.MealPlans.AnyAsync(mp => mp.MealPlanTitle == mealPlanViewModel.MealPlanTitle))
+        if (ModelState.IsValid)
         {
-            ModelState.AddModelError("", "Meal Plan Title must be unique.");
-            return View("Index", mealPlanViewModel);
-        }
-        mealPlan.UserId = currentUserId;
-        mealPlan.MealPlanTitle = mealPlanViewModel.MealPlanTitle;
+            var exists = await _db.MealPlans
+                .AnyAsync(mp => mp.MealPlanTitle == mealPlanViewModel.MealPlanTitle && mp.UserId == currentUserId);
 
-        _db.MealPlans.Add(mealPlan);
-        await _db.SaveChangesAsync();
-        return View("Index");
+            if (exists)
+            {
+                ModelState.AddModelError("", "Meal Plan Title must be unique");
+            }
+            else
+            {
+                _db.MealPlans.Add(new MealPlan
+                {
+                    UserId = currentUserId,
+                    MealPlanTitle = mealPlanViewModel.MealPlanTitle
+                });
+
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+        }
+
+        // If validation fails or duplicate name
+        var allMealPlans = await GetMealPlansForUserAsync(currentUserId);
+
+        var viewModel = new MealPlansPageViewModel
+        {
+            MealPlans = allMealPlans,
+            MealPlanViewModel = mealPlanViewModel
+        };
+
+        return View("Index", viewModel);
+    }
+    
+    private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
+    {
+        var mealPlans = await _db.MealPlans
+            .Where(mp => mp.UserId == userId)
+            .OrderByDescending(mp => mp.UpdatedOn)
+            .Select(mp => new MealPlanViewModel
+            {
+                Id = mp.Id,
+                MealPlanTitle = mp.MealPlanTitle,
+                UpdatedOn = mp.UpdatedOn,
+                RecipeCount = mp.MealPlanRecipes.Count()
+            })
+            .ToListAsync();
+
+        return mealPlans;
     }
 
 }
