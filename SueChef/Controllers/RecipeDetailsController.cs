@@ -95,8 +95,9 @@ public class RecipeDetailsController : Controller
     {
         int? currentUserId = HttpContext.Session.GetInt32("user_id"); 
 
-        if (currentUserId == null) //If user is NOT logged in re-direct to log-in page - Do we want it to pop up in an error before re-directing? 
+        if (currentUserId == null) //If user is NOT logged in re-direct to log-in page with error message 
         {
+            TempData["ErrorMessage"] = "Please log in to rate recipes.";
             return RedirectToAction("New", "Sessions");
         }
         var existingRating = await _db.Ratings
