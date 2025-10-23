@@ -58,11 +58,11 @@ public class HomeController : Controller
 
         var vegetarianRecipesCarousel = new RecipeCarouselViewModel
         {
-        Title = "Vegetarian Meals",
-        CarouselId = "vegCarousel", // Unique ID
-        // Filter the existing recipeCards list where IsVegetarian is true
-        Recipes = recipeCards.Where(r => r.IsVegetarian).ToList() 
-    };
+            Title = "Vegetarian Meals",
+            CarouselId = "vegCarousel", // Unique ID
+                                        // Filter the existing recipeCards list where IsVegetarian is true
+            Recipes = recipeCards.Where(r => r.IsVegetarian).ToList()
+        };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
         var AllViewModels = new HomePageViewModel
