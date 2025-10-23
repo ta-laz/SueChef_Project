@@ -13,7 +13,7 @@
             <!-- Recipe Specific details  -->
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
-        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="@Model.IndividualRecipe.Servings" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
+        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
         <div><strong>Difficulty:</strong> @Model.IndividualRecipe.DifficultyLevel</div>
         <div><strong>Rating:</strong> *****</div>
         <div><strong>Prep Time:</strong> @Model.IndividualRecipe.PrepTime minutes</div>
@@ -50,7 +50,7 @@
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="p-2 mb-1 border-t-2 border-orange-700 italic">@i.Name @i.Quantity@i.Unit</p> 
+                <p class="p-2 mb-1 border-t-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
@@ -100,6 +100,19 @@
     const ingredientsTab = document.getElementById('ingredientsToggle');
     const nutritionTab = document.getElementById('nutritionToggle');
     const servingInput = document.getElementById('serving');
+    const baseServings = 4; 
+    const ingredientEls = Array.from(document.querySelectorAll('.ingredient')); //Creates an array of ingredient elements 
+
+    servingInput.addEventListener('input', () => { //When input changes execute the following
+      const servings = parseFloat(servingInput.value) || baseServings; //Turns the value into a float and defaults to base servings if not filled in. 
+
+      ingredientEls.forEach(el => { //Logic to take the quantity and multiply it by the servings, to scale 
+          const baseQty = parseFloat(el.dataset.baseQuantity);
+          const newQty = baseQty * servings;
+          el.querySelector('.ingredient-quantity').textContent = newQty; //Find the .ingredient-quantity class and update it to the new amount 
+      });
+    });
+
 
     // JS waiting for the button to be clicked 
     ingredientsBtn.addEventListener('click', () => {
