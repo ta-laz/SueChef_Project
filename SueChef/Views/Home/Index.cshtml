@@ -15,13 +15,13 @@
             var verticalRecipes = Model;
         }
 
-        <div class="relative max-w-6xl mx-auto">
+        <div id="batchCarousel" data-carousel class="relative max-w-6xl mx-auto">
 
             <!-- Left Button (&#8592 is the left arrow symbol) -->
             <button type="button" id="carousel-left"
                 class="absolute left-0 top-1/2 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
                 &#8592;
-            </button>
+            </button> 
 
             <!-- Carousel Track -->
             <div id="carousel-track"
@@ -64,49 +64,5 @@
             <partial name="_RecipeCardHorizontalPartial" model="recipe" />
         }
     </section>
-
-    <!-- JS for carousel buttons -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const track = document.getElementById("carousel-track");
-            const btnLeft = document.getElementById("carousel-left");
-            const btnRight = document.getElementById("carousel-right");
-
-            function getVisibleCards() {
-                if (window.innerWidth < 640) return 1;
-                if (window.innerWidth < 1024) return 2;
-                return 4;
-            }
-
-            function getCardWidth() {
-                const card = track.querySelector(".carousel-card");
-                return card ? card.offsetWidth + 16 : 0; // add small gap
-            }
-
-            function scrollCarousel(direction) {
-                const cardWidth = getCardWidth();
-                const visibleCards = getVisibleCards();
-
-                const peek = cardWidth / 2;
-                const scrollAmount = cardWidth * visibleCards;
-                // Calculate new target position
-                const newScrollLeft = Math.round((track.scrollLeft + direction * scrollAmount) / cardWidth) * cardWidth;
-
-                track.scrollTo({
-                    left: newScrollLeft - peek,
-                    behavior: "smooth"
-                });
-            }
-
-            btnRight.addEventListener("click", () => scrollCarousel(1));
-            btnLeft.addEventListener("click", () => scrollCarousel(-1));
-
-            window.addEventListener("resize", () => {
-                // Optional: snap realignment on resize
-                track.scrollTo({ left: 0, behavior: "smooth" });
-            });
-        });
-    </script>
-
 
 </body>
