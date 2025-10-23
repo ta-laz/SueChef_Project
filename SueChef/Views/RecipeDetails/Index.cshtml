@@ -77,18 +77,37 @@
         }
         </ul>
       </section>
-            <!-- Rate this recipe placeholder -->
 
+            <!-- Rate this recipe section  -->
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+              <div class="flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                  </svg>
+                    <span class="font-medium">@TempData["SuccessMessage"]</span>
+                </div>
+            }
+      
       <div class="text-center p-4 border-t">
-        <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
-        <div class="text-yellow-400 text-4xl sm:text-5xl md:text-6xl text-center mb-3"> <!-- New stars???? -->
-          &#9733;&#9733;&#9733;&#9733;&#9733;
-        </div>
+              <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
+              
+              <form method="post" action="@Url.Action("Rate", "RecipeDetails")" id="ratingForm">  
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />  <!-- Sends the recipe ID back to the controller so controller knows what is recipe is being rated -->
+                  <div class="rating-group flex justify-center flex-row-reverse text-5xl md:text-6xl text-center mb-3">
+                      @for (int i = 5; i >= 1; i--) //Generate 5 stars 
+                      {
+                          <input type="radio" id="star-@i" name="rating" value="@i" class="hidden peer" @(Model.IndividualRecipe.UserRating == i ? "checked" : "") required /> //Hidden radio buttons so we know what the user has rated 1-5 
+                          <label for="star-@i" class="peer-checked:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
+                      }
+                  </div>
+                  
+                  <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+              </form> 
 
-
- <!-- Chefs hats? Spoons? -->
+        
       </div>
-
     </main>
   </body>
 </html>
