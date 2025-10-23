@@ -9,13 +9,14 @@ function initCarousel(carouselId) {
 
     function getVisibleCards() {
         if (window.innerWidth < 640) return 1;
-        if (window.innerWidth < 1024) return 2;
+        if (window.innerWidth < 768) return 1.5;
+        if (window.innerWidth < 1024) return 3;
         return 4;
     }
 
     function getCardWidth() {
         const card = track.querySelector(".carousel-card");
-        return card ? card.offsetWidth + 16 : 0; // add small gap
+        return card ? card.offsetWidth + 24 : 0; // add small gap
     }
 
     // Clone first and last few cards for seamless looping

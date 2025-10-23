@@ -15,26 +15,26 @@
             var verticalRecipes = Model;
         }
 
-        <div id="batchCarousel" data-carousel class="relative max-w-6xl mx-auto">
+        <div id="batchCarousel" data-carousel class="relative bg-white max-w-6xl mx-auto">
 
             <!-- Left Button (&#8592 is the left arrow symbol) -->
             <button type="button"
-                class="carousel-left absolute left-0 top-1/2 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
+                class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
                 &#8592;
             </button> 
 
             <!-- Carousel Track -->
-            <div class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-3 justify-start hide-scrollbar px-[10%]">
+            <div class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[10%]">
                 @foreach (var recipe in verticalRecipes)
                 {
-                    <div class="carousel-card snap-center flex-shrink-0 w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                    <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.5%]">
                         <partial name="_RecipeCardVerticalPartial" model="recipe" />
                     </div>
                 }
             </div>
 
             <!-- Right Button (&#8594 is the right arrow symbol) -->
-            <button type="button" class="carousel-right absolute right-0 top-1/2 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
+            <button type="button" class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
             </button>
         </div>
     </section>
