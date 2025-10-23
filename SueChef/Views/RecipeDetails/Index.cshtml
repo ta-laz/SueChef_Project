@@ -104,7 +104,11 @@
     const ingredientEls = Array.from(document.querySelectorAll('.ingredient')); //Creates an array of ingredient elements 
 
     servingInput.addEventListener('input', () => { //When input changes execute the following
-      const servings = parseFloat(servingInput.value) || baseServings; //Turns the value into a float and defaults to base servings if not filled in. 
+      let servings = parseFloat(servingInput.value) || baseServings; //Turns the value into a float and defaults to base servings if not filled in. 
+      if (servings < 1 ) servings = 1; 
+      if (servings > 12) servings = 12;
+      servingInput.value = servings; 
+
 
       ingredientEls.forEach(el => { //Logic to take the quantity and multiply it by the servings, to scale 
           const baseQty = parseFloat(el.dataset.baseQuantity);
