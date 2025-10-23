@@ -17,7 +17,7 @@
 
 <body>
     <header
-        class="sticky top-0 border-b border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
+        class="sticky top-0 border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
         <!-- Burger menu on the left -->
         <button id="menuButton" class="p-2 rounded-md hover:bg-rose-900">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
@@ -28,7 +28,7 @@
 
         <!-- Logo in the Middle-->
         <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
-            <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-24 h-24">
+            <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36">
         </a>
 
 
@@ -68,14 +68,13 @@
 
     <!-- Hidden search bar bit (for mobile) -->
     <div id="mobileSearch"
-        class="hidden md:hidden fixed top-[60px] right-4 w-3/4 px-4 py-3 shadow-md z-40 rounded-lg backdrop-blur-sm bg-white/70">
-        @*rose-700/60 as an option for the dropdown I guess*@
+        class="hidden md:hidden fixed top-[60px] w-full px-4 py-3 shadow-md z-40 rounded-lg backdrop-blur-sm bg-white/70">
         <input type="text" placeholder="Search recipes..."
-            class="w-3/4 p-2 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
+            class="w-full p-2 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
     </div>
 
 
-    <div class="container">
+    <div class="container mx-auto">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
