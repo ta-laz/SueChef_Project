@@ -1,4 +1,4 @@
-namespace SueChef.Models;
+namespace SueChef.ViewModels;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

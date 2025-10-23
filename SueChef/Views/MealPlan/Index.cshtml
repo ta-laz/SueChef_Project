@@ -1,5 +1,7 @@
 <!-- VIEW FOR ALL MEAL PLANS -->
 
+@model SueChef.ViewModels.MealPlanViewModel
+
 <div class="justify-center">
     @* Error messages to display if post request unsuccessful *@
     <div asp-validation-summary="All"
@@ -40,6 +42,12 @@
     <button id="add-newplan" class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">
         Add Meal Plan
     </button>
+
+    @* List of All Meal Plans: *@
+    <div>
+        
+    </div>
+
 
     @* Script to unhide form when Creating new meal plan  *@
     <script>

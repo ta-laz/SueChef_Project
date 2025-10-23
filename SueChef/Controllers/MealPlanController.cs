@@ -26,7 +26,19 @@ public class MealPlanController : Controller
     public async Task<IActionResult> Index()
     {
         var MealPlans = await _db.MealPlans.OrderByDescending(mp => mp.UpdatedOn).ToListAsync();
-        return View();
+        List<MealPlanViewModel> AllMealPlans = new List<MealPlanViewModel>();
+        foreach (MealPlan mealPlan in MealPlans)
+        {
+            var mealPlanVM = new MealPlanViewModel
+            {
+                Id = mealPlan.Id,
+                MealPlanTitle = mealPlan.MealPlanTitle,
+                UpdatedOn = mealPlan.UpdatedOn,
+                RecipeCount = mealPlan.MealPlanRecipes.Count()
+            };
+            AllMealPlans.Add(mealPlanVM);
+        }
+        return View(AllMealPlans);
     }
 
 
