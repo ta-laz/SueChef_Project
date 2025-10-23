@@ -12,7 +12,8 @@
 </head>
 
 <body>
-    <header class="border-b border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
+    <header
+        class="sticky top-0 border-b border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
         <!-- Burger menu on the left -->
         <button id="menuButton" class="p-2 rounded-md hover:bg-rose-900">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
@@ -26,9 +27,15 @@
             <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-24 h-24">
         </a>
 
+
         <!-- Search on right -->
-        <div class="flex items-center ml-auto">
-            <button id="searchButton" class="p-2 rounded-full hover:bg-gray-100">
+        <div class="flex items-center ml-auto space-x-2">
+            <div id="desktopSearch"
+                class="hidden md:block ml-2 overflow-hidden transition-all duration-300 ease-in-out w-0">
+                <input type="text" placeholder="Search recipes..."
+                    class="p-2 w-full rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
+            </div>
+            <button id="searchButton" class="p-2 rounded-full hover:bg-rose-900">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24"
                     fill="currentColor">
                     <path
@@ -43,6 +50,13 @@
         </div>
     </header>
 
+    <!-- Hidden search bar bit (for mobile) -->
+    <div id="mobileSearch"
+        class="hidden md:hidden fixed top-[60px] right-4 w-3/4 px-4 py-3 shadow-md z-40 rounded-lg backdrop-blur-sm bg-white/70">
+        @*rose-700/60 as an option for the dropdown I guess*@
+        <input type="text" placeholder="Search recipes..."
+            class="w-3/4 p-2 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
+    </div>
 
 
     <div class="container">
@@ -56,9 +70,12 @@
             &copy; 2025 - SueChef - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="/js/navbar.js" asp-append-version="true"></script>
 </body>
 
 </html>
