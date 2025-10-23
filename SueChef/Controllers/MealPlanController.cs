@@ -31,9 +31,13 @@ public class MealPlanController : Controller
 
     [Route("/MealPlans")]
     [HttpPost]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(MealPlan mealPlan)
     {
-        return View(Index);
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        mealPlan.UserId = currentUserId;
+        _db.MealPlans.Add(mealPlan);
+        await _db.SaveChangesAsync();
+        return View("Index");
     }
 
 }
