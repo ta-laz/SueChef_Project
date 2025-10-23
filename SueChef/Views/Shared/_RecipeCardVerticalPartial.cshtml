@@ -1,87 +1,87 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
-    <div
-        class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0">
+<div
+    class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0 h-full h-[90%] sm:h-[90%] md:h-full lg:h-full">
 
-        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col h-full">
+    <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col ">
 
 
-            <!-- Row one: picture -->
-            <div class="w-full">
-                <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                    class="w-full sm:h-36 md:h-36 lg:h-52 object-cover" />
+        <!-- Row one: picture -->
+        <div class="w-full">
+            <img src="@Model.RecipePicturePath" alt="Recipe Picture"
+                class="w-full h-96 sm:h-96 md:h-52 lg:h-52 object-cover" />
+        </div>
+
+        <div class="flex-1 flex flex-col justify-between p-2">
+            <!-- Row two: title -->
+            <h3
+                class="text-xl text-gray-700 md:text-xl lg:text-xl line-clamp-2 font-medium hover:text-orange-800 transition mb-1">
+                @Model.Title
+            </h3>
+
+            <!-- Row three: stars -->
+            <div class="flex items-center gap-1 mb-1 text-yellow-400">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="w-4 h-4 md:w-4 md:h-4 lg:w-5 lg:h-5">
+                        <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.94.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
+                    </svg>
+                }
             </div>
 
-            <div class="flex-1 flex flex-col justify-between p-2">
-                <!-- Row two: title -->
-                <h3
-                    class="text-xl text-gray-700 md:text-xl lg:text-xl line-clamp-2 font-medium hover:text-orange-800 transition mb-1">
-                    @Model.Title
-                </h3>
-
-                <!-- Row three: stars -->
-                <div class="flex items-center gap-1 mb-1 text-yellow-400">
-                    @for (int i = 0; i < 5; i++)
-                    {
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            class="w-4 h-4 md:w-4 md:h-4 lg:w-5 lg:h-5">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.94.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
-                        </svg>
-                    }
-                </div>
-
-                <!-- Row four: ratings -->
-                <div class="flex items-center text-gray-700 mb-1 md:text-sm lg:text-md">
-                    947 ratings
-                </div>
+            <!-- Row four: ratings -->
+            <div class="flex items-center text-gray-700 mb-1 md:text-sm lg:text-md">
+                947 ratings
             </div>
+        </div>
 
-            <!-- Row five: categories bar -->
-            <div
-                class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-1 p-2">
-                <div class="flex w-full">
-                    <!-- Category -->
+        <!-- Row five: categories bar -->
+        <div
+            class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-1 p-2">
+            <div class="flex w-full">
+                <!-- Category -->
+                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                    <img src="images/flag.png" alt="Category"
+                        class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
+                </div>
+
+                <!-- Vegetarian -->
+                @if (@Model.IsVegetarian)
+                {
                     <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                        <img src="images/flag.png" alt="Category"
+                        <img src="images/vegetariancartoon.png" alt="Vegetarian"
                             class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
                     </div>
+                }
+            </div>
 
-                    <!-- Vegetarian -->
-                    @if (@Model.IsVegetarian)
-                    {
-                        <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                            <img src="images/vegetariancartoon.png" alt="Vegetarian"
-                                class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                            <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
-                        </div>
-                    }
-                </div>
-
-                <div class="flex w-full">
-                    <!-- Dairy Free -->
-                    @if (@Model.IsDairyFree)
-                    {
-                        <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                            <img src="images/dairyfree.png" alt="Dairy Free"
-                                class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                            <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
-                        </div>
-                    }
-
-                    <!-- Difficulty -->
+            <div class="flex w-full">
+                <!-- Dairy Free -->
+                @if (@Model.IsDairyFree)
+                {
                     <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                        <img src="~/images/chefshat.png" alt="Difficulty"
+                        <img src="images/dairyfree.png" alt="Dairy Free"
                             class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                        <span
-                            class="text-xs font-medium
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
+                    </div>
+                }
+
+                <!-- Difficulty -->
+                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                    <img src="~/images/chefshat.png" alt="Difficulty"
+                        class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
+                    <span
+                        class="text-xs font-medium
                     @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs" : "text-red-600 md:text-xs lg:text-xs")">
-                            @(Model.DifficultyLevel == 1 ? "Easy" :
-                                                        Model.DifficultyLevel == 2 ? "Medium" : "Hard")
-                        </span>
-                    </div>
+                        @(Model.DifficultyLevel == 1 ? "Easy" :
+                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
+                    </span>
                 </div>
             </div>
-        </a>
-    </div>
+        </div>
+    </a>
+</div>
