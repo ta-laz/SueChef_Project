@@ -12,14 +12,30 @@
     <section class="mb-8">
         <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
         @{
-            var verticalRecipes = Model.Take(5);
+            var verticalRecipes = Model;
         }
 
-        <div class="flex flex-wrap justify-center gap-4">
-            @foreach (var recipe in verticalRecipes)
-            {
-                <partial name="_RecipeCardVerticalPartial" model="recipe" />
-            }
+        <div class="relative">
+
+            <!-- Left Button (&#8592 is the left arrow symbol) -->
+            <button type="button" id="carousel-left"
+                class="absolute left-0 top-1/2 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
+                &#8592;
+            </button>
+
+            <!-- Carousel Track -->
+            <div id="carousel-track"
+                class="flex max-w-6xl mx-auto overflow-hidden scroll-smooth transition-all duration-500 gap-4 px-10">
+                @foreach (var recipe in verticalRecipes)
+                {
+                    <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                }
+            </div>
+
+            <!-- Right Button (&#8594 is the right arrow symbol) -->
+            <button type="button" id="carousel-right"
+                class="absolute right-0 top-1/2 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
+            </button>
         </div>
     </section>
 
@@ -35,5 +51,25 @@
         }
     </section>
 
+    <!-- JS for carousel buttons -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const track = document.getElementById("carousel-track");
+            const btnLeft = document.getElementById("carousel-left");
+            const btnRight = document.getElementById("carousel-right");
+
+            // One card width (including gap)
+            const cardWidth = track.querySelector("div").offsetWidth + 16; // adjust gap
+            const visibleCards = 4;
+
+            btnRight.addEventListener("click", () => {
+                track.scrollBy({ left: cardWidth * visibleCards, behavior: "smooth" });
+            });
+
+            btnLeft.addEventListener("click", () => {
+                track.scrollBy({ left: -cardWidth * visibleCards, behavior: "smooth" });
+            });
+        });
+    </script>
 
 </body>
