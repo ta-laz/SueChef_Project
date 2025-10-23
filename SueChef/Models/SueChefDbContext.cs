@@ -23,7 +23,7 @@ public class SueChefDbContext : DbContext
 
         // --- Chef → Recipe (one-to-many)
         modelBuilder.Entity<Chef>()
-            .HasMany(c => c.Recipes)
+            .HasMany(c => c.Recipe)
             .WithOne(r => r.Chef)
             .HasForeignKey(r => r.ChefId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -105,9 +105,5 @@ public class SueChefDbContext : DbContext
             b.HasIndex(mpr => new { mpr.MealPlanId, mpr.RecipeId }).IsUnique();
         });
 
-
-
     }
-
 }
-
