@@ -9,19 +9,40 @@
 
 <body class="bg-orange-50">
 
-    <section>
+    <!-- FEATURED RECIPE SECTION -->
+    <section class="relative w-full max-w-6xl mx-auto mb-4 rounded-md overflow-hidden shadow-md">
+
+        <!-- Background image -->
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
+            class="block transition-all duration-300">
+            <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
+                class="w-full h-[70vh] object-cover" />
+        </a>
+
+        <!-- Overlay -->
+        <div class="absolute left-2 inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+        </div>
+
+        <!-- Text Box -->
         <div
-            class="flex flex-col hover:shadow-md bg-white overflow-hidden transition-all duration-300  mb-2 flex-shrink-0 h-[90%] sm:h-[90%] md:h-[90%] lg:h-[20%]">
-                <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
-                    class="block transition-all duration-300">
-                    <div class="">
-                        <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
-                            class="w-full h-[90%] sm:h-[90%] md:h-[90%] lg:h-[20%] object-cover rounded-md border border-gray-300" />
-                </a>
-            </div>
+            class="absolute bottom-8 left-1/2 -translate-x-1/2 bg-white/30 backdrop-blur-md border border-white/40 rounded-md p-6 max-w-xl w-[90%] text-center shadow-lg">
+            <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
+                @Model.FeaturedRecipe.Title
+            </h2>
+            <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
+                @Model.FeaturedRecipe.Description
+            </p>
+            <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
+                class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2 rounded-full transition">
+                View Recipe
+            </a>
+        </div>
+
     </section>
 
-    <section class="mb-8">
+    <!-- VERTICAL RECIPE CAROUSEL SECTION -->
+
+    <section class="mb-4">
         <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
         @{
             var verticalRecipes = Model.RecipeCards;
@@ -64,6 +85,8 @@
             scrollbar-width: none;
         }
     </style>
+
+    <!-- HORIZONTAL RECIPES SECTION -->
 
     <section class="mb-8">
         <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
