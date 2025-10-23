@@ -12,13 +12,25 @@
 
             <!-- Recipe Specific details  -->
 
-      <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
-        <div class="@(Model.IndividualRecipe.DifficultyLevel == 1 ? "text-green-600 text-sm font-semibold" : Model.IndividualRecipe.DifficultyLevel == 2 ? "text-orange-500 text-sm font-semibold" : "text-red-600 text-sm font-semibold")"><strong class="text-gray-700">Difficulty:</strong> @(Model.IndividualRecipe.DifficultyLevel == 1 ? "Easy" : Model.IndividualRecipe.DifficultyLevel == 2 ? "Medium" : "Hard")</div>
-        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
-        <div><strong>Rating:</strong> *****</div>
-        <div><strong>Prep Time:</strong> @Model.IndividualRecipe.PrepTime minutes</div>
-        <div><strong>Cook Time:</strong> @Model.IndividualRecipe.CookTime minutes </div>
-      </section>
+        <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base">
+          <!-- Difficulty -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Difficulty:</strong><span class="@(Model.IndividualRecipe.DifficultyLevel == 1 ? "text-green-600 font-semibold" : Model.IndividualRecipe.DifficultyLevel == 2 ? "text-orange-500 font-semibold" : "text-red-600 font-semibold")">
+        @(Model.IndividualRecipe.DifficultyLevel == 1 ? "Easy" : Model.IndividualRecipe.DifficultyLevel == 2 ? "Medium" : "Hard")</span>
+          </div>
+          <!-- Serves -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Serves:</strong>
+            <input type="number" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
+          </div>
+          <!-- Rating -->
+          <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
+            <p class="text-sm font-bold text-gray-700">@Model.IndividualRecipe.AverageRating</p><p class="text-sm font-medium text-gray-700 underline">(@Model.IndividualRecipe.RatingCount)</p>
+          </div>
+          <!-- Prep Time -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Prep Time:</strong><span>@Model.IndividualRecipe.PrepTime mins</span></div>
+          <!-- Cook Time -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Cook Time:</strong><span>@Model.IndividualRecipe.CookTime mins</span></div>
+        </section>
+
 
             <!-- Add to plan / Select Plan placeholders -->
 
