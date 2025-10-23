@@ -40,7 +40,8 @@
                         </div>
                     </div>
 
-                    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
+                    <p
+                        class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
                         @Model.Description
                     </p>
 
@@ -82,10 +83,10 @@
                             <span
                                 class="text-xs font-medium
                     @(Model.DifficultyLevel == 1
-                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
-                                                                                                                                                                                                        : Model.DifficultyLevel == 2
-                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
-                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
+                                                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                        : Model.DifficultyLevel == 2
+                                                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
                                 @(Model.DifficultyLevel == 1 ? "Easy" :
                                                                 Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                             </span>
