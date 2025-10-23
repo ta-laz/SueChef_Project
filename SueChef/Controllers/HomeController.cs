@@ -32,7 +32,9 @@ public class HomeController : Controller
             Category = r.Category ?? "Uncategorized",
             DifficultyLevel = r.DifficultyLevel,
             IsVegetarian = r.IsVegetarian,
-            IsDairyFree = r.IsDairyFree
+            IsDairyFree = r.IsDairyFree,
+            PrepTime = r.PrepTime,
+            CookTime = r.CookTime
         })
         .ToListAsync();
 
@@ -96,6 +98,14 @@ public class HomeController : Controller
             Recipes = recipeCards.Where(r => r.DifficultyLevel == 3).ToList()
         };
 
+        var quickRecipesCarousel = new RecipeCarouselViewModel
+        {
+            Title = "Quick Meals",
+            CarouselId = "quickCarousel", // Unique ID
+                                          // Filter the existing recipeCards list where IsDairyFree is true
+            Recipes = recipeCards.Where(r => r.PrepTime + r.CookTime < 60).ToList()
+        };
+
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
         var AllViewModels = new HomePageViewModel
         {
@@ -106,7 +116,8 @@ public class HomeController : Controller
             DairyFreeRecipesCarousel = dairyFreeRecipesCarousel,
             EasyRecipesCarousel = easyRecipesCarousel,
             MediumRecipesCarousel = mediumRecipesCarousel,
-            HardRecipesCarousel = hardRecipesCarousel
+            HardRecipesCarousel = hardRecipesCarousel,
+            QuickRecipesCarousel = quickRecipesCarousel
         };
 
         // Pass the list of view models into the View for this controller action

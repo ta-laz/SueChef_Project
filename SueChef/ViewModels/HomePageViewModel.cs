@@ -12,4 +12,5 @@ public class HomePageViewModel
     public RecipeCarouselViewModel EasyRecipesCarousel { get; set; }
     public RecipeCarouselViewModel MediumRecipesCarousel { get; set; }
     public RecipeCarouselViewModel HardRecipesCarousel { get; set; }
+    public RecipeCarouselViewModel QuickRecipesCarousel { get; set; }
 }
