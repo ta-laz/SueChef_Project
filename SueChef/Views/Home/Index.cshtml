@@ -18,40 +18,44 @@
             <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
                 class="w-full h-[70vh] object-cover" />
 
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t to-transparent">
-        </div>
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t to-transparent">
+            </div>
 
-        <!-- Text Box -->
-        <div
-            class="absolute bottom-8 translate-x-4 bg-white/30 backdrop-blur-md rounded-md p-6 max-w-xl w-[90%] shadow-lg">
-            <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
-                @Model.FeaturedRecipe.Title
-            </h2>
-            <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
-                @Model.FeaturedRecipe.Description
-            </p>
-            <button
-                class="inline-block bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-8 py-2 rounded-full transition">
-                View Recipe
-            </button>
-        </div>
-</a>
+            <!-- Text Box -->
+            <div
+                class="absolute bottom-8 translate-x-4 bg-white/30 backdrop-blur-md rounded-md p-6 max-w-xl w-[90%] shadow-lg">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
+                    @Model.FeaturedRecipe.Title
+                </h2>
+                <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
+                    @Model.FeaturedRecipe.Description
+                </p>
+                <button
+                    class="inline-block bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-8 py-2 rounded-full transition">
+                    View Recipe
+                </button>
+            </div>
+        </a>
     </section>
 
     <!-- VERTICAL RECIPE CAROUSEL SECTION -->
 
-    <section class="mb-4">
-        <h2 class="text-2xl text-center font-semibold mb-4">Batch cooking winners</h2>
+    <section class="mb-8">
+
         @{
             var verticalRecipes = Model.RecipeCards;
         }
+        <div class="max-w-6xl mx-auto mb-2">
+            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">All Recipes</h2>
+        </div>
 
         <div id="batchCarousel" data-carousel class="relative bg-white max-w-6xl mx-auto">
 
+
             <!-- Left Button (&#8592 is the left arrow symbol) -->
             <button type="button"
-                class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">
+                class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 shadow-md">
                 &#8592;
             </button>
 
@@ -68,7 +72,7 @@
 
             <!-- Right Button (&#8594 is the right arrow symbol) -->
             <button type="button"
-                class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full p-3 z-10 shadow-md">&#8594;
+                class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 z-10 shadow-md">&#8594;
             </button>
         </div>
     </section>
@@ -88,7 +92,9 @@
     <!-- HORIZONTAL RECIPES SECTION -->
 
     <section class="mb-8">
-        <h2 class="text-2xl text-center font-bold mb-4">Trending now</h2>
+        <div class="max-w-6xl mx-auto mb-2">
+            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">5 Random Recipes</h2>
+        </div>
         @{
             var horizontalRecipes = Model.RecipeCards.Skip(5).Take(5);
         }
