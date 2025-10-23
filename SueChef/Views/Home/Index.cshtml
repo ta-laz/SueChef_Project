@@ -25,7 +25,7 @@
 
             <!-- Carousel Track -->
             <div id="carousel-track"
-                class="flex max-w-6xl mx-auto overflow-hidden scroll-smooth transition-all duration-500 gap-4 px-10">
+                class="relative flex max-w-6xl mx-auto overflow-hidden scroll-smooth transition-all duration-500 gap-3">
                 @foreach (var recipe in verticalRecipes)
                 {
                     <partial name="_RecipeCardVerticalPartial" model="recipe" />
@@ -53,6 +53,9 @@
 
     <!-- JS for carousel buttons -->
     <script>
+
+        // Mobile shows one vertical card only
+        let visibleCards = window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 4;
         document.addEventListener("DOMContentLoaded", function () {
             const track = document.getElementById("carousel-track");
             const btnLeft = document.getElementById("carousel-left");
@@ -60,7 +63,9 @@
 
             // One card width (including gap)
             const cardWidth = track.querySelector("div").offsetWidth + 16; // adjust gap
+
             const visibleCards = 4;
+
 
             btnRight.addEventListener("click", () => {
                 track.scrollBy({ left: cardWidth * visibleCards, behavior: "smooth" });
