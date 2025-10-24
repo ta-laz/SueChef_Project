@@ -77,7 +77,29 @@ public class MealPlanController : Controller
 
         return View("Index", viewModel);
     }
-    
+
+    [Route("/MealPlans/{id}")]
+    [HttpGet]
+    public async Task<IActionResult> Show(int id)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
+        var recipes = _db.MealPlanRecipes.Where(mpr => mpr.MealPlanId == id)
+            .Select(mp => new RecipeCardViewModel
+            {
+                Id = mp.RecipeId,
+                Title = mp.Recipe.Title,
+                Description = mp.Recipe.Description,
+                DifficultyLevel = mp.Recipe.DifficultyLevel,
+                IsVegetarian = mp.Recipe.IsVegetarian,
+                IsDairyFree = mp.Recipe.IsDairyFree,
+                RecipePicturePath = mp.Recipe.RecipePicturePath,
+                Category = mp.Recipe.Category
+            }).ToList();
+        return View(recipes);
+    }
+
+
     private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
     {
         var mealPlans = await _db.MealPlans
