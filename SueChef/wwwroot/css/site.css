@@ -45,7 +45,12 @@ body {
 .logo-text:hover {
   text-shadow:
     0 0 3px rgba(255, 255, 255, 0.5),
-    0 0 6px rgba(255, 255, 255, 0.3),
-    0 0 10px rgba(255, 255, 255, 0.2);
+    0 0 5px rgba(255, 255, 255, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.2);
   filter: brightness(1.1);
 }
+
+/* Used this to debug which element was sticking out too much on the side (it outlines all elements in red) */
+/* * {
+  outline: 1px solid red !important;
+} */

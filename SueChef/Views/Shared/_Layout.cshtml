@@ -126,16 +126,49 @@
 
 
     <div class="container mx-auto">
-        <main role="main" class="pb-3">
+        <main id ="MainContent" role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - SueChef - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <!-- Time for the footer now -->
+
+    <footer class="bg-gray-700 overscroll-none">
+    <div class="relative mx-auto max-w-[95vw] px-4 py-16 sm:px-6 lg:px-8 lg:pt-24">
+            <!-- This is the back to the top button -->
+            <div class="absolute right-6 top-4 sm:right-6 sm:top-6 lg:right-8 lg:top-8">
+                <a href="#MainContent"
+                    class="inline-block rounded-full bg-white p-2 !text-gray-700 hover:!text-white shadow-sm transition hover:bg-rose-700 sm:p-3 lg:p-4">
+                    <span class="sr-only">Back to top</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+            <div class="lg:flex lg:items-end lg:justify-between">
+                <div>
+                    <div class="flex justify-center text-white lg:justify-start">
+                        <span class="text-5xl font-semibold" style="font-family: 'Macondo Swash Caps', cursive;">
+                            SueChef
+                        </span>
+                    </div>
+
+                    <p class="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
+                        Helping you find recipes as delicious as your dinner guests. SueChef is not an invitation for you to take legal action. Bon appetit!
+                    </p>
+                </div>
+                <ul class="mt-12 flex flex-wrap justify-center gap-6 md:gap-8 lg:mt-0 lg:justify-end lg:gap-12">
+                    <li><a href="#" class="!text-white transition logo-text">About Us</a></li>
+                    <li><a href="#" class="!text-white transition logo-text">Careers</a></li>
+                    <li><a href="#" class="!text-white transition logo-text">Privacy</a></li>
+                    <li><a href="#" class="!text-white transition logo-text">Contact</a></li>
+                </ul>
+            </div>
+    </div>
     </footer>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
