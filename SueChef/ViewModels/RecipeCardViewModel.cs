@@ -3,7 +3,7 @@ namespace SueChef.ViewModels
 
     public class RecipeCardViewModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int DifficultyLevel { get; set; }
