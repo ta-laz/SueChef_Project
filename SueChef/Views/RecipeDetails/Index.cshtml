@@ -9,18 +9,35 @@
             <h2 class="text-lg text-gray-700">By @Model.IndividualRecipe.ChefName</h2>
         <!-- </div> -->
         </header>
+                    <!-- Recipe Description for boss sarah-->
+
+        <section class="leading-relaxed text-gray-700">
+          <p>@Model.IndividualRecipe.Description</p>
+          </section>
 
             <!-- Recipe Specific details  -->
 
-      <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap justify-between text-sm ">
-        <div class="@(Model.IndividualRecipe.DifficultyLevel == 1 ? "text-green-600 text-sm font-semibold" : Model.IndividualRecipe.DifficultyLevel == 2 ? "text-orange-500 text-sm font-semibold" : "text-red-600 text-sm font-semibold")"><strong class="text-gray-700">Difficulty:</strong> @(Model.IndividualRecipe.DifficultyLevel == 1 ? "Easy" : Model.IndividualRecipe.DifficultyLevel == 2 ? "Medium" : "Hard")</div>
-        <div><strong>Serves:</strong><input type="number" id="serving" name="serving" min="1" max="12" value="4" class="text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none"/></div>
-        <div><strong>Rating:</strong> *****</div>
-        <div><strong>Prep Time:</strong> @Model.IndividualRecipe.PrepTime minutes</div>
-        <div><strong>Cook Time:</strong> @Model.IndividualRecipe.CookTime minutes </div>
-      </section>
+        <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base">
+          <!-- Difficulty -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Difficulty:</strong><span class="@(Model.IndividualRecipe.DifficultyLevel == 1 ? "text-green-600 font-semibold" : Model.IndividualRecipe.DifficultyLevel == 2 ? "text-orange-500 font-semibold" : "text-red-600 font-semibold")">
+        @(Model.IndividualRecipe.DifficultyLevel == 1 ? "Easy" : Model.IndividualRecipe.DifficultyLevel == 2 ? "Medium" : "Hard")</span>
+          </div>
+          <!-- Serves -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Serves:</strong>
+            <input type="number" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
+          </div>
+          <!-- Rating -->
+          <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
+            <p class="text-sm font-bold text-gray-700">@Model.IndividualRecipe.AverageRating</p><p class="text-sm font-medium text-gray-700 ">(@Model.IndividualRecipe.RatingCount)</p>
+          </div>
+          <!-- Prep Time in mins (do we want hours for longer?)-->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Prep Time:</strong><span>@Model.IndividualRecipe.PrepTime mins</span></div>
+          <!-- Cook Time in mins (do we want hours for longer?) -->
+          <div class="flex items-center"><strong class="text-gray-700 mr-1">Cook Time:</strong><span>@Model.IndividualRecipe.CookTime mins</span></div>
+        </section>
 
-            <!-- Add to plan / Select Plan placeholders -->
+
+            <!-- Add to plan / Select Plan placeholders Non functional -->
 
       <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
         <p class="font-medium">Add to Meal Plan</p>
@@ -30,13 +47,6 @@
         <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
           Select Plan
         </button>
-      </section>
-            <!-- Recipe Description -->
-
-      <section class="leading-relaxed text-gray-700">
-        <p>
-        @Model.IndividualRecipe.Description
-        </p>
       </section>
               
             <!-- Toggle buttons for ingredients and nutrition -->
@@ -50,14 +60,14 @@
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="p-2 mb-1 border-t-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
+                <p class="p-2 mb-1 border-b-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0.00") Kcal</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
               <!-- Logic to split the method and change it into step: 1, etc. -->
@@ -77,18 +87,37 @@
         }
         </ul>
       </section>
-            <!-- Rate this recipe placeholder -->
 
+            <!-- Rate this recipe section  -->
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+              <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                  </svg>
+                    <span class="font-medium">@TempData["SuccessMessage"]</span>
+                </div>
+            }
+      
       <div class="text-center p-4 border-t">
-        <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
-        <div class="text-yellow-400 text-4xl sm:text-5xl md:text-6xl text-center mb-3"> <!-- New stars???? -->
-          &#9733;&#9733;&#9733;&#9733;&#9733;
-        </div>
+              <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
+              
+              <form method="post" action="@Url.Action("Rate", "RecipeDetails")" id="ratingForm">  
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />  <!-- Sends the recipe ID back to the controller so controller knows what is recipe is being rated -->
+                  <div class="rating-group flex justify-center flex-row-reverse text-5xl md:text-6xl text-center mb-3">
+                      @for (int i = 5; i >= 1; i--) //Generate 5 stars 
+                      {
+                          <input type="radio" id="star-@i" name="rating" value="@i" class="hidden peer" @(Model.IndividualRecipe.UserRating == i ? "checked" : "") required /> //Hidden radio buttons so we know what the user has rated 1-5 
+                          <label for="star-@i" class="peer-checked:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
+                      }
+                  </div>
+                  
+                  <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+              </form> 
 
-
- <!-- Chefs hats? Spoons? -->
+        
       </div>
-
     </main>
   </body>
 </html>
@@ -141,5 +170,13 @@
         ingredientsBtn.classList.add('bg-orange-100', 'text-orange-700');
         //see above notes if unsure 
     });
+      setTimeout(() => { //Short script to make the alert messages fade away after a few seconds
+        document.querySelectorAll('.alert-message').forEach(el => {
+          el.style.transition = 'opacity 1s ease';
+          el.style.opacity = '0';
+      setTimeout(() => el.remove(), 1000);
+    });
+    }, 4000);
+    
 </script>
 

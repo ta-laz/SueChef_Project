@@ -3,6 +3,9 @@ namespace SueChef.Models;
 using System.ComponentModel.DataAnnotations;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> main
 
 public class Rating
 {
@@ -16,6 +19,7 @@ public class Rating
     public int? UserId { get; set; }
 
     public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+<<<<<<< HEAD
 =======
 public class Rating
 {
@@ -31,6 +35,8 @@ public class Rating
     public User Users { get; set; } = null!;
 
     public DateTime CreatedOn { get; set; }
+>>>>>>> main
+=======
 >>>>>>> main
 
 

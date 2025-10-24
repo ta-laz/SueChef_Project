@@ -22,15 +22,23 @@ public class RecipeDetailsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(int id)
     {
-        var recipe = await _db.Recipes
+        var recipe = await _db.Recipes //Pulling recipes and FKs from the db
                                 .Include(r => r.Chef)
                                 .Include(r => r.RecipeIngredients)
                                     .ThenInclude(ri => ri.Ingredient)
                                 .FirstOrDefaultAsync(r => r.Id == id);
 
-        var ratings = await _db.Ratings.Where(r => r.RecipeId == id).ToListAsync();
-        double? avgRatings = ratings.Any() ? ratings.Average(r => r.Stars) : 0;
-        int TotalRatings = ratings.Count();
+        var ratings = await _db.Ratings.Where(r => r.RecipeId == id).ToListAsync(); //Pulling the ratings from the db
+        double? avgRatings = ratings.Any() ? ratings.Average(r => r.Stars) : 0; //Calculates the average for when we need it later if no ratings default to 0 
+        int TotalRatings = ratings.Count(); //Counts total ratings 
+
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        var userRating = currentUserId != null //If the user is logged in - get the rating from the database, otherwise use the default  
+                                        ? await _db.Ratings
+                                            .Where(r => r.RecipeId == id && r.UserId == currentUserId.Value)
+                                            .Select(r => r.Stars)
+                                            .FirstOrDefaultAsync()
+                                         : 0; //The default 
 
 
         if (recipe == null)
@@ -69,8 +77,10 @@ public class RecipeDetailsController : Controller
             CarbsPerServing = carbsPerServing,
             FatsPerServing = fatsPerServing,
             RatingCount = TotalRatings,
-            AverageRating = avgRatings
+            AverageRating = avgRatings,
+            UserRating = userRating //Passing all the ratings and user rating in the controller so we know if they have or haven't rated. 
         };
+
         var AllViewModels = new IndividualRecipePageViewModel
         {
             IndividualRecipe = viewModel
@@ -78,21 +88,46 @@ public class RecipeDetailsController : Controller
         return View(AllViewModels);
 
     }
+
+
     [HttpPost]
     public async Task<IActionResult> Rate(int recipeId, int rating)
     {
-        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+
+        if (currentUserId == null) //If user is NOT logged in re-direct to log-in page with error message 
+        {
+            TempData["ErrorMessage"] = "Please log in to rate recipes.";
+            return RedirectToAction("New", "Sessions");
+        }
+        var existingRating = await _db.Ratings
+                                            .FirstOrDefaultAsync(r => r.RecipeId == recipeId && r.UserId == currentUserId.Value); //Pulling the rating of the user that is logged in (if they're logged in)
+
+        if (existingRating != null) //If the rating exists and they rate it again it will update and display the following message.
+        {
+            existingRating.Stars = rating;
+            _db.Ratings.Update(existingRating);
+            TempData["SuccessMessage"] = "Your rating has been updated!";
+
+        }
+        else //otherwise 
+        {
+            var newRating = new Rating
+            {
+                RecipeId = recipeId,
+                Stars = rating,
+                UserId = currentUserId,
+            };
+            _db.Ratings.Add(newRating);
+            TempData["SuccessMessage"] = "Thanks for rating!"; //first time rating 
+
+        }
+
         var Recipe = await _db.Recipes.FindAsync(recipeId);
         if (Recipe == null) return NotFound();
-        var Rating = new Rating
-        {
-            RecipeId = recipeId,
-            Stars = rating,
-            UserId = currentUserId,
-        };
-        _db.Ratings.Add(Rating);
+
         await _db.SaveChangesAsync();
-        return RedirectToAction("Index", new { recipeId });
+        return RedirectToAction("Index", new { id = recipeId }); //Re load the page 
     }
 
 }
