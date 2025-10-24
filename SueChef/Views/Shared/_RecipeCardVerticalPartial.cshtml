@@ -49,7 +49,7 @@
                 {
                     <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                         <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">Dairy Free</span>
                     </div>
                 }
 
@@ -58,7 +58,7 @@
                 {
                     <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                         <i data-lucide="vegan" class="w-6 h-6 text-gray-500"></i>
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">Vegetarian</span>
                     </div>
                 }
             </div>
@@ -66,17 +66,17 @@
             <div class="flex w-full">
                 
                 <!-- Time -->
-                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                <div class="flex items-center flex-1 w-48 p-1 gap-1">
                     <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
-                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@roundedHours hrs @totalTime mins</span>
+                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">@roundedHours hrs @totalTime mins</span>
                 </div>
 
                 <!-- Difficulty -->
-                <div class="flex items-center flex-1 min-w-[15%] max-w-[50%] p-1 gap-1">
+                <div class="flex items-center flex-1  max-w-[50%] p-1 gap-1">
                     <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
                     <span
                         class="text-xs font-medium
-                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs" : "text-red-600 md:text-xs lg:text-xs")">
+                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs tracking-tight" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs tracking-tight" : "text-red-600 md:text-xs lg:text-xs tracking-tight")">
                         @(Model.DifficultyLevel == 1 ? "Easy" :
                                                 Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                     </span>
