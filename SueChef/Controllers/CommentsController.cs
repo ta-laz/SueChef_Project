@@ -8,43 +8,36 @@ namespace SueChef.Controllers;
 
 public class CommentController : Controller
 {
-    private readonly ILogger<CommentController> _logger;
     private readonly SueChefDbContext _db;
 
 
     public CommentController(ILogger<CommentController> logger, SueChefDbContext db)
     {
-        //_logger = logger;
         _db = db;
     }
 
-    [Route("/Recipe/{id}")]
+    [Route("/recipe/{recipeId}/comments", Name = "commentingOnRecipe")]
     [HttpPost]
-    public async Task<IActionResult> Comment(int userId,  int recipeId, string content)
+    public async Task<IActionResult> comments(int recipeId, string content)
     {
-        int currentUserId = userId;
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        if (!currentUserId.HasValue) return RedirectToAction("New", "Sessions");
 
-        if (currentUserId == null) //If user is NOT logged in re-direct to log-in page with error message 
-        {
-            TempData["ErrorMessage"] = "Please log in to comment on recipes.";
-            return RedirectToAction("New", "Sessions");
-        }
         if (string.IsNullOrWhiteSpace(content))
         {
             TempData["ErrorMessage"] = "Comment cannot be empty.";
-            return RedirectToAction("Index", new { id = recipeId });
+            return Redirect($"/recipe/{recipeId}");
         }
-        var comment = new Comment 
-        {
-            UserId = currentUserId,
-            CreatedOn = DateTime.UtcNow,
+
+        _db.Comments.Add(new Comment {
+            UserId = currentUserId.Value,
             RecipeId = recipeId,
-            Content = content
-        };
-        _db.Comments.Add(comment);
+            Content = content.Trim(),
+            CreatedOn = DateTime.UtcNow
+        });
         await _db.SaveChangesAsync();
-        
-        return RedirectToAction("Index", new { id = recipeId }); //Re load the page 
+
+        return Redirect($"/recipe/{recipeId}"); // back to details
     }
 }
 

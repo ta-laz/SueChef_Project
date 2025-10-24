@@ -18,7 +18,7 @@ public class RecipeDetailsController : Controller
         _db = db;
     }
 
-    [Route("/Recipe/{id}")]
+    [Route("/Recipe/{id}", Name = "RecipeDetails")]
     [HttpGet]
     public async Task<IActionResult> Index(int id)
     {
