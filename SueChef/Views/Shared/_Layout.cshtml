@@ -12,6 +12,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="~/js/carousel.js"></script>
 
+    @* Adding this in here so we can use the Logo name with font if we wanted to *@
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap" rel="stylesheet">
 
 </head>
 
@@ -27,9 +31,18 @@
         </button>
 
         <!-- Logo in the Middle-->
-        <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
-            <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36">
+        <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center select-none">
+            <span class="logo-text text-white text-3xl md:text-3xl lg:text-4xl"
+                style="font-family: 'Macondo Swash Caps', cursive;">
+                SueChef
+            </span>
         </a>
+        <!-- Old code if we wanted to use image instead of font -->
+
+        @* <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
+            <img src="~/images/suechef-name.png" alt="SueChef logo"
+                class="w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36 hover:brightness-200 hover:saturate-200">
+        </a> *@
 
 
         <!-- Search on right with the expanding search for web -->
@@ -48,8 +61,8 @@
             </button>
 
             <!-- Lil guy on the right -->
-            <button id="accountButton" class="p-2 rounded-full hover:bg-rose-900">
-                <img src="~/images/account-icon.png" alt="Account icon" class="w-7 h-7 object-contain" />
+            <button id="accountButton" class="p-1 rounded-full hover:bg-rose-900">
+                <img src="~/images/account-icon.png" alt="Account icon" class="w-8 h-8 object-contain" />
             </button>
         </div>
     </header>
