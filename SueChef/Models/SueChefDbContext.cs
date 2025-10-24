@@ -11,6 +11,8 @@ public class SueChefDbContext : DbContext
     public DbSet<User>? Users { get; set; }
     public DbSet<Rating>? Ratings { get; set; }
 
+    public DbSet<Comment>? Comments { get; set; }
+
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {
     }
