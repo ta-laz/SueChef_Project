@@ -2,16 +2,7 @@
   <body class="bg-orange-50 text-gray-700">
 
           </div>
-<div>
-  <h3>Comment on this recipe</h3>
-<form method="post"
-      asp-route="commentingOnRecipe"
-      asp-route-recipeId="@Model.IndividualRecipe.Id">
-  @Html.AntiForgeryToken()
-  <textarea name="content" required></textarea>
-  <button type="submit">Comment</button>
-</form>
-</div>
+
     </main>
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       <!-- Header card containing image and title -->
@@ -129,6 +120,18 @@
                   
                   <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
+  
+  
+    <h3>Comment on this recipe</h3>
+<form method="post"
+      asp-route="commentingOnRecipe"
+      asp-route-recipeId="@Model.IndividualRecipe.Id">
+  @Html.AntiForgeryToken()
+  <textarea name="content" required></textarea>
+  <button type="submit">Comment</button>
+</form>
+</div>
+  <div>
 
 
   </body>
