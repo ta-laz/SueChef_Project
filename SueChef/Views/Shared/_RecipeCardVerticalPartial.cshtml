@@ -41,6 +41,28 @@
         <!-- Row five: tags bar -->
         <div
             class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-400 py-1 p-2 max-h-18">
+            
+            <div class="flex w-full">
+
+                <!-- Time -->
+                <div class="flex items-center flex-1 w-48 p-1 gap-1">
+                    <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
+                    <span
+                        class="text-xs md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">@Model.TotalTimeDisplay</span>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="flex items-center flex-1  max-w-[50%] p-1 gap-1">
+                    <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
+                    <span
+                        class="text-xs font-medium
+                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs tracking-tight" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs tracking-tight" : "text-red-600 md:text-xs lg:text-xs tracking-tight")">
+                        @(Model.DifficultyLevel == 1 ? "Easy" :
+                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
+                    </span>
+                </div>
+            </div>
+
             <div class="flex w-full">
 
                 <!-- Dairy Free -->
@@ -62,25 +84,6 @@
                 }
             </div>
 
-            <div class="flex w-full">
-
-                <!-- Time -->
-                <div class="flex items-center flex-1 w-48 p-1 gap-1">
-                    <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
-                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">@Model.TotalTimeDisplay</span>
-                </div>
-
-                <!-- Difficulty -->
-                <div class="flex items-center flex-1  max-w-[50%] p-1 gap-1">
-                    <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
-                    <span
-                        class="text-xs font-medium
-                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs tracking-tight" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs tracking-tight" : "text-red-600 md:text-xs lg:text-xs tracking-tight")">
-                        @(Model.DifficultyLevel == 1 ? "Easy" :
-                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
-                    </span>
-                </div>
-            </div>
         </div>
     </a>
 </div>
