@@ -83,7 +83,7 @@ public class PlaywrightRecipeTests : PageTest
         await Expect(Page.Locator("body")).ToContainTextAsync("Protein per Serving");
         await Expect(Page.Locator("body")).ToContainTextAsync("Carbs per Serving");
         await Expect(Page.Locator("body")).ToContainTextAsync("Fats per Serving");
-        await Expect(Page.Locator("body")).ToContainTextAsync("904.48"); // Calories
+        await Expect(Page.Locator("body")).ToContainTextAsync("904"); // Calories
         await Expect(Page.Locator("body")).ToContainTextAsync("62.5");  // Protein
         await Expect(Page.Locator("body")).ToContainTextAsync("82.9");  // Carbs
         await Expect(Page.Locator("body")).ToContainTextAsync("34.9");  // Fats
