@@ -16,54 +16,75 @@ function initCarousel(carouselId) {
 
     function getCardWidth() {
         const card = track.querySelector(".carousel-card");
-        return card ? card.offsetWidth + 24 : 0; // add small gap
+        return card ? card.offsetWidth + 24 : 0; // +24 for the gap
     }
 
-    // Clone first and last few cards for seamless looping
-    const cards = Array.from(track.children);
+    // --- Clone cards for infinite loop ---
+    let originalCards = Array.from(track.children);
     const visible = getVisibleCards();
 
-    cards.slice(-visible).forEach(card => {
-        const clone = card.cloneNode(true);
-        track.insertBefore(clone, track.firstChild);
-    });
-    cards.slice(0, visible).forEach(card => {
-        const clone = card.cloneNode(true);
-        track.appendChild(clone);
-    });
+    // Avoid double cloning if reinitialized
+    if (!track.dataset.cloned) {
+        // Clone last 'visible' cards to the start
+        originalCards.slice(-visible).forEach(card => {
+            const clone = card.cloneNode(true);
+            clone.classList.add("clone");
+            track.insertBefore(clone, track.firstChild);
+        });
 
-    // Start at the "real" first card
+        // Clone first 'visible' cards to the end
+        originalCards.slice(0, visible).forEach(card => {
+            const clone = card.cloneNode(true);
+            clone.classList.add("clone");
+            track.appendChild(clone);
+        });
+
+        track.dataset.cloned = "true";
+    }
+
+    // Update references
+    const allCards = Array.from(track.children);
+    const totalCards = allCards.length;
+    const realCards = totalCards - visible * 2;
     const cardWidth = getCardWidth();
+
+    // Start at the first *real* card
     track.scrollLeft = cardWidth * visible;
 
+    // --- Smooth scroll on button click ---
     function scrollCarousel(direction) {
-        const cardWidth = getCardWidth();
-        const visibleCards = getVisibleCards();
-        const scrollAmount = cardWidth * visibleCards;
-
+        const scrollAmount = cardWidth * Math.floor(getVisibleCards());
         track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
-
-        setTimeout(() => {
-            if (track.scrollLeft >= cardWidth * (cards.length + visible)) {
-                track.scrollLeft = cardWidth * visible;
-            } else if (track.scrollLeft <= 0) {
-                track.scrollLeft = cardWidth * cards.length;
-            }
-        }, 600);
     }
 
     btnRight.addEventListener("click", () => scrollCarousel(1));
     btnLeft.addEventListener("click", () => scrollCarousel(-1));
 
+    // --- Infinite looping logic ---
+    track.addEventListener("scroll", () => {
+        const maxScroll = cardWidth * (visible + realCards);
+        const minScroll = 0;
+
+        // If scrolled past last real card, jump back to start
+        if (track.scrollLeft >= maxScroll) {
+            track.scrollLeft = cardWidth * visible;
+        }
+        // If scrolled before first real card, jump to end
+        else if (track.scrollLeft <= minScroll) {
+            track.scrollLeft = cardWidth * (visible + realCards - 1);
+        }
+    });
+
+    // --- Handle resize dynamically ---
     window.addEventListener("resize", () => {
-        track.scrollTo({ left: cardWidth * visible, behavior: "auto" });
+        const newCardWidth = getCardWidth();
+        track.scrollLeft = newCardWidth * visible;
     });
 }
 
-// Automatically initialize any carousel container found
+// --- Auto-init all carousels ---
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-carousel]").forEach(container => {
-        const id = container.id;
-        initCarousel(id);
+        initCarousel(container.id);
     });
 });
