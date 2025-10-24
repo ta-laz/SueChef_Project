@@ -3,30 +3,55 @@
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
-        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 object-cover rounded-lg shadow md:w-[75%] md:mx-auto"/>
+        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
             <h1 class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
-            <div class="md:w-[75%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
+            <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
-              <div class="inline-flex rounded-lg overflow-hidden shadow">
+              <div class="inline-flex rounded-lg shadow">
 
                <!-- Quick Add Button -->
-              <button class="bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold">Quick Add</button>
+              <button class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold">Quick Add</button>
 
               <!-- Dropdown Toggle -->
               <div class="relative">
-                <button id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center">
+                <button  id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div id="dropdownMenu" class="hidden absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded shadow-lg z-10">
-                  <button class="block w-full text-left px-4 py-2 text-sm hover:bg-orange-100">Test plan</button>
-                  <button class="block w-full text-left px-4 py-2 text-sm hover:bg-orange-100">Test plan 2</button>
-                  <button class="block w-full text-left px-4 py-2 text-sm hover:bg-orange-100">Test plan 3 </button>
-                </div>
+                <ul id="dropdownMenu" class="hidden absolute right-0 mt-1 w-48 bg-orange-50 border border-orange-300 rounded-lg shadow-lg z-10 max-h-64">
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 1</span>
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 2</span>
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 3</span>
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 4</span>
+                    </label>
+                  </li>
+                </ul>
               </div>
             </div>
         <!-- </div> -->
@@ -69,14 +94,15 @@
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="tracking-wide p-2 mb-1 border-b-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
+                <p class="tracking-wide p-2 mb-1 border-b-2 border-orange-700 ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity font-bold">@i.Quantity</span><strong>@i.Unit</strong> @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 text-center font-bold italic">Nutrition: Per serving<span id="fatsPerServing"></span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 ">Calories: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 ">Protein: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 ">Carbs: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 ">Fats: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
               <!-- Logic to split the method and change it into step: 1, etc. -->
@@ -91,7 +117,7 @@
         <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
         @foreach(var step in steps)
         { 
-          <p class="">Step @counter: @step.Trim()</p>
+          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>
           counter++;
         }
         </ul>

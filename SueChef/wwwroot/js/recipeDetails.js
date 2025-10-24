@@ -1,6 +1,6 @@
 //Saving all the IDs to variables so it knows where to go
 document.addEventListener("DOMContentLoaded", () => {
-    
+
 const ingredientsBtn = document.getElementById('ingredientsButton');
 const nutritionBtn = document.getElementById('nutritionButton');
 const ingredientsTab = document.getElementById('ingredientsToggle');
@@ -9,18 +9,26 @@ const servingInput = document.getElementById('serving');
 const baseServings = 4;
 const ingredientEls = Array.from(document.querySelectorAll('.ingredient')); //Creates an array of ingredient elements 
 
-servingInput.addEventListener('input', () => { //When input changes execute the following
-    let servings = parseFloat(servingInput.value) || baseServings; //Turns the value into a float and defaults to base servings if not filled in. 
-    if (servings < 1) servings = 1;
-    if (servings > 12) servings = 12;
-    servingInput.value = servings;
+servingInput.addEventListener('input', () => {
+    let rawValue = servingInput.value.trim(); //Saving the serving input to variable 
+    
+    // Only try to parse if it’s not empty
+    let servings = parseFloat(rawValue);
+    
+    // If input is empty or invalid, don’t reset yet
+    if (!isNaN(servings)) {
+        // Limit to between 1 and 12
+        if (servings < 1) servings = 1;
+        if (servings > 12) servings = 12;
+        servingInput.value = servings; // update input only if valid number
 
-
-    ingredientEls.forEach(el => { //Logic to take the quantity and multiply it by the servings, to scale 
-        const baseQty = parseFloat(el.dataset.baseQuantity);
-        const newQty = baseQty * servings;
-        el.querySelector('.ingredient-quantity').textContent = newQty; //Find the .ingredient-quantity class and update it to the new amount 
-    });
+        // Update ingredient quantities
+        ingredientEls.forEach(el => {
+            const baseQty = parseFloat(el.dataset.baseQuantity);
+            const newQty = baseQty * servings;
+            el.querySelector('.ingredient-quantity').textContent = newQty;
+        });
+    }
 });
 servingInput.dispatchEvent(new Event('input')); //Run the script on load so that it starts as 4 
 
@@ -55,26 +63,28 @@ setTimeout(() => { //Short script to make the alert messages fade away after a f
     });
 }, 4000);
 
-    const dropdownButton = document.getElementById("dropdownButton");
-    const dropdownMenu = document.getElementById("dropdownMenu");
+const dropdownButton = document.getElementById("dropdownButton");
+const dropdownMenu = document.getElementById("dropdownMenu");
 
-    if (dropdownButton && dropdownMenu) {
-        dropdownButton.addEventListener("click", (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle("hidden");
-        });
+if (dropdownButton && dropdownMenu) {
+    // Toggle dropdown on button click
+    dropdownButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle("hidden");
+    });
 
-        document.addEventListener("click", () => {
-            if (!dropdownMenu.classList.contains("hidden")) {
-                dropdownMenu.classList.add("hidden");
-            }
-        });
+    // Prevent clicks inside the menu from closing it
+    dropdownMenu.addEventListener("click", (e) => {
+        e.stopPropagation(); // <--- This is key
+    });
 
-        dropdownMenu.querySelectorAll("button").forEach((option) => {
-            option.addEventListener("click", () => {
-                dropdownMenu.classList.add("hidden");
-            });
-        });
-    }
+    // Close dropdown if clicking anywhere else
+    document.addEventListener("click", () => {
+        if (!dropdownMenu.classList.contains("hidden")) {
+            dropdownMenu.classList.add("hidden");
+        }
+    });
+}
+
 });
 
