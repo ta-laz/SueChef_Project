@@ -2,20 +2,19 @@ namespace SueChef.Models;
 
 using System.ComponentModel.DataAnnotations;
 
+
 public class Rating
 {
     [Key]
-    public int RatingId { get; set; }
-    
+    public int Id { get; set; }
+
     public int RecipeId { get; set; }
-    public Recipe Recipes { get; set; } = null!;
+    public Recipe Recipe { get; set; } = null!;
 
-    public int? stars { get; set; }
-    public int UserId { get; set; }
+    public int? Stars { get; set; }
+    public int? UserId { get; set; }
 
-    public User Users { get; set; } = null!;
-
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
 
 }

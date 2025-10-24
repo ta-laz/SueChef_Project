@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SueChef.Models;
@@ -11,9 +12,11 @@ using SueChef.Models;
 namespace SueChef.Migrations
 {
     [DbContext(typeof(SueChefDbContext))]
-    partial class SueChefDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023143905_rating-table")]
+    partial class ratingtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,11 +76,11 @@ namespace SueChef.Migrations
 
             modelBuilder.Entity("SueChef.Models.Rating", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RatingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RatingId"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
@@ -85,15 +88,20 @@ namespace SueChef.Migrations
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("Stars")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<int?>("stars")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RatingId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UsersId");
 
                     b.ToTable("Ratings");
                 });
@@ -211,11 +219,21 @@ namespace SueChef.Migrations
 
             modelBuilder.Entity("SueChef.Models.Rating", b =>
                 {
-                    b.HasOne("SueChef.Models.Recipe", "Recipe")
+                    b.HasOne("SueChef.Models.Recipe", "Recipes")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Recipe");
+                    b.HasOne("SueChef.Models.User", "Users")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipes");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SueChef.Models.Recipe", b =>

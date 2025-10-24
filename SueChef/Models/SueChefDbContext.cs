@@ -9,6 +9,7 @@ public class SueChefDbContext : DbContext
     public DbSet<Ingredient>? Ingredients { get; set; }
     public DbSet<RecipeIngredient>? RecipeIngredients { get; set; }
     public DbSet<User>? Users { get; set; }
+    public DbSet<Rating>? Ratings { get; set; }
 
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {
@@ -41,6 +42,21 @@ public class SueChefDbContext : DbContext
             b.HasIndex(ri => new { ri.RecipeId, ri.IngredientId }).IsUnique();
         });
 
+        // --- rating table 
+        modelBuilder.Entity<Rating>(r =>
+        {
+            r.HasOne(ra => ra.Recipe)
+            .WithMany(r => r.Ratings)
+            .HasForeignKey(ri => ri.RecipeId)
+            .HasForeignKey(ri => ri.UserId);
+        });
+    
+
+
+
+
+        
+        
         // --- Recipe table configuration
         modelBuilder.Entity<Recipe>()
             .Property(r => r.Title)
@@ -63,5 +79,8 @@ public class SueChefDbContext : DbContext
         modelBuilder.Entity<RecipeIngredient>()
             .HasIndex(ri => new { ri.RecipeId, ri.IngredientId })
             .IsUnique();
+
+
+
     }
 }
