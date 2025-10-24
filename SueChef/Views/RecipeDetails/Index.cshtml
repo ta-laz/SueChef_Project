@@ -60,14 +60,14 @@
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="p-2 mb-1 border-t-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
+                <p class="p-2 mb-1 border-b-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-t-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
               <!-- Logic to split the method and change it into step: 1, etc. -->
