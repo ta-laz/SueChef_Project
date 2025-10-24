@@ -7,48 +7,112 @@
     <title>@ViewData["Title"] - SueChef</title>
     <script type="importmap"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SueChef.styles.css" asp-append-version="true" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="~/js/carousel.js"></script>
 
+
 </head>
 
 <body>
-    <header>
-        <form asp-controller="Sessions" asp-action="Signout" method="post" class="d-inline">
-            @Html.AntiForgeryToken()
-            <button type="submit" data-testid="signout" id="signout"
-                class="block w-full text-left px-4 py-2 appearance-none hover:bg-gray-100">Sign
-                Out</button>
-        </form>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-rose-800 border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand items-center text-orange-100" asp-area="" asp-controller="Home" asp-action="Index">SueChef</a>
-                <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                                asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sessions"
-                                asp-action="Signout">Sign Out</a>
-                        </li>
-                    </ul>
-                </div>
+    <header class="sticky top-0 border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
+
+        <!-- Burger menu on the left -->
+        <button id="menuButton" class="p-2 rounded-md hover:bg-rose-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Logo in the Middle-->
+        <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
+            <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36">
+        </a>
+
+
+        <!-- Search on right with the expanding search for web -->
+        <div class="flex items-center ml-auto space-x-2">
+            <div id="desktopSearch"
+                class="hidden md:block ml-2 overflow-hidden transition-all duration-300 ease-in-out w-0">
+                <input type="text" placeholder="Search recipes..."
+                    class="p-2 w-full rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
             </div>
-        </nav>
+            <button id="searchButton" class="p-2 rounded-full hover:bg-rose-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24"
+                    fill="currentColor">
+                    <path
+                        d="M10 2a8 8 0 105.293 14.293l4.707 4.707a1 1 0 001.414-1.414l-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z" />
+                </svg>
+            </button>
+
+            <!-- Lil guy on the right -->
+            <button id="accountButton" class="p-2 rounded-full hover:bg-rose-900">
+                <img src="~/images/account-icon.png" alt="Account icon" class="w-7 h-7 object-contain" />
+            </button>
+        </div>
     </header>
-    <div class="container">
+
+    <!-- This bit is the burger menu for the main website navigation (for mobile in future, both for now) -->
+    <div id="sideMenu"
+        class="fixed top-0 left-0 h-full w-64 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 backdrop-blur-sm bg-white/80 overflow-y-auto">
+        <nav class="flex flex-col mt-20 space-y-4 px-6">
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Seasonal Recipes</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Vegetarian Recipes</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Allergy Friendly Recipes</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Quick Meals</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Budget Meals</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Baked Goods</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Our Chefs</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Request A Recipe</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Subscriptions</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Newsletters</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Download Our App</a>
+        </nav>
+    </div>
+
+    <!-- Adding logic here to show logged in and logged out users different things -->
+    @{
+            var userId = Context.Session.GetInt32("user_id");
+    }
+    <!-- This bit is the burger menu for account page stuff (for mobile in future, both for now) -->
+    <div id="sideMenuAccount"
+        class="fixed top-0 right-0 h-full w-64 transform translate-x-full transition-transform duration-300 ease-in-out z-40 backdrop-blur-sm bg-white/70">
+        <nav class="flex flex-col mt-20 space-y-4 px-6 text-gray-700">
+
+        @if (userId != null){
+
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">My Shopping List</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">My Meal Plans</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Favourites</a>
+            <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Account Settings</a>
+            <form asp-controller="Sessions" asp-action="Signout" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" data-testid="signout" id="signout"
+                    class="block w-full text-left hover:bg-rose-800 hover:text-white text-gray-700 px-4 py-2 rounded-md">Sign
+                    Out</button>
+                </form>
+            }
+            else{
+                <a asp-controller="Sessions" asp-action="New"
+                    class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Sign In</a>
+
+                <a asp-controller="Users" asp-action="New"
+                    class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Register</a>
+            }
+        </nav>
+    </div>
+
+    <!-- Hidden search bar bit (for mobile) -->
+    <div id="mobileSearch"
+        class="hidden md:hidden fixed top-[60px] w-full px-4 py-3 shadow-md z-40 rounded-lg backdrop-blur-sm bg-white/70">
+        <input type="text" placeholder="Search recipes..."
+            class="w-full p-2 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
+    </div>
+
+
+    <div class="container mx-auto">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -59,10 +123,12 @@
             &copy; 2025 - SueChef - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="/js/navbar.js" asp-append-version="true"></script>
 </body>
 
 </html>
