@@ -63,7 +63,7 @@ setTimeout(() => { //Short script to make the alert messages fade away after a f
     });
 }, 4000);
 
-const dropdownButton = document.getElementById("dropdownButton");
+const dropdownButton = document.getElementById("dropdownButton");  //Dropdown for add to meal plan on recipe page 
 const dropdownMenu = document.getElementById("dropdownMenu");
 
 if (dropdownButton && dropdownMenu) {
@@ -75,7 +75,7 @@ if (dropdownButton && dropdownMenu) {
 
     // Prevent clicks inside the menu from closing it
     dropdownMenu.addEventListener("click", (e) => {
-        e.stopPropagation(); // <--- This is key
+        e.stopPropagation(); 
     });
 
     // Close dropdown if clicking anywhere else
