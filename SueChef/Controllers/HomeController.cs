@@ -35,8 +35,11 @@ public class HomeController : Controller
             IsDairyFree = r.IsDairyFree,
             PrepTime = r.PrepTime,
             CookTime = r.CookTime,
-            RatingCount = r.Ratings.Count(),
-            AverageRating = r.Ratings.Any() ? r.Ratings.Average(rt => rt.Stars) : 0
+
+            RatingCount = _db.Ratings.Count(rt => rt.RecipeId == r.Id && rt.Stars.HasValue),
+            AverageRating = _db.Ratings
+            .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
+            .Average(rt => (double?)rt.Stars) ?? 0
         })
         .ToListAsync();
 
