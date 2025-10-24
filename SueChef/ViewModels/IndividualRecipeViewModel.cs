@@ -10,12 +10,18 @@ namespace SueChef.ViewModels
         public string? RecipePicturePath { get; set; }
         public string? ChefName { get; set; }
         public int? CookTime {get; set; }
-        public int? PrepTime {get; set;}
+        public int? PrepTime { get; set; }
+        
         public List<IndividualRecipeIngredientViewModel>? Ingredients { get; set; }
         public int Servings {get; set;}
         public decimal CaloriesPerServing {get; set;}
         public decimal ProteinPerServing { get; set; }
         public decimal CarbsPerServing { get; set; }
         public decimal FatsPerServing { get; set; }
+
+        public double? AverageRating { get; set; }
+        public int RatingCount { get; set; }
+
+        public int? UserRating { get; set; }
     }
 }

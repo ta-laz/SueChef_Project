@@ -31,9 +31,9 @@ public class Tests : PageTest
     [Test]
     public async Task IndexpageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
     {
-        // go to the MakersBnB Index page
+        // go to the SueChef Index page
         // NB: update the localhost port with the one your server is running on
-        // expect the page title to contain "Index Page - MakersBnB"
+        // expect the page title to contain "SueChef"
         await Expect(Page).ToHaveTitleAsync(new Regex("Home Page"));
     }
 }
