@@ -5,6 +5,7 @@ public class HomePageViewModel
     public IEnumerable<RecipeCardViewModel> RecipeCards { get; set; } = new List<RecipeCardViewModel>();
     public FeaturedRecipeViewModel TopFeaturedRecipe { get; set; }
     public FeaturedRecipeViewModel MiddleFeaturedRecipe { get; set; }
+    public FeaturedRecipeViewModel BottomFeaturedRecipe { get; set; }
     
     // Updated properties for distinct carousels
     public RecipeCarouselViewModel AllRecipesCarousel { get; set; } 

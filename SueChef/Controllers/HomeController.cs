@@ -63,6 +63,18 @@ public class HomeController : Controller
             })
             .FirstOrDefaultAsync();
 
+        var bottomFeaturedRecipe = await _db.Recipes
+        .Where(r => r.Id == 2)
+        .Select(r => new FeaturedRecipeViewModel
+        {
+            Id = r.Id,
+            Title = r.Title,
+            Description = r.Description,
+            RecipePicturePath = r.RecipePicturePath,
+            Category = r.Category
+        })
+        .FirstOrDefaultAsync();
+
         var allRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "All Recipes",
@@ -124,6 +136,7 @@ public class HomeController : Controller
             RecipeCards = recipeCards,
             TopFeaturedRecipe = topFeaturedRecipe,
             MiddleFeaturedRecipe = middleFeaturedRecipe,
+            BottomFeaturedRecipe = bottomFeaturedRecipe,
             AllRecipesCarousel = allRecipesCarousel,
             VegetarianRecipesCarousel = vegetarianRecipesCarousel,
             DairyFreeRecipesCarousel = dairyFreeRecipesCarousel,
