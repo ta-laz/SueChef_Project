@@ -99,6 +99,21 @@ public class MealPlanController : Controller
         return View(recipes);
     }
 
+    [Route("/MealPlans/{id}")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddRecipe(int id, int recipeId)
+    {
+        _db.MealPlanRecipes.Add(new MealPlanRecipe
+        {
+            MealPlanId = id,
+            RecipeId = recipeId
+        });
+        await _db.SaveChangesAsync();
+        string MealPlanTitle = await _db.MealPlanRecipes.Where(mp => mp.MealPlanId == id).Select(mp => mp.MealPlan.MealPlanTitle).FirstOrDefaultAsync();
+        TempData["Success"] = $"Recipe added to meal plan {MealPlanTitle}";
+        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
 
     private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
     {
