@@ -1,8 +1,8 @@
 @model SueChef.ViewModels.RecipeCarouselViewModel
 
 <section class="mb-8">
-    <div class="max-w-6xl mx-auto mb-2">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4 sm:ml-2 tracking-normal">
+    <div class="max-w-6xl mx-auto mb-2 px-5 sm:px-6 md:px-0">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-normal">
             @Model.Title
         </h2>
     </div>
@@ -17,7 +17,7 @@
 
         <!-- Carousel Track -->
         <div
-            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[10%]">
+            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 justify-start hide-scrollbar px-[2%] sm:px-[10%] md:px-[10%]">
             @foreach (var recipe in Model.Recipes)
             {
                 <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.25%]">
