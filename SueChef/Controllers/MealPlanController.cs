@@ -85,16 +85,27 @@ public class MealPlanController : Controller
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
         var recipes = _db.MealPlanRecipes.Where(mpr => mpr.MealPlanId == id)
-            .Select(mp => new RecipeCardViewModel
+            .Select(mpr => new RecipeCardViewModel
             {
-                Id = mp.RecipeId,
-                Title = mp.Recipe.Title,
-                Description = mp.Recipe.Description,
-                DifficultyLevel = mp.Recipe.DifficultyLevel,
-                IsVegetarian = mp.Recipe.IsVegetarian,
-                IsDairyFree = mp.Recipe.IsDairyFree,
-                RecipePicturePath = mp.Recipe.RecipePicturePath,
-                Category = mp.Recipe.Category
+                Id = mpr.RecipeId,
+                Title = mpr.Recipe.Title,
+                Description = mpr.Recipe.Description,
+                DifficultyLevel = mpr.Recipe.DifficultyLevel,
+                IsVegetarian = mpr.Recipe.IsVegetarian,
+                IsDairyFree = mpr.Recipe.IsDairyFree,
+                RecipePicturePath = mpr.Recipe.RecipePicturePath,
+                Category = mpr.Recipe.Category,
+                MealPlanRecipeId = mpr.Id,
+                Ingredients = mpr.Recipe.RecipeIngredients.Select(ri => new IndividualRecipeIngredientViewModel
+                {
+                    Name = ri.Ingredient.Name,
+                    Calories = ri.Ingredient.Calories,
+                    Carbs = ri.Ingredient.Carbs,
+                    Protein = ri.Ingredient.Protein,
+                    Fats = ri.Ingredient.Fat,
+                    Quantity = ri.Quantity,
+                    Unit = ri.Unit
+                }).ToList(),
             }).ToList();
         return View(recipes);
     }
@@ -113,6 +124,19 @@ public class MealPlanController : Controller
         string MealPlanTitle = await _db.MealPlanRecipes.Where(mp => mp.MealPlanId == id).Select(mp => mp.MealPlan.MealPlanTitle).FirstOrDefaultAsync();
         TempData["Success"] = $"Recipe added to meal plan {MealPlanTitle}";
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
+
+    [Route("/MealPlans/DeleteRecipe/{id}")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteRecipe(int id)
+    {
+        var recipe = _db.MealPlanRecipes.Find(id);
+        if (recipe == null)
+            return NotFound();
+        _db.MealPlanRecipes.Remove(recipe);
+        await _db.SaveChangesAsync();
+        return RedirectToAction("Show", new { id = recipe.MealPlanId });
     }
 
     private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
