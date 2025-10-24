@@ -13,6 +13,8 @@ namespace SueChef.ViewModels
         public string? Category { get; set; }
         public int PrepTime { get; set; }
         public int CookTime { get; set; }
+        public double? AverageRating { get; set; }
+        public int RatingCount { get; set; }
 
         public string TotalTimeDisplay
         {

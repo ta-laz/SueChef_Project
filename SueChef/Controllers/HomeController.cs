@@ -26,15 +26,17 @@ public class HomeController : Controller
         .Select(r => new RecipeCardViewModel
         {
             Id = r.Id,
-            Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
+            Title = r.Title,
             Description = r.Description,
-            RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
-            Category = r.Category ?? "Uncategorized",
+            RecipePicturePath = r.RecipePicturePath,
+            Category = r.Category,
             DifficultyLevel = r.DifficultyLevel,
             IsVegetarian = r.IsVegetarian,
             IsDairyFree = r.IsDairyFree,
             PrepTime = r.PrepTime,
-            CookTime = r.CookTime
+            CookTime = r.CookTime,
+            RatingCount = r.Ratings.Count(),
+            AverageRating = r.Ratings.Any() ? r.Ratings.Average(rt => rt.Stars) : 0
         })
         .ToListAsync();
 
