@@ -120,7 +120,7 @@
         <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
         @foreach(var step in steps)
         { 
-          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>
+          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
           counter++;
         }
         </ul>
@@ -147,7 +147,7 @@
                       @for (int i = 5; i >= 1; i--) //Generate 5 stars 
                       {
                           <input type="radio" id="star-@i" name="rating" value="@i" class="hidden peer" @(Model.IndividualRecipe.UserRating == i ? "checked" : "") required /> //Hidden radio buttons so we know what the user has rated 1-5 
-                          <label for="star-@i" class="peer-checked:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
+                          <label for="star-@i" class="peer-checked:text-yellow-400 peer-hover:text-yellow-400 [&:hover~label]:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
                       }
                   </div>
                   
