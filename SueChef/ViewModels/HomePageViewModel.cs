@@ -3,7 +3,8 @@ namespace SueChef.ViewModels;
 public class HomePageViewModel
 {
     public IEnumerable<RecipeCardViewModel> RecipeCards { get; set; } = new List<RecipeCardViewModel>();
-    public FeaturedRecipeViewModel FeaturedRecipe { get; set; }
+    public FeaturedRecipeViewModel TopFeaturedRecipe { get; set; }
+    public FeaturedRecipeViewModel MiddleFeaturedRecipe { get; set; }
     
     // Updated properties for distinct carousels
     public RecipeCarouselViewModel AllRecipesCarousel { get; set; } 

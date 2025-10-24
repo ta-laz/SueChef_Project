@@ -9,9 +9,9 @@
 
 <body class="bg-orange-50">
 
-    <!-- FEATURED RECIPE SECTION -->
+    <!-- TOP FEATURED RECIPE SECTION -->
     <section class="mb-8">
-        <partial name="_FeaturedRecipePartial" model="Model.FeaturedRecipe" />
+        <partial name="_FeaturedRecipePartial" model="Model.TopFeaturedRecipe" />
     </section>
 
     <!-- EASY RECIPES CAROUSEL SECTION -->
@@ -36,6 +36,11 @@
 
     <section class="mb-8">
         <partial name="_RecipeCarouselPartial" model="Model.QuickRecipesCarousel" />
+    </section>
+
+    <!-- MIDDLE FEATURED RECIPE SECTION -->
+    <section class="mb-8">
+        <partial name="_FeaturedRecipePartial" model="Model.MiddleFeaturedRecipe" />
     </section>
     
     <!-- DAIRY FREE RECIPES CAROUSEL SECTION -->

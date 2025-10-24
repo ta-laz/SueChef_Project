@@ -39,15 +39,27 @@ public class HomeController : Controller
         .ToListAsync();
 
         // Only retrieve the data you want from the Recipes table and convert them into 1 FeaturedRecipeViewModel Object:
-        var featuredRecipe = await _db.Recipes
+        var topFeaturedRecipe = await _db.Recipes
             .Where(r => r.Id == 41)
             .Select(r => new FeaturedRecipeViewModel
             {
                 Id = r.Id,
-                Title = r.Title ?? "Untitled Recipe", // The ?? is a 'null coalescing operator', means that if there is no title, use "Untitled Recipe"
+                Title = r.Title,
                 Description = r.Description,
-                RecipePicturePath = r.RecipePicturePath ?? "/images/bolognese.png",
-                Category = r.Category ?? "Uncategorized"
+                RecipePicturePath = r.RecipePicturePath,
+                Category = r.Category
+            })
+            .FirstOrDefaultAsync();
+
+        var middleFeaturedRecipe = await _db.Recipes
+            .Where(r => r.Id == 47)
+            .Select(r => new FeaturedRecipeViewModel
+            {
+                Id = r.Id,
+                Title = r.Title,
+                Description = r.Description,
+                RecipePicturePath = r.RecipePicturePath,
+                Category = r.Category
             })
             .FirstOrDefaultAsync();
 
@@ -110,7 +122,8 @@ public class HomeController : Controller
         var AllViewModels = new HomePageViewModel
         {
             RecipeCards = recipeCards,
-            FeaturedRecipe = featuredRecipe,
+            TopFeaturedRecipe = topFeaturedRecipe,
+            MiddleFeaturedRecipe = middleFeaturedRecipe,
             AllRecipesCarousel = allRecipesCarousel,
             VegetarianRecipesCarousel = vegetarianRecipesCarousel,
             DairyFreeRecipesCarousel = dairyFreeRecipesCarousel,
