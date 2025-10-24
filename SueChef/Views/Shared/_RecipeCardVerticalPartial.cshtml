@@ -1,5 +1,11 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
+@{
+    int totalTime = @Model.CookTime + @Model.PrepTime;
+    double hours = totalTime / 60; 
+    double roundedHours = Math.Floor(hours);
+}
+
 <div
     class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-400 rounded-md mb-2 flex-shrink-0 h-full h-[90%] sm:h-[90%] md:h-full lg:h-full">
 
@@ -33,15 +39,19 @@
             </div>
         </div>
 
-        <!-- Row five: categories bar -->
+        <!-- Row five: tags bar -->
         <div
             class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-400 py-1 p-2 max-h-18">
             <div class="flex w-full">
-                <!-- Category -->
-                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                    <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
-                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
-                </div>
+                
+                <!-- Dairy Free -->
+                @if (@Model.IsDairyFree)
+                {
+                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                        <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
+                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
+                    </div>
+                }
 
                 <!-- Vegetarian -->
                 @if (@Model.IsVegetarian)
@@ -54,17 +64,15 @@
             </div>
 
             <div class="flex w-full">
-                <!-- Dairy Free -->
-                @if (@Model.IsDairyFree)
-                {
-                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                        <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
-                    </div>
-                }
+                
+                <!-- Time -->
+                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                    <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
+                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@roundedHours hrs @totalTime mins</span>
+                </div>
 
                 <!-- Difficulty -->
-                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                <div class="flex items-center flex-1 min-w-[15%] max-w-[50%] p-1 gap-1">
                     <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
                     <span
                         class="text-xs font-medium
@@ -77,6 +85,3 @@
         </div>
     </a>
 </div>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>lucide.createIcons();</script>
