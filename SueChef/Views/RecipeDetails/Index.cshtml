@@ -9,6 +9,11 @@
             <h2 class="text-lg text-gray-700">By @Model.IndividualRecipe.ChefName</h2>
         <!-- </div> -->
         </header>
+                    <!-- Recipe Description for boss sarah-->
+
+        <section class="leading-relaxed text-gray-700">
+          <p>@Model.IndividualRecipe.Description</p>
+          </section>
 
             <!-- Recipe Specific details  -->
 
@@ -42,11 +47,6 @@
         <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
           Select Plan
         </button>
-      </section>
-            <!-- Recipe Description -->
-
-      <section class="leading-relaxed text-gray-700">
-        <p>@Model.IndividualRecipe.Description</p>
       </section>
               
             <!-- Toggle buttons for ingredients and nutrition -->
