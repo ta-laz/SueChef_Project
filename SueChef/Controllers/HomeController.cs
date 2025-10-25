@@ -148,14 +148,29 @@ public class HomeController : Controller
             .ToList()
         };
 
-        List<int> recipeCategories = new List<int> { 1, 2, 3 };
-        var recipeCategoriesCarousel = new RecipeCarouselViewModel
+        var easyCategory = await _db.Recipes
+        .Where(r => r.Id == 40)
+        .Select(r => new CategoryCardViewModel
         {
-            Title = "Recipe Categories",
-            CarouselId = "recipeCategoriesCarousel",
-            Recipes = recipeCards
-            .Where(r => recipeCategories.Contains(r.Id))
-            .ToList()
+            Id = r.Id,
+            Text = "New to cooking? Try these!",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var mediumCategory = await _db.Recipes
+        .Where(r => r.Id == 35)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "For those that want a bit more of a challenge",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var categoryCarouselViewModel = new CategoryCarouselViewModel
+        {
+            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory }
         };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
@@ -174,7 +189,7 @@ public class HomeController : Controller
             QuickRecipesCarousel = quickRecipesCarousel,
             HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel,
             MostRatedRecipesCarousel = mostRatedRecipesCarousel,
-            RecipeCategoriesCarousel = recipeCategoriesCarousel
+            CategoryCarouselViewModel = categoryCarouselViewModel
         };
 
         // Pass the list of view models into the View for this controller action

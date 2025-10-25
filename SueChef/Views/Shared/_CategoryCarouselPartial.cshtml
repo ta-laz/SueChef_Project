@@ -1,4 +1,4 @@
-@model SueChef.ViewModels.RecipeCarouselViewModel
+@model SueChef.ViewModels.CategoryCarouselViewModel
 
 <section class="mb-8">
     <div class="max-w-6xl mx-auto mb-2 px-5 sm:px-6 md:px-0">
@@ -18,10 +18,10 @@
         <!-- Carousel Track -->
         <div
             class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-8 sm:gap-4 md:gap-2 justify-start hide-scrollbar px-[15%] sm:px-[10%] md:px-[10%]">
-            @foreach (var recipe in Model.Recipes)
+            @foreach (var category in Model.Categories)
             {
                 <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.25%]">
-                    <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                    <partial name="_CategoryCardPartial" model="category" />
                 </div>
             }
         </div>

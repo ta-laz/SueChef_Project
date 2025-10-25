@@ -7,7 +7,7 @@ public class HomePageViewModel
     public FeaturedRecipeViewModel MiddleFeaturedRecipe { get; set; }
     public FeaturedRecipeViewModel BottomFeaturedRecipe { get; set; }
 
-    public RecipeCarouselViewModel RecipeCategoriesCarousel { get; set; }
+    public CategoryCarouselViewModel CategoryCarouselViewModel { get; set; }
     public RecipeCarouselViewModel AllRecipesCarousel { get; set; }
     public RecipeCarouselViewModel VegetarianRecipesCarousel { get; set; }
     public RecipeCarouselViewModel DairyFreeRecipesCarousel { get; set; }
