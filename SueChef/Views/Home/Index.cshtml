@@ -85,7 +85,7 @@
             <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">Don't know what to make? Here's a random selection</h2>
         </div>
         @{
-            var horizontalRecipes = Model.RecipeCards.Skip(5).Take(5);
+            var horizontalRecipes = Model.RecipeCards.Take(5);
         }
 
         @foreach (var recipe in horizontalRecipes)
