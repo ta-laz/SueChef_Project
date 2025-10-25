@@ -226,7 +226,7 @@ public class HomeController : Controller
             Id = r.Id,
             Text = "Our users can't stop rating these recipes",
             RecipePicturePath = r.RecipePicturePath,
-            Category = ""
+            Category = "mostrated"
         })
         .FirstOrDefaultAsync();
 

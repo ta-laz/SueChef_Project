@@ -59,7 +59,7 @@ public class CategoriesController : Controller
                 break;
             case "highlyrated":
                 pageTitle = "Highest Rated Recipes";
-                
+
                 // Compute average rating and join directly in the DB
                 var topRated = await _db.Ratings
                     .Where(rt => rt.Stars.HasValue)
@@ -78,6 +78,20 @@ public class CategoriesController : Controller
 
                 query = _db.Recipes.Where(r => topIds.Contains(r.Id));
                 break;
+            case "mostrated":
+                pageTitle = "Most Rated Recipes";
+
+                var mostRatedIds = await _db.Ratings
+                    .Where(rt => rt.Stars.HasValue)
+                    .GroupBy(rt => rt.RecipeId)
+                    .OrderByDescending(g => g.Count())
+                    .Select(g => g.Key)
+                    .Take(10)
+                    .ToListAsync();
+
+                query = _db.Recipes.Where(r => mostRatedIds.Contains(r.Id));
+                break;
+
             default:
                 pageTitle = "All Recipes";
                 break;
