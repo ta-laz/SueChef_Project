@@ -107,6 +107,22 @@ public class MealPlanController : Controller
                     Unit = ri.Unit
                 }).ToList(),
             }).ToList();
+        var mealPlan = _db.MealPlans
+        .Where(mp => mp.Id == id)
+        .Select(mp => new MealPlanViewModel
+        {
+            Id = mp.Id,
+            MealPlanTitle = mp.MealPlanTitle
+        })
+        .FirstOrDefault();
+
+    var viewModel = new SingleMealPlanPageViewModel
+    {
+        RecipesList = recipes,
+        MealPlan = mealPlan
+    };
+
+    return View(viewModel);
         return View(recipes);
     }
 
