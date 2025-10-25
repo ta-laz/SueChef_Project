@@ -19,30 +19,65 @@
 
                     <!-- Recipe Title -->
                     <h3
-                        class="text-2xl text-gray-700 md:text-2xl lg:text-2xl font-medium hover:text-orange-800 transition ">
+                        class="text-xl text-gray-700 md:text-2xl lg:text-2xl font-medium hover:text-orange-800 transition ">
                         @Model.Title
                     </h3>
 
                     <!-- Stars -->
-                    <div class="flex gap-4 items-center mt-2 text-yellow-400">
-                        <div class="flex items-center gap-1 text-yellow-400">
-                            @for (int i = 0; i < 5; i++)
+                    <div class="flex items-center gap-1 mb-1 text-yellow-400">
+                        @{
+                            double avg = Model.AverageRating ?? 0;
+                            int fullStars = (int)Math.Floor(avg);
+                            bool hasHalfStar = (avg - fullStars) >= 0.5;
+                        }
+
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= fullStars)
                             {
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-star-icon lucide-star">
-                        <path
-                            d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-                    </svg>
+                                <!-- full star -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-yellow-400 stroke-yellow-400"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                                </svg>
                             }
-                        </div>
+                            else if (i == fullStars + 1 && hasHalfStar)
+                            {
+                                <!-- half star -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-yellow-400 stroke-yellow-400"
+                                    viewBox="0 0 24 24">
+                                    <defs>
+                                        <linearGradient id="half">
+                                            <stop offset="50%" stop-color="currentColor" />
+                                            <stop offset="50%" stop-color="transparent" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path fill="url(#half)" stroke="currentColor"
+                                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <!-- empty star -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-yellow-400" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="2">
+                                    <path
+                                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                                </svg>
+                            }
+                        }
+
+                        @{
+                            string ratingText = $"{Model.RatingCount} rating{(Model.RatingCount != 1 ? "s" : "")}";
+                        }
                         <div class="flex items-center gap-1 text-gray-700 md:text-xl lg:text-lg">
-                            @Model.RatingCount ratings
+                            @ratingText
                         </div>
                     </div>
 
                     <p
-                        class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
+                        class="recipe-card__description text-gray-600 line-clamp-2 break-words tracking-tight md:tracking-normal text-md md:text-lg lg:text-lg mt-2">
                         @Model.Description
                     </p>
 
@@ -53,7 +88,8 @@
                         <!-- Category -->
                         <div class="flex flex-col items-center w-1/4">
                             <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
-                            <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.TotalTimeDisplay</span>
+                            <span
+                                class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.TotalTimeDisplay</span>
                         </div>
 
                         <!-- Difficulty -->
@@ -62,10 +98,10 @@
                             <span
                                 class="text-xs font-medium
                     @(Model.DifficultyLevel == 1
-                                                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
-                                                                                                                                                                                                                                        : Model.DifficultyLevel == 2
-                                                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
-                                                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
+                                                                                                                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                                                                                        : Model.DifficultyLevel == 2
+                                                                                                                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
                                 @(Model.DifficultyLevel == 1 ? "Easy" :
                                                                 Model.DifficultyLevel == 2 ? "Medium" : "Hard")
                             </span>

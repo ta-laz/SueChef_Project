@@ -228,7 +228,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Dairy free meals",
+            Text = "No dairy? No problem!",
             RecipePicturePath = r.RecipePicturePath
         })
         .FirstOrDefaultAsync();
@@ -238,7 +238,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Vegetarian meals",
+            Text = "There's no meat in sight, we promise",
             RecipePicturePath = r.RecipePicturePath
         })
         .FirstOrDefaultAsync();

@@ -2,7 +2,7 @@
 
 <section class="mb-8">
     <div class="max-w-6xl mx-auto mb-2 px-5 sm:px-6 md:px-0">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-tight">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-tight ">
             @Model.Title
         </h2>
     </div>
@@ -11,13 +11,13 @@
 
         <!-- Left Button (&#8592 is the left arrow symbol) -->
         <button type="button"
-            class="carousel-left absolute left-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 shadow-md">
+            class="carousel-left absolute left-8 sm:-left-4 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 shadow-md">
             &#8592;
         </button>
 
         <!-- Carousel Track -->
         <div
-            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-8 sm:gap-4 md:gap-2 justify-start hide-scrollbar px-[15%] sm:px-[10%] md:px-[10%]">
+            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-4 sm:gap-4 md:gap-2 justify-start hide-scrollbar px-[10%] sm:px-[10%] md:px-[10%]">
             @foreach (var recipe in Model.Recipes)
             {
                 <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.25%]">
@@ -28,7 +28,7 @@
 
         <!-- Right Button (&#8594 is the right arrow symbol) -->
         <button type="button"
-            class="carousel-right absolute right-0 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 z-10 shadow-md">&#8594;
+            class="carousel-right absolute right-8 sm:-right-4 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-10 h-10 z-10 shadow-md">&#8594;
         </button>
     </div>
 </section>
