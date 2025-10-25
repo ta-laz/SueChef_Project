@@ -15,4 +15,5 @@ public class HomePageViewModel
     public RecipeCarouselViewModel MediumRecipesCarousel { get; set; }
     public RecipeCarouselViewModel HardRecipesCarousel { get; set; }
     public RecipeCarouselViewModel QuickRecipesCarousel { get; set; }
+    public RecipeCarouselViewModel HighlyRatedRecipesCarousel { get; set; }
 }
