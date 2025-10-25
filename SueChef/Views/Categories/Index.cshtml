@@ -5,12 +5,21 @@
     <div class="mb-4 px-5 sm:px-6 md:px-0">
         <div class="sticky top-12 rounded-md">
             <div class=" max-w-6xl mx-auto mb-2 ">
-                <h1 class=" text-2xl font-semibold text-gray-800 trackling-tight py-4">@Model.Title</h1>
+                <h1 class=" text-2xl font-semibold text-gray-800 trackling-tight py-2">@Model.Title</h1>
+
+                <!-- Back to Top -->
+                <button id="back-to-top" class="bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600
+                          transition-opacity duration-200 opacity-0 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                    </svg>
+                </button>
             </div>
         </div>
 
         <div class="relative overflow-hidden">
-            <div id="posts-container" class="overflow-y-auto max-h-[70vh] pb-10 space-y-6">
+            <div id="recipes-container" class="overflow-y-auto max-h-[70vh] pb-10 space-y-6 hide-scrollbar">
                 @foreach (var recipe in Model.Recipes)
                 {
                     <partial name="_RecipeCardHorizontalPartial" model="recipe" />
@@ -18,4 +27,18 @@
             </div>
         </div>
     </div>
+
+    <!-- Hide scrollbar utility -->
+    <style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
 </body>
+
