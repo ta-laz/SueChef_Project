@@ -1,45 +1,5 @@
 @model SueChef.ViewModels.CategoryCardViewModel
 
-@* @{
-    string headingText = Model.Title; // Default
-    if (Model.IsVegetarian)
-    {
-        headingText = "Vegetarian Recipes";
-    }
-    else if (Model.IsDairyFree)
-    {
-        headingText = "Dairy-Free Recipes";
-    }
-    else if (Model.DifficultyLevel == 1)
-    {
-        headingText = "Easy Recipes";
-    }
-    else if (Model.DifficultyLevel == 2)
-    {
-        headingText = "Medium Recipes";
-    }
-    else if (Model.DifficultyLevel == 3)
-    {
-        headingText = "Hard Recipes";
-    }
-    else if (Model.PrepTime + Model.CookTime < 60)
-    {
-        headingText = "Quick Recipes";
-    }
-    else if (Model.PrepTime + Model.CookTime > 60)
-    {
-        headingText = "If you have the time for something special";
-    }
-    else if (Model.AverageRating > 4)
-    {
-        headingText = "Our most highly rated recipes";
-    }
-    else if (Model.RatingCount > 4)
-    {
-        headingText = "Our most rated recipes";
-    }
-} *@
-
 <div
     class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200  mb-2 flex-shrink-0 h-full h-[90%] sm:h-[90%] md:h-full lg:h-full">
 

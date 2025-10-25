@@ -148,8 +148,11 @@ public class HomeController : Controller
             .ToList()
         };
 
+        // these make new CategoryCardViewModels that are made based on selection criteria from the recipes
+        // each one is added to a list inside a CategoryCarouselViewModel
+
         var easyCategory = await _db.Recipes
-        .Where(r => r.Id == 40)
+        .Where(r => r.DifficultyLevel == 1 && r.Id != 3)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
@@ -159,7 +162,7 @@ public class HomeController : Controller
         .FirstOrDefaultAsync();
 
         var mediumCategory = await _db.Recipes
-        .Where(r => r.Id == 35)
+        .Where(r => r.DifficultyLevel == 2)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
@@ -169,7 +172,7 @@ public class HomeController : Controller
         .FirstOrDefaultAsync();
 
         var hardCategory = await _db.Recipes
-        .Where(r => r.Id == 33)
+        .Where(r => r.DifficultyLevel == 3)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
@@ -179,7 +182,7 @@ public class HomeController : Controller
         .FirstOrDefaultAsync();
 
         var quickCategory = await _db.Recipes
-        .Where(r => r.Id == 3)
+        .Where(r => r.PrepTime + r.CookTime < 60 && r.Id != 1)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
@@ -219,20 +222,30 @@ public class HomeController : Controller
             RecipePicturePath = r.RecipePicturePath
         })
         .FirstOrDefaultAsync();
-        
-        var vegetarianCategory = await _db.Recipes
-        .Where(r => r.Id == mostRatedRecipeId)
+
+        var dairyFreeCategory = await _db.Recipes
+        .Where(r => r.IsDairyFree == true && r.Id != 1 && r.Id != 3 && r.Id != 6)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Our users can't stop rating these recipes",
+            Text = "Dairy free meals",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var vegetarianCategory = await _db.Recipes
+        .Where(r => r.IsVegetarian == true && r.Id != 1 && r.Id != 3 && r.Id != 6)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "Vegetarian meals",
             RecipePicturePath = r.RecipePicturePath
         })
         .FirstOrDefaultAsync();
 
         var categoryCarouselViewModel = new CategoryCarouselViewModel
         {
-            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostRatedCategory }
+            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostRatedCategory, dairyFreeCategory, vegetarianCategory }
         };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
