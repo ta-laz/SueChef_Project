@@ -84,63 +84,68 @@ public class HomeController : Controller
         {
             Title = "All Recipes",
             CarouselId = "allRecipesCarousel",
-            Recipes = recipeCards.Skip(5).ToList()
+            Recipes = recipeCards.ToList()
         };
 
         var vegetarianRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "Vegetarian Meals",
-            CarouselId = "vegCarousel", // Unique ID
-                                        // Filter the existing recipeCards list where IsVegetarian is true
+            CarouselId = "vegCarousel",
             Recipes = recipeCards.Where(r => r.IsVegetarian).Skip(5).ToList()
         };
 
         var dairyFreeRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "Dairy-Free Meals",
-            CarouselId = "dairyFreeCarousel", // Unique ID
-                                              // Filter the existing recipeCards list where IsDairyFree is true
+            CarouselId = "dairyFreeCarousel",
             Recipes = recipeCards.Where(r => r.IsDairyFree).ToList()
         };
 
         var easyRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "For beginners",
-            CarouselId = "easyCarousel", // Unique ID
-                                         // Filter the existing recipeCards list where IsDairyFree is true
+            CarouselId = "easyCarousel",
             Recipes = recipeCards.Where(r => r.DifficultyLevel == 1).ToList()
         };
 
         var mediumRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "For those wanting a little challenge",
-            CarouselId = "mediumCarousel", // Unique ID
-                                           // Filter the existing recipeCards list where IsDairyFree is true
+            CarouselId = "mediumCarousel",
             Recipes = recipeCards.Where(r => r.DifficultyLevel == 2).ToList()
         };
 
         var hardRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "For the real SueChefs!",
-            CarouselId = "hardCarousel", // Unique ID
-                                         // Filter the existing recipeCards list where IsDairyFree is true
+            CarouselId = "hardCarousel",
             Recipes = recipeCards.Where(r => r.DifficultyLevel == 3).ToList()
         };
 
         var quickRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "Quick Meals",
-            CarouselId = "quickCarousel", // Unique ID
-                                          // Filter the existing recipeCards list where IsDairyFree is true
+            CarouselId = "quickCarousel",
             Recipes = recipeCards.Where(r => r.PrepTime + r.CookTime < 60).ToList()
         };
 
         var highlyRatedRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "Highly Rated Recipes",
-            CarouselId = "highlyRatedCarousel", // Unique ID
-                                                // Filter the existing recipeCards list where IsDairyFree is true
-            Recipes = recipeCards.Where(r => r.AverageRating > 4).ToList()
+            CarouselId = "highlyRatedCarousel",
+            Recipes = recipeCards
+            .OrderByDescending(r => r.AverageRating)
+            .Where(r => r.AverageRating > 4).ToList()
+        };
+
+        var mostRatedRecipesCarousel = new RecipeCarouselViewModel
+        {
+            Title = "Most Rated Recipes",
+            CarouselId = "mostRatedCarousel",
+            Recipes = recipeCards
+            .OrderByDescending(r => r.RatingCount)
+            .Take(10)
+            .ToList()
         };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
@@ -157,7 +162,8 @@ public class HomeController : Controller
             MediumRecipesCarousel = mediumRecipesCarousel,
             HardRecipesCarousel = hardRecipesCarousel,
             QuickRecipesCarousel = quickRecipesCarousel,
-            HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel
+            HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel,
+            MostRatedRecipesCarousel = mostRatedRecipesCarousel
         };
 
         // Pass the list of view models into the View for this controller action
