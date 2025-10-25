@@ -136,7 +136,20 @@ public class MealPlanController : Controller
             return NotFound();
         _db.MealPlanRecipes.Remove(recipe);
         await _db.SaveChangesAsync();
-        return RedirectToAction("Show", new { id = recipe.MealPlanId });
+        return RedirectToAction("Index");
+    }
+
+    [Route("/MealPlans/DeleteMealPlan/{id}")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteMealPlan(int id)
+    {
+        var mealPlan = _db.MealPlans.Find(id);
+        if (mealPlan == null)
+            return NotFound();
+        _db.MealPlans.Remove(mealPlan);
+        await _db.SaveChangesAsync();
+        return RedirectToAction("Index");
     }
 
     private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
