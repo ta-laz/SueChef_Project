@@ -61,7 +61,7 @@
                     <div class="flex rounded-md justify-around items-center text-center gap-4 mt-2">
                         <!-- Category -->
                         <div class="flex flex-col items-center w-1/4">
-                            <img src="images/flag.png" alt="Category"
+                            <img src="@Url.Content("~/images/flag.png")" alt="Category"
                                 class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
                             <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.Category</span>
                         </div>
@@ -70,7 +70,7 @@
                         @if (@Model.IsVegetarian)
                         {
                             <div class="flex flex-col items-center w-1/4">
-                                <img src="images/vegetariancartoon.png" alt="Vegetarian"
+                                <img src="@Url.Content("/images/vegetariancartoon.png")" alt="Vegetarian"
                                     class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
                                 <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Vegetarian</span>
                             </div>
@@ -80,7 +80,7 @@
                         @if (@Model.IsDairyFree)
                         {
                             <div class="flex flex-col items-center w-1/4">
-                                <img src="images/dairyfree.png" alt="Dairy Free"
+                                <img src="@Url.Content("~/images/dairyfree.png")" alt="Dairy Free"
                                     class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
                                 <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
                             </div>
@@ -88,7 +88,7 @@
 
                         <!-- Difficulty -->
                         <div class="flex flex-col items-center w-1/4">
-                            <img src="~/images/chefshat.png" alt="Difficulty"
+                            <img src="@Url.Content("~/images/chefshat.png")" alt="Difficulty"
                                 class="w-8 h-8 object-contain rounded-full border-1 border-gray-500" />
                             <span
                                 class="text-xs font-medium
