@@ -1,23 +1,21 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const backToTop = document.getElementById('back-to-top');
+    if (!backToTop) return;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const container = document.getElementById('recipes-container');
-        const backToTop = document.getElementById('back-to-top');
-        if (!container || !backToTop) return; // guard
+    const toggleBtn = () => {
+        if (window.scrollY > 200) { // show after 200px of scrolling
+            backToTop.classList.remove('opacity-0', 'pointer-events-none');
+            backToTop.classList.add('opacity-100');
+        } else {
+            backToTop.classList.add('opacity-0', 'pointer-events-none');
+            backToTop.classList.remove('opacity-100');
+        }
+    };
 
-        const toggleBtn = () => {
-            if (container.scrollTop > 100) {
-                backToTop.classList.remove('opacity-0', 'pointer-events-none');
-                backToTop.classList.add('opacity-100');
-            } else {
-                backToTop.classList.add('opacity-0', 'pointer-events-none');
-                backToTop.classList.remove('opacity-100');
-            }
-        };
+    window.addEventListener('scroll', toggleBtn, { passive: true });
+    toggleBtn();
 
-        container.addEventListener('scroll', toggleBtn, { passive: true });
-        toggleBtn(); // initialise state
-
-        backToTop.addEventListener('click', () => {
-            container.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+});
