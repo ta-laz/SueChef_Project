@@ -148,6 +148,16 @@ public class HomeController : Controller
             .ToList()
         };
 
+        List<int> recipeCategories = new List<int> { 1, 2, 3 };
+        var recipeCategoriesCarousel = new RecipeCarouselViewModel
+        {
+            Title = "Recipe Categories",
+            CarouselId = "recipeCategoriesCarousel",
+            Recipes = recipeCards
+            .Where(r => recipeCategories.Contains(r.Id))
+            .ToList()
+        };
+
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
         var AllViewModels = new HomePageViewModel
         {
@@ -163,7 +173,8 @@ public class HomeController : Controller
             HardRecipesCarousel = hardRecipesCarousel,
             QuickRecipesCarousel = quickRecipesCarousel,
             HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel,
-            MostRatedRecipesCarousel = mostRatedRecipesCarousel
+            MostRatedRecipesCarousel = mostRatedRecipesCarousel,
+            RecipeCategoriesCarousel = recipeCategoriesCarousel
         };
 
         // Pass the list of view models into the View for this controller action

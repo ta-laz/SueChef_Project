@@ -6,9 +6,9 @@ public class HomePageViewModel
     public FeaturedRecipeViewModel TopFeaturedRecipe { get; set; }
     public FeaturedRecipeViewModel MiddleFeaturedRecipe { get; set; }
     public FeaturedRecipeViewModel BottomFeaturedRecipe { get; set; }
-    
-    // Updated properties for distinct carousels
-    public RecipeCarouselViewModel AllRecipesCarousel { get; set; } 
+
+    public RecipeCarouselViewModel RecipeCategoriesCarousel { get; set; }
+    public RecipeCarouselViewModel AllRecipesCarousel { get; set; }
     public RecipeCarouselViewModel VegetarianRecipesCarousel { get; set; }
     public RecipeCarouselViewModel DairyFreeRecipesCarousel { get; set; }
     public RecipeCarouselViewModel EasyRecipesCarousel { get; set; }
