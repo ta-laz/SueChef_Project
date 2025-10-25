@@ -57,6 +57,27 @@ public class CategoriesController : Controller
                 query = query.Where(r => r.DifficultyLevel == 3);
                 pageTitle = "Hard Recipes";
                 break;
+            case "highlyrated":
+                pageTitle = "Highest Rated Recipes";
+                
+                // Compute average rating and join directly in the DB
+                var topRated = await _db.Ratings
+                    .Where(rt => rt.Stars.HasValue)
+                    .GroupBy(rt => rt.RecipeId)
+                    .Select(g => new
+                    {
+                        RecipeId = g.Key,
+                        Average = g.Average(rt => rt.Stars.Value),
+                        Count = g.Count()
+                    })
+                    .OrderByDescending(g => g.Average)
+                    .Take(10)
+                    .ToListAsync();
+
+                var topIds = topRated.Select(r => r.RecipeId).ToList();
+
+                query = _db.Recipes.Where(r => topIds.Contains(r.Id));
+                break;
             default:
                 pageTitle = "All Recipes";
                 break;

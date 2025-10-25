@@ -149,6 +149,7 @@ public class HomeController : Controller
         };
 
         // these make new CategoryCardViewModels that are made based on selection criteria from the recipes
+        // the category string is used to tell the <a> tag in the partial HTML what to send to the categoriescontroller so that it renders the correct filter on the page
         // each one is added to a list inside a CategoryCarouselViewModel
 
         var easyCategory = await _db.Recipes
@@ -157,7 +158,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "New to cooking? Try these!",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "easy"
         })
         .FirstOrDefaultAsync();
 
@@ -167,7 +169,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "For those that want a bit more of a challenge",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "medium"
         })
         .FirstOrDefaultAsync();
 
@@ -177,7 +180,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "SueChef herself would find these tricky",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "hard"
         })
         .FirstOrDefaultAsync();
 
@@ -187,7 +191,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "Short on time? You can whip these meals up in a jiffy",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "quick"
         })
         .FirstOrDefaultAsync();
 
@@ -203,7 +208,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "These are our most highly rated recipes",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "highlyrated"
         })
         .FirstOrDefaultAsync();
 
@@ -219,7 +225,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "Our users can't stop rating these recipes",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = ""
         })
         .FirstOrDefaultAsync();
 
@@ -229,7 +236,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "No dairy? No problem!",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "dairyfree"
         })
         .FirstOrDefaultAsync();
 
@@ -239,7 +247,8 @@ public class HomeController : Controller
         {
             Id = r.Id,
             Text = "There's no meat in sight, we promise",
-            RecipePicturePath = r.RecipePicturePath
+            RecipePicturePath = r.RecipePicturePath,
+            Category = "vegetarian"
         })
         .FirstOrDefaultAsync();
 
