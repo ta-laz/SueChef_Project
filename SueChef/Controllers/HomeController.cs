@@ -17,7 +17,7 @@ public class HomeController : Controller
         _db = db;
     }
 
-    public async Task<IActionResult> Index(int count = 0)
+    public async Task<IActionResult> Index()
     {
 
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
@@ -89,14 +89,14 @@ public class HomeController : Controller
 
         var vegetarianRecipesCarousel = new RecipeCarouselViewModel
         {
-            Title = "Vegetarian Meals",
+            Title = "Vegetarian Recipes",
             CarouselId = "vegCarousel",
             Recipes = recipeCards.Where(r => r.IsVegetarian).Skip(5).ToList()
         };
 
         var dairyFreeRecipesCarousel = new RecipeCarouselViewModel
         {
-            Title = "Dairy-Free Meals",
+            Title = "Dairy-Free Recipes",
             CarouselId = "dairyFreeCarousel",
             Recipes = recipeCards.Where(r => r.IsDairyFree).ToList()
         };
