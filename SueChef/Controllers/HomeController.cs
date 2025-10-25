@@ -168,9 +168,71 @@ public class HomeController : Controller
         })
         .FirstOrDefaultAsync();
 
+        var hardCategory = await _db.Recipes
+        .Where(r => r.Id == 33)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "SueChef herself would find these tricky",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var quickCategory = await _db.Recipes
+        .Where(r => r.Id == 3)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "Short on time? You can whip these meals up in a jiffy",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var highestRatedRecipe = recipeCards
+        .OrderByDescending(r => r.AverageRating)
+        .FirstOrDefault();
+
+        int highestRatedRecipeId = highestRatedRecipe.Id;
+
+        var highlyRatedCategory = await _db.Recipes
+        .Where(r => r.Id == highestRatedRecipeId)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "These are our most highly rated recipes",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
+        var mostRatedRecipe = recipeCards
+        .OrderByDescending(r => r.RatingCount)
+        .FirstOrDefault();
+
+        int mostRatedRecipeId = mostRatedRecipe.Id;
+
+        var mostRatedCategory = await _db.Recipes
+        .Where(r => r.Id == mostRatedRecipeId)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "Our users can't stop rating these recipes",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+        
+        var vegetarianCategory = await _db.Recipes
+        .Where(r => r.Id == mostRatedRecipeId)
+        .Select(r => new CategoryCardViewModel
+        {
+            Id = r.Id,
+            Text = "Our users can't stop rating these recipes",
+            RecipePicturePath = r.RecipePicturePath
+        })
+        .FirstOrDefaultAsync();
+
         var categoryCarouselViewModel = new CategoryCarouselViewModel
         {
-            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory }
+            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostRatedCategory }
         };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
