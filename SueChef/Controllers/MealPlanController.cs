@@ -149,9 +149,10 @@ public class MealPlanController : Controller
         var recipe = _db.MealPlanRecipes.Find(id);
         if (recipe == null)
             return NotFound();
+        var mealPlanId = recipe.MealPlanId;
         _db.MealPlanRecipes.Remove(recipe);
         await _db.SaveChangesAsync();
-        return RedirectToAction("Index");
+        return RedirectToAction("Show", new {id = mealPlanId});
     }
 
     [Route("/MealPlans/DeleteMealPlan/{id}")]
