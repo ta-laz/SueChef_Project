@@ -130,15 +130,27 @@ public class MealPlanController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddRecipe(int id, int recipeId)
-    {
+    {   
+        string MealPlanTitle = await _db.MealPlanRecipes
+            .Where(mp => mp.MealPlanId == id)
+            .Select(mp => mp.MealPlan.MealPlanTitle)
+            .FirstOrDefaultAsync();
+        bool exists = await _db.MealPlanRecipes
+            .AnyAsync(mpr => mpr.MealPlanId == id && mpr.RecipeId == recipeId && !mpr.IsDeleted);
+
+        if (exists)
+        {
+            // Show an error message in TempData
+            TempData["ErrorMessage"] = $"This recipe is already in {MealPlanTitle}.";
+            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        }     
         _db.MealPlanRecipes.Add(new MealPlanRecipe
         {
             MealPlanId = id,
             RecipeId = recipeId
         });
         await _db.SaveChangesAsync();
-        string MealPlanTitle = await _db.MealPlanRecipes.Where(mp => mp.MealPlanId == id).Select(mp => mp.MealPlan.MealPlanTitle).FirstOrDefaultAsync();
-        TempData["Success"] = $"Recipe added to meal plan {MealPlanTitle}";
+        TempData["Success"] = $"Recipe added to {MealPlanTitle}";
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
     }
 
