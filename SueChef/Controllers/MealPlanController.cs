@@ -123,7 +123,6 @@ public class MealPlanController : Controller
     };
 
     return View(viewModel);
-        return View(recipes);
     }
 
     [Route("/MealPlans/{id}")]
@@ -178,7 +177,11 @@ public class MealPlanController : Controller
                 Id = mp.Id,
                 MealPlanTitle = mp.MealPlanTitle,
                 UpdatedOn = mp.UpdatedOn,
-                RecipeCount = mp.MealPlanRecipes.Count()
+                RecipeCount = mp.MealPlanRecipes.Count(),
+                RecipePicturePaths = mp.MealPlanRecipes
+                    .Select(mpr => mpr.Recipe.RecipePicturePath)
+                    .Take(4)
+                    .ToList()
             })
             .ToListAsync();
 

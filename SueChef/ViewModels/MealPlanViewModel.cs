@@ -13,5 +13,6 @@ public class MealPlanViewModel
     public string? MealPlanTitle { get; set; }
     public int? RecipeCount { get; set; }
     public DateOnly? UpdatedOn { get; set; }
+    public List<string>? RecipePicturePaths { get; set; } = new();
 
 }
