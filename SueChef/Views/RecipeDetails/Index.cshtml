@@ -4,7 +4,7 @@
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
-            <h1 class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
+            <h1 data-testid="recipe-title" class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
             <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
@@ -74,7 +74,7 @@
           </div>
           <!-- Serves -->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Serves:</strong>
-            <input type="number" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
+            <input type="number" data-testid="serving-input" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
           </div>
           <!-- Rating -->
           <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
@@ -90,22 +90,22 @@
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
         <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
-          <button id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
-          <button id="nutritionButton" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
+          <button data-testid="recipe-tab-toggle" id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
+          <button data-testid="toggle-nutrition" id="nutritionButton" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
           
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="tracking-wide p-2 mb-1 border-b-2 border-orange-700 ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity font-bold">@i.Quantity</span><strong>@i.Unit</strong> @i.Name </p> 
+                <p data-testid="recipe-ingredients-@i.Name" class="tracking-wide p-2 mb-1 border-b-2 border-orange-700 ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity font-bold">@i.Quantity</span><strong>@i.Unit</strong> @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
-              <p class="p-2 mb-1 border-b-2 border-orange-700 text-center font-bold italic">Nutrition: Per serving<span id="fatsPerServing"></span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 font-b"><strong>Calories</strong> <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Protein</strong> <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Carbs</strong> <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Fats</strong> <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 text-center font-bold italic">Nutrition: Per serving</p>
+              <p data-testid="calories" class="p-2 mb-1 border-b-2 border-orange-700 font-b"><strong>Calories</strong> <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
+              <p data-testid="protein" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Protein</strong> <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p data-testid="carbs" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Carbs</strong> <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p data-testid="fats" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Fats</strong> <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
               <!-- Logic to split the method and change it into step: 1, etc. -->
@@ -115,7 +115,7 @@
         var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
         var counter = 1;
       }
-      <section>
+      <section data-testid="method-steps">
         <h2 class="text-xl font-semibold mb-2">Method</h2>
         <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
         @foreach(var step in steps)
@@ -134,12 +134,12 @@
                   <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
                   </svg>
-                    <span class="font-medium">@TempData["SuccessMessage"]</span>
+                    <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
                 </div>
             }
       
       <div class="text-center p-4 border-t">
-              <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
+              <h2 data-testid="Rate-the-recipe"class="text-xl font-semibold mb-2">Rate this recipe</h2>
               
               <form method="post" action="@Url.Action("Rate", "RecipeDetails")" id="ratingForm">  
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />  <!-- Sends the recipe ID back to the controller so controller knows what is recipe is being rated -->
@@ -147,11 +147,11 @@
                       @for (int i = 5; i >= 1; i--) //Generate 5 stars 
                       {
                           <input type="radio" id="star-@i" name="rating" value="@i" class="hidden peer" @(Model.IndividualRecipe.UserRating == i ? "checked" : "") required /> //Hidden radio buttons so we know what the user has rated 1-5 
-                          <label for="star-@i" class="peer-checked:text-yellow-400 peer-hover:text-yellow-400 [&:hover~label]:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
+                          <label data-testid="star-rating-@i" for="star-@i" class="peer-checked:text-yellow-400 peer-hover:text-yellow-400 [&:hover~label]:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
                       }
                   </div>
                   
-                  <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
 
         
