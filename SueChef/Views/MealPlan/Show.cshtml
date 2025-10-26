@@ -5,16 +5,27 @@
 
 <div class="justify-center p-3">
 
-    <!-- Meal Plan Title -->
-    <section class="mb-8">
-        <div class="max-w-6xl mx-auto mb-2">
-            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">@Model.MealPlan.MealPlanTitle - Recipes:</h2>
-        </div>
+<!-- Main central container -->
+    <div class="w-full max-w-4xl mx-auto">
 
-        <!-- Each recipe card: -->
-        @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
-        {
-            <partial name="_MealPlanRecipeCardPartial" model="recipe" />
-        }
-    </section>
+        <!-- Meal Plan Title -->
+        <section class="flex mb-2 justify-between items-end">
+            <div class="mb-2">
+                <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">@Model.MealPlan.MealPlanTitle - Recipes:</h2>
+            </div>
+            <a asp-controller="Home" asp-action="Index">
+                <button class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
+                    Add Recipes
+                </button>
+            </a>
+        </section>
+
+        <section class="mb-8">
+            <!-- Each recipe card: -->
+            @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
+            {
+                <partial name="_MealPlanRecipeCardPartial" model="recipe" />
+            }
+        </section>
+    </div>
 </div>
