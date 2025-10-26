@@ -76,10 +76,18 @@
     <!-- Add to Meal Plan Button -->
     <div class="">
         <button
-            class="flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white w-8 h-8 shadow-sm rounded-full transition active:bg-rose-800">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+            class="meal-plan-btn flex items-center justify-center bg-orange-500 hover:opacity-90 text-white w-8 h-8 shadow-sm rounded-full transition"
+            onclick="toggleMealPlan(this)">
+            <!-- Plus Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 plus-icon" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+
+            <!-- Tick Icon (hidden initially) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden tick-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
         </button>
     </div>
@@ -87,7 +95,8 @@
 </div>
 
 <!-- Row five: tags bar -->
-<div class="flex flex-wrap justify-start items-center text-center border-t-2 border-gray-200 py-3 md:py-1 p-2 min-h-24 md:min-h-18">
+<div
+    class="flex flex-wrap justify-start items-center text-center border-t-2 border-gray-200 py-3 md:py-1 p-2 min-h-24 md:min-h-18">
 
     <div class="flex w-full">
 
@@ -133,3 +142,25 @@
 
 </div>
 </div>
+
+<script>
+    function toggleMealPlan(button) {
+        const plusIcon = button.querySelector('.plus-icon');
+        const tickIcon = button.querySelector('.tick-icon');
+        const isActive = button.classList.contains('bg-rose-800');
+
+        if (isActive) {
+            // Back to plus
+            button.classList.remove('bg-rose-800');
+            button.classList.add('bg-orange-500');
+            tickIcon.classList.add('hidden');
+            plusIcon.classList.remove('hidden');
+        } else {
+            // Change to tick
+            button.classList.remove('bg-orange-500');
+            button.classList.add('bg-rose-800');
+            plusIcon.classList.add('hidden');
+            tickIcon.classList.remove('hidden');
+        }
+    }
+</script>
