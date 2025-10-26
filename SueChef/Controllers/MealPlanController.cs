@@ -84,7 +84,8 @@ public class MealPlanController : Controller
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-        var recipes = _db.MealPlanRecipes.Where(mpr => mpr.MealPlanId == id)
+        var recipes = _db.MealPlanRecipes
+            .Where(mpr => mpr.MealPlanId == id && !mpr.IsDeleted)
             .Select(mpr => new RecipeCardViewModel
             {
                 Id = mpr.RecipeId,
@@ -146,13 +147,43 @@ public class MealPlanController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteRecipe(int id)
     {
-        var recipe = _db.MealPlanRecipes.Find(id);
+        var recipe = await _db.MealPlanRecipes
+                                        .Include(mpr => mpr.Recipe)
+                                        .FirstOrDefaultAsync(mpr => mpr.Id == id && !mpr.IsDeleted);
         if (recipe == null)
             return NotFound();
         var mealPlanId = recipe.MealPlanId;
-        _db.MealPlanRecipes.Remove(recipe);
+        // Mark as deleted instead of removing
+        recipe.IsDeleted = true;
         await _db.SaveChangesAsync();
-        return RedirectToAction("Show", new {id = mealPlanId});
+
+        // Store info in TempData for success message + undo
+        TempData["DeletedRecipeId"] = recipe.Id;
+        TempData["DeletedRecipeName"] = recipe.Recipe.Title;
+        TempData["MealPlanId"] = recipe.MealPlanId;
+        TempData["SuccessMessage"] = $"Recipe: {recipe.Recipe.Title} removed successfully.";
+
+        return RedirectToAction("Show", new { id = mealPlanId });
+    }
+    
+
+
+    [Route("/MealPlans/UndoDeleteRecipe/{id}")]
+    [HttpGet]
+    public async Task<IActionResult> UndoDeleteRecipe(int id)
+    {
+        var recipe = await _db.MealPlanRecipes
+            .Include(mpr => mpr.Recipe)
+            .FirstOrDefaultAsync(mpr => mpr.Id == id && mpr.IsDeleted);
+        if (recipe == null)
+        {
+            TempData["ErrorMessage"] = "Unable to undo deletion.";
+            return RedirectToAction("Index");
+        }
+        recipe.IsDeleted = false;
+        await _db.SaveChangesAsync();
+        TempData["SuccessMessage"] = $"Recipe: {recipe.Recipe.Title} restored successfully!";
+        return RedirectToAction("Show", new { id = recipe.MealPlanId });
     }
 
     [Route("/MealPlans/DeleteMealPlan/{id}")]
@@ -178,8 +209,11 @@ public class MealPlanController : Controller
                 Id = mp.Id,
                 MealPlanTitle = mp.MealPlanTitle,
                 UpdatedOn = mp.UpdatedOn,
-                RecipeCount = mp.MealPlanRecipes.Count(),
+                RecipeCount = mp.MealPlanRecipes
+                    .Where(mpr => mpr.IsDeleted == false)
+                    .Count(),
                 RecipePicturePaths = mp.MealPlanRecipes
+                    .Where(mpr => mpr.IsDeleted == false)
                     .Select(mpr => mpr.Recipe.RecipePicturePath)
                     .Take(4)
                     .ToList()
