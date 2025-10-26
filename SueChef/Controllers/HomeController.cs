@@ -140,7 +140,7 @@ public class HomeController : Controller
 
         var mostRatedRecipesCarousel = new RecipeCarouselViewModel
         {
-            Title = "Most Rated Recipes",
+            Title = "Most Popular Recipes",
             CarouselId = "mostRatedCarousel",
             Recipes = recipeCards
             .OrderByDescending(r => r.RatingCount)
