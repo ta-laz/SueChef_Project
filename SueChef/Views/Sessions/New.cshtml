@@ -1,86 +1,92 @@
 @model SueChef.ViewModels.SignInViewModel
 
-<body class="bg-orange-50 text-gray-700">
-    <div class="rounded-lg p-6 w-full text-center">
+<body class="bg-rose-800">
 
-        <!-- Welcome to suechef/sign text  -->
+        <div class="flex flex-col hover:shadow-md transition-all duration-300 rounded-lg justify-center items-center bg-gray-700 max-w-[75%] md:max-w-[50%]">
+            <img src="~/images/suechef-name.png" alt="SueChef logo"
+                class="flex items-center w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36">
 
-        <h1 id="greeting" class="text-3xl font-bold text-gray-700 text-center">Welcome To SueChef!</h1>
-        <h2 class="text-xl font-semibold text-gray-700 text-center mb-6">Sign In</h2>
-        <!-- Error data for if user tries to rate a dish without being logged in --> 
-        @if (TempData["ErrorMessage"] != null)
+                <h2 class="text-white text-xl tracking-tight mb-12"> Sign in
+                </h2>
+
+
+            <!-- Error data for if user tries to rate a dish without being logged in -->
+            @if (TempData["ErrorMessage"] != null)
             {
-                <div class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md shadow mb-6">
-                    <svg class="w-6 h-6 mr-2 text-orange-700" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M6 18L18 6M6 6l12 12" />
+                <div
+                    class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md shadow mb-6">
+                    <svg class="w-6 h-6 mr-2 text-orange-700" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <span class="font-medium">@TempData["ErrorMessage"]</span>
                 </div>
             }
-    </div>
 
-    <!-- Form container -->
+            <!-- Form container -->
 
-    <div class="bg-orange-100 border-l-4 border-orange-400 p-4 rounded shadow">
-
-        <form id="login-form" asp-action="Create" asp-controller="Sessions" method="post"
-            class="flex flex-col space-y-4" novalidate>
-            @Html.AntiForgeryToken()
-
-            <!-- Display Model Errors -->
-            <div asp-validation-summary="ModelOnly" class="text-gray-700 mb-2"></div>
-
-            <!-- Email  -->
             <div>
-                <label for="username" class="mb-1 block text-sm text-gray-700">Username</label>
-                <input asp-for="UserName" id="username" data-testid="username"
-                    class="w-full border border-gray-400 rounded-lg p-2" placeholder="Username" />
-                @if (ViewData.ModelState.TryGetValue(nameof(Model.UserName), out var userNameState) &&
-                                userNameState.Errors.Any())
-                {
-                    <div class="text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage</div>
+                <form id="login-form" asp-action="Create" asp-controller="Sessions" method="post"
+                    class="flex flex-col space-y-4" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <!-- Display Model Errors -->
+                    <div asp-validation-summary="ModelOnly" class="text-white mb-2"></div>
+
+                    <!-- Email  -->
+                    <div>
+                        <label for="username" class="mb-1 block text-sm text-white">Username</label>
+                        <input asp-for="UserName" id="username" data-testid="username"
+                            class="w-full border border-gray-400  p-2" placeholder="Username*" />
+                        @if (ViewData.ModelState.TryGetValue(nameof(Model.UserName), out var userNameState) &&
+                                                userNameState.Errors.Any())
+                        {
+                            <div class="text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Password  -->
+                    <div>
+                        <label for="password" class="mb-1 block text-sm text-white">Password</label>
+                        <input asp-for="Password" data-testid="password" id="password"
+                            class="w-full border border-gray-400  p-2" placeholder="Password*" />
+                        @if (ViewData.ModelState.TryGetValue(nameof(Model.Password), out var passState) &&
+                                                passState.Errors.Any())
+                        {
+                            <div class="text-red-600 text-sm font-bold mt-1">@passState.Errors.First().ErrorMessage</div>
+                        }
+                    </div>
+
+                    <!-- Show Password Checkbox -->
+                    <div class="flex items-center mt-2">
+                        <input id="Show-Password" class="h-4 w-4" type="checkbox" onclick="myFunction()">
+                        <label for="Show-Password" class="ml-2 text-md text-white">Show Password</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center">
+                        <button type="submit" id="signin-submit" data-testid="signin-submit"
+                            class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium w-48 px-4 py-2 rounded-full ">Sign
+                            In</button>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div class="text-center mt-4">
+                <a class="text-white hover:underline" href="/signup" id="signup">Not a user? Sign Up here!</a>
+            </div>
+
+            <script>
+                function myFunction() {
+                    var x = document.getElementById("password");
+                    x.type = x.type === "password" ? "text" : "password";
                 }
-            </div>
+            </script>
 
-            <!-- Password  -->
-            <div>
-                <label for="password" class="mb-1 block text-sm text-gray-700">Password</label>
-                <input asp-for="Password" data-testid="password" id="password"
-                    class="w-full border border-gray-400 rounded-lg p-2" placeholder="Password" />
-                @if (ViewData.ModelState.TryGetValue(nameof(Model.Password), out var passState) &&
-                                passState.Errors.Any())
-                {
-                    <div class="text-red-600 text-sm font-bold mt-1">@passState.Errors.First().ErrorMessage</div>
-                }
-            </div>
-
-            <!-- Show Password Checkbox -->
-            <div class="flex items-center mt-2">
-                <input id="Show-Password" class="h-4 w-4" type="checkbox" onclick="myFunction()">
-                <label for="Show-Password" class="ml-2 text-md text-gray-700">Show Password</label>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="flex justify-center">
-                <button type="submit" id="signin-submit" data-testid="signin-submit"
-                    class="bg-gray-700 text-white text-sm font-medium w-48 px-4 py-2 rounded-md hover:bg-gray-400">Sign
-                    In</button>
-            </div>
-
-
-        </form>
-
-        <div class="text-center mt-4">
-            <a class="text-gray-700 hover:underline" href="/signup" id="signup">Not a user? Sign Up here!</a>
         </div>
-
-        <script>
-            function myFunction() {
-                var x = document.getElementById("password");
-                x.type = x.type === "password" ? "text" : "password";
-            }
-        </script>
-
     </div>
     </div>
 </body>
