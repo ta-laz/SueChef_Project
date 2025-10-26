@@ -7,9 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SueChef.Test
 {
+    using Microsoft.AspNetCore.Identity;
     using SueChef.Models;
     internal static class TestDataSeeder
     {
+
+        private static readonly PasswordHasher<User> Hasher = new();
+        private static readonly string PwHash = Hasher.HashPassword(new User(), "pass");
+    
         public static async Task EnsureDbReadyAsync(SueChefDbContext db)
         {
             Console.WriteLine("🔧 Ensuring database is ready (migrate)...");
@@ -27,7 +32,8 @@ namespace SueChef.Test
             {
                 // Clean slate
                 await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs"
+                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
+                    "Ratings","MealPlanRecipes","MealPlans","Users"
                     RESTART IDENTITY CASCADE;
                 """);
 
@@ -108,18 +114,126 @@ namespace SueChef.Test
                     // Compute diet flags from actual ingredients
                     var (veg, dairyFree, vegan, gf, nutFree, pesc) = ComputeDietaryFlags(selectedIngredients);
                     recipe.IsVegetarian = veg;
-                    recipe.IsDairyFree  = dairyFree;
-                    SetIfExists(recipe, "IsGlutenFree",  gf);
-                    SetIfExists(recipe, "IsVegan",       vegan);
-                    SetIfExists(recipe, "IsNutFree",     nutFree);
+                    recipe.IsDairyFree = dairyFree;
+                    SetIfExists(recipe, "IsGlutenFree", gf);
+                    SetIfExists(recipe, "IsVegan", vegan);
+                    SetIfExists(recipe, "IsNutFree", nutFree);
                     SetIfExists(recipe, "IsPescatarian", pesc);
 
                     db.Recipes.Update(recipe);
                     await db.SaveChangesAsync();
                 }
+                // Create 10 users
+                var baseJoin = new DateOnly(2025, 1, 1);
+                var baseDob = new DateOnly(1992, 1, 1);
+
+                var users = Enumerable.Range(1, 10).Select(i => new User
+                {
+                    UserName = $"user{i}",
+                    Email = $"user{i}@example.com",
+                    PasswordHash = PwHash,
+                    DateJoined = baseJoin.AddDays(i * 10),
+                    DOB = baseDob.AddDays(i * 37)
+                }).ToList();
+
+                db.Users.AddRange(users);
+                await db.SaveChangesAsync();
+
+                // Meal Plans (0–2 per user)
+                var mealPlans = new List<MealPlan>();
+                var today = new DateOnly(2025, 10, 26);
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var u = users[i];
+                    if (i % 3 == 0) continue; // some users have none
+                    int planCount = (i % 3 == 1) ? 1 : 2;
+                    for (int j = 0; j < planCount; j++)
+                    {
+                        var created = today.AddDays(-(i * 2 + j));
+                        mealPlans.Add(new MealPlan
+                        {
+                            UserId = u.Id,
+                            MealPlanTitle = $"{u.UserName} Plan {j + 1}",
+                            CreatedOn = created,
+                            UpdatedOn = created.AddDays(1)
+                        });
+                    }
+                }
+                db.MealPlans.AddRange(mealPlans);
+                await db.SaveChangesAsync();
+
+                // MealPlanRecipes (3–5 random recipes per plan)
+                var totalRecipes = await db.Recipes.CountAsync();
+                var planRecipes = new List<MealPlanRecipe>();
+                var rand = new Random(42);
+
+                foreach (var plan in mealPlans)
+                {
+                    int count = rand.Next(3, 6);
+                    var picked = new HashSet<int>();
+                    while (picked.Count < count)
+                    {
+                        int rid = rand.Next(1, totalRecipes + 1);
+                        picked.Add(rid);
+                    }
+                    foreach (var rid in picked)
+                    {
+                        planRecipes.Add(new MealPlanRecipe
+                        {
+                            MealPlanId = plan.Id,
+                            RecipeId = rid
+                        });
+                    }
+                }
+                db.MealPlanRecipes.AddRange(planRecipes);
+                await db.SaveChangesAsync();
+
+                // Ratings (each user rates 2–4 recipes)
+                var ratings = new List<Rating>();
+                int rateId = 1;
+                foreach (var u in users)
+                {
+                    var picked = new HashSet<int>();
+                    int rateCount = 2 + (u.Id % 3);
+                    for (int j = 0; j < rateCount; j++)
+                    {
+                        int rid = ((u.Id * 7 + j * 11) % totalRecipes) + 1;
+                        if (!picked.Add(rid)) continue;
+                        ratings.Add(new Rating
+                        {
+                            RecipeId = rid,
+                            UserId = u.Id,
+                            Stars = 2 + ((u.Id + j) % 4),
+                            CreatedOn = DateTime.UtcNow.AddDays(-u.Id * 3 - j)
+                        });
+                    }
+                    rateId++;
+                }
+                db.Ratings.AddRange(ratings);
+                await db.SaveChangesAsync();
+
+                // Favorites (each user has 2–4)
+                // var favorites = new List<Favorite>();
+                // foreach (var u in users)
+                // {
+                //     var picked = new HashSet<int>();
+                //     int favCount = 2 + (u.Id % 3);
+                //     for (int j = 0; j < favCount; j++)
+                //     {
+                //         int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
+                //         if (!picked.Add(rid)) continue;
+                //         favorites.Add(new Favorite
+                //         {
+                //             UserId = u.Id,
+                //             RecipeId = rid
+                //         });
+                //     }
+                // }
+                // db.Favorites.AddRange(favorites);
+                // await db.SaveChangesAsync();
 
                 await tx.CommitAsync();
-                Console.WriteLine("✅ Realistic recipes + ingredients seeded.");
+                Console.WriteLine("✅ Database seeded.");
             }
             catch (Exception ex)
             {
@@ -268,7 +382,7 @@ namespace SueChef.Test
                 => new(title, cuisine, difficulty, desc, method, items.ToList());
 
             // 50 realistic dishes, Serving = 1; quantities chosen accordingly.
-          return new List<RecipeDef>
+            return new List<RecipeDef>
           {
               R("Classic Neapolitan Margherita Pizza","Italian",2,
                 """
@@ -867,22 +981,22 @@ namespace SueChef.Test
         private static (bool veg, bool dairyFree, bool vegan, bool glutenFree, bool nutFree, bool pesc)
             ComputeDietaryFlags(IEnumerable<Ingredient> ingredients)
         {
-            var cats  = ingredients.Select(i => (i.Category ?? "").ToLowerInvariant()).ToHashSet();
+            var cats = ingredients.Select(i => (i.Category ?? "").ToLowerInvariant()).ToHashSet();
             var names = ingredients.Select(i => (i.Name ?? "").ToLowerInvariant()).ToArray();
 
-            bool hasMeat   = cats.Contains("meat") || cats.Contains("poultry");
-            bool hasFish   = cats.Contains("fish") || cats.Contains("seafood");
-            bool hasDairy  = cats.Contains("dairy"); // includes eggs by our catalogue grouping
-            bool hasEggs   = names.Any(n => n.Contains("egg"));
-            bool hasNuts   = cats.Contains("nuts");
+            bool hasMeat = cats.Contains("meat") || cats.Contains("poultry");
+            bool hasFish = cats.Contains("fish") || cats.Contains("seafood");
+            bool hasDairy = cats.Contains("dairy"); // includes eggs by our catalogue grouping
+            bool hasEggs = names.Any(n => n.Contains("egg"));
+            bool hasNuts = cats.Contains("nuts");
             bool hasGluten = cats.Contains("pasta") || cats.Contains("bakery") || names.Any(n => n.Contains("wheat") || n.Contains("bread"));
 
             bool isVegetarian = !hasMeat && !hasFish;
-            bool isVegan      = isVegetarian && !hasDairy && !hasEggs;
-            bool isDairyFree  = !hasDairy || isVegan;
-            bool isNutFree    = !hasNuts;
+            bool isVegan = isVegetarian && !hasDairy && !hasEggs;
+            bool isDairyFree = !hasDairy || isVegan;
+            bool isNutFree = !hasNuts;
             bool isGlutenFree = !hasGluten;
-            bool isPesc       = !hasMeat && hasFish;
+            bool isPesc = !hasMeat && hasFish;
 
             return (isVegetarian, isDairyFree, isVegan, isGlutenFree, isNutFree, isPesc);
         }
