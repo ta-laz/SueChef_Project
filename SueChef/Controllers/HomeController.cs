@@ -207,7 +207,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "These are our most highly rated recipes",
+            Text = "Our top 10 most highly rated recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "highlyrated"
         })
