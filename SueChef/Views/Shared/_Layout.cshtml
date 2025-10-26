@@ -133,8 +133,8 @@
     @if (ViewData["HideNavAndFooter"] != null)
     {
         <!-- Centered pages (like Sign In) -->
-        <div class="flex md:items-center md:justify-center min-h-screen bg-gradient-to-br from-rose-900 to-rose-700">
-            <main role="main" class="w-full max-h-[50%] md:max-h-full flex md:mt-0 -translate-y-[10%] md:-translate-y-0 items-center justify-center">
+        <div class="min-h-screen bg-gradient-to-br from-rose-900 to-rose-700 flex flex-col">
+            <main role="main" class="flex flex-1 items-start justify-center mt-4 md:mt-0 md:items-center">
                 @RenderBody()
             </main>
         </div>
