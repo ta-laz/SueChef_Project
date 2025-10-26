@@ -17,6 +17,35 @@ public class SueChefDbContext : DbContext
     {
     }
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        // Update MealPlan UpdatedOn for direct modifications
+        foreach (var entry in ChangeTracker.Entries<MealPlan>())
+        {
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
+            {
+                entry.Entity.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+            }
+        }
+
+        // Update MealPlan UpdatedOn if related MealPlanRecipe was added or deleted
+        foreach (var entry in ChangeTracker.Entries<MealPlanRecipe>())
+        {
+            if (entry.State == EntityState.Added || entry.State == EntityState.Deleted)
+            {
+                var mealPlan = await MealPlans.FindAsync(entry.Entity.MealPlanId);
+                if (mealPlan != null)
+                {
+                    mealPlan.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+                    // Mark it as modified so EF updates it
+                    Entry(mealPlan).State = EntityState.Modified;
+                }
+            }
+        }
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
