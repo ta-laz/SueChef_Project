@@ -1,92 +1,136 @@
 @model SueChef.ViewModels.SignInViewModel
 
-<body class="bg-rose-800">
+@{
+    Layout = "_Layout";
+    ViewData["HideNavAndFooter"] = true;
+}
 
-        <div class="flex flex-col hover:shadow-md transition-all duration-300 rounded-lg justify-center items-center bg-gray-700 max-w-[75%] md:max-w-[50%]">
-            <img src="~/images/suechef-name.png" alt="SueChef logo"
-                class="flex items-center w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36">
+<body class="bg-white min-h-screen flex items-center justify-center">
+    <main class="w-full justify-center max-w-sm bg-rose-800 rounded-lg shadow-lg p-8">
 
-                <h2 class="text-white text-xl tracking-tight mb-12"> Sign in
-                </h2>
+        <!-- Logo -->
+        <a href="/" class="flex justify-center mb-6">
+            <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-32 h-auto">
+        </a>
+
+        <h2 class="text-center text-white text-2xl font-semibold mb-8">Sign in</h2>
 
 
-            <!-- Error data for if user tries to rate a dish without being logged in -->
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div
-                    class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md shadow mb-6">
-                    <svg class="w-6 h-6 mr-2 text-orange-700" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <span class="font-medium">@TempData["ErrorMessage"]</span>
+        <!-- Error data for if user tries to rate a dish without being logged in -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div
+                class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md shadow mb-6">
+                <svg class="w-6 h-6 mr-2 text-orange-700" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span class="font-medium">@TempData["ErrorMessage"]</span>
+            </div>
+        }
+
+        <!-- Form container -->
+
+        <div>
+            <form id="login-form" asp-action="Create" asp-controller="Sessions" method="post"
+                class="flex flex-col space-y-4" novalidate>
+                @Html.AntiForgeryToken()
+
+                <!-- Display Model Errors -->
+                <div asp-validation-summary="ModelOnly" class="text-white mb-2"></div>
+
+                <!-- Username  -->
+                <div>
+                    <label for="username" class="mb-1 block text-sm text-white"></label>
+                    <input asp-for="UserName" id="username" data-testid="username"
+                        class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-white outline-none"
+                        placeholder="Username*" />
+                    @if (ViewData.ModelState.TryGetValue(nameof(Model.UserName), out var userNameState) &&
+                                        userNameState.Errors.Any())
+                    {
+                        <div class="text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage
+                        </div>
+                    }
                 </div>
+
+                <!-- Password  -->
+                <div class="relative">
+                    <label for="password" class="mb-1 block text-sm text-white"></label>
+                    <input asp-for="Password" data-testid="password" id="password"
+                        class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-white outline-none"
+                        placeholder="Password*" />
+                    <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-400"
+                        onclick="togglePassword()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                    @if (ViewData.ModelState.TryGetValue(nameof(Model.Password), out var passState) &&
+                                        passState.Errors.Any())
+                    {
+                        <div class="text-red-600 text-sm font-bold mt-1">@passState.Errors.First().ErrorMessage</div>
+                    }
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center">
+                    <button type="submit" id="signin-submit" data-testid="signin-submit"
+                        class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium w-48 px-4 py-2 rounded-full ">Sign
+                        In</button>
+                </div>
+
+                <!-- Create Account -->
+                <div class="text-center text-white mt-4 mb-8">New here?
+                    <a class="text-white hover:underline" href="/signup" id="signup">Create an account</a>
+                </div>
+
+                <!-- Divider -->
+                <div class="flex items-center my-4">
+                    <hr class="flex-grow border-gray-300">
+                    <span class="px-2 text-sm text-white">OR</span>
+                    <hr class="flex-grow border-gray-300">
+                </div>
+
+                <!-- Social Logins -->
+                <div class="space-y-2">
+                    <button type="button"
+                        class="w-full border border-gray-300 rounded-full py-2 flex items-center justify-center text-white space-x-2 hover:bg-gray-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="black" viewBox="0 0 24 24">
+                            <path
+                                d="M16.365 1.43a10.035 10.035 0 0 0-12.605 6.187 10.035 10.035 0 0 0 6.187 12.605 10.035 10.035 0 0 0 12.605-6.187h-6.187v-3.703h9.89a10.035 10.035 0 0 0-9.89-8.902z" />
+                        </svg>
+                        <span>Continue with Apple</span>
+                    </button>
+
+                    <button type="button"
+                        class="w-full border border-gray-300 rounded-full py-2 flex items-center justify-center text-white space-x-2 hover:bg-gray-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#1877F2]" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692V11.08h3.128V8.414c0-3.1 1.893-4.788 4.658-4.788 1.324 0 2.462.099 2.794.143v3.24h-1.918c-1.504 0-1.795.715-1.795 1.763v2.309h3.59l-.467 3.626h-3.123V24h6.116c.73 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z" />
+                        </svg>
+                        <span>Continue with Facebook</span>
+                    </button>
+
+                    <button type="button"
+                        class="w-full border border-gray-300 rounded-full py-2 flex items-center justify-center text-white space-x-2 hover:bg-gray-50 transition">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" />
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+
+            </form>
+        </main>
+
+
+        <script>
+            function togglePassword() {
+                const pwd = document.getElementById('password');
+                pwd.type = pwd.type === 'password' ? 'text' : 'password';
             }
+        </script>
 
-            <!-- Form container -->
-
-            <div>
-                <form id="login-form" asp-action="Create" asp-controller="Sessions" method="post"
-                    class="flex flex-col space-y-4" novalidate>
-                    @Html.AntiForgeryToken()
-
-                    <!-- Display Model Errors -->
-                    <div asp-validation-summary="ModelOnly" class="text-white mb-2"></div>
-
-                    <!-- Email  -->
-                    <div>
-                        <label for="username" class="mb-1 block text-sm text-white">Username</label>
-                        <input asp-for="UserName" id="username" data-testid="username"
-                            class="w-full border border-gray-400  p-2" placeholder="Username*" />
-                        @if (ViewData.ModelState.TryGetValue(nameof(Model.UserName), out var userNameState) &&
-                                                userNameState.Errors.Any())
-                        {
-                            <div class="text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage
-                            </div>
-                        }
-                    </div>
-
-                    <!-- Password  -->
-                    <div>
-                        <label for="password" class="mb-1 block text-sm text-white">Password</label>
-                        <input asp-for="Password" data-testid="password" id="password"
-                            class="w-full border border-gray-400  p-2" placeholder="Password*" />
-                        @if (ViewData.ModelState.TryGetValue(nameof(Model.Password), out var passState) &&
-                                                passState.Errors.Any())
-                        {
-                            <div class="text-red-600 text-sm font-bold mt-1">@passState.Errors.First().ErrorMessage</div>
-                        }
-                    </div>
-
-                    <!-- Show Password Checkbox -->
-                    <div class="flex items-center mt-2">
-                        <input id="Show-Password" class="h-4 w-4" type="checkbox" onclick="myFunction()">
-                        <label for="Show-Password" class="ml-2 text-md text-white">Show Password</label>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex justify-center">
-                        <button type="submit" id="signin-submit" data-testid="signin-submit"
-                            class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium w-48 px-4 py-2 rounded-full ">Sign
-                            In</button>
-                    </div>
-
-
-                </form>
-            </div>
-
-            <div class="text-center mt-4">
-                <a class="text-white hover:underline" href="/signup" id="signup">Not a user? Sign Up here!</a>
-            </div>
-
-            <script>
-                function myFunction() {
-                    var x = document.getElementById("password");
-                    x.type = x.type === "password" ? "text" : "password";
-                }
-            </script>
-
-        </div>
-    </div>
-    </div>
 </body>

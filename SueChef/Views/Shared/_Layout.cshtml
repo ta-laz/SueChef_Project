@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,10 +15,12 @@
     <script src="~/js/backtotopbutton.js"></script>
     <script src="~/js/homepagemealplanbutton.js"></script>
 
-
 </head>
 
 <body>
+
+    @if (ViewData["HideNavAndFooter"] == null)
+    {
     <header class="sticky top-0 border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
 
         <!-- Burger menu on the left -->
@@ -123,7 +126,7 @@
         <input type="text" placeholder="Search recipes..."
             class="w-full p-2 rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
     </div>
-
+    }
 
     <div class="container mx-auto">
         <main role="main" class="pb-3">
@@ -131,22 +134,25 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - SueChef - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    @if (ViewData["HideNavAndFooter"] == null)
+    {
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2025 - SueChef - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        }
 
-    <script src="https://unpkg.com/lucide@0.468.0"></script>
-    <script>
-        lucide.createIcons();
-    </script>
+        <script src="https://unpkg.com/lucide@0.468.0"></script>
+        <script>
+            lucide.createIcons();
+        </script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
 
-    <script src="/js/navbar.js" asp-append-version="true"></script>
-</body>
+        <script src="/js/navbar.js" asp-append-version="true"></script>
+    </body>
 
-</html>
+    </html>
