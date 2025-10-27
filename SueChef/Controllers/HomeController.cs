@@ -200,7 +200,7 @@ public class HomeController : Controller
         .OrderByDescending(r => r.AverageRating)
         .FirstOrDefault();
 
-        int highestRatedRecipeId = highestRatedRecipe.Id;
+        int? highestRatedRecipeId = highestRatedRecipe.Id;
 
         var highlyRatedCategory = await _db.Recipes
         .Where(r => r.Id == highestRatedRecipeId)
@@ -217,7 +217,7 @@ public class HomeController : Controller
         .OrderByDescending(r => r.RatingCount)
         .FirstOrDefault();
 
-        int mostRatedRecipeId = mostRatedRecipe.Id;
+        int? mostRatedRecipeId = mostRatedRecipe.Id;
 
         var mostRatedCategory = await _db.Recipes
         .Where(r => r.Id == mostRatedRecipeId)
