@@ -86,9 +86,8 @@
         </div>
 
         <!-- Adding logic here to show logged in and logged out users different things -->
-        @{
             var userId = Context.Session.GetInt32("user_id");
-        }
+
         <!-- This bit is the burger menu for account page stuff (for mobile in future, both for now) -->
         <div id="sideMenuAccount"
             class="fixed top-0 right-0 h-full w-64 transform translate-x-full transition-transform duration-300 ease-in-out z-40 backdrop-blur-sm bg-white/70">
