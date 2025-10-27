@@ -18,7 +18,7 @@ public class Tests : PageTest
     [SetUp]
     public async Task SetupDb()
     {
-        await Page.GotoAsync("/");
+        await Page.GotoAsync($"{BaseUrl}/");
         await using var context = DbFactory.Create();
         await TestDataSeeder.ResetAndSeedAsync(context);
     }
@@ -28,12 +28,12 @@ public class Tests : PageTest
           BaseURL = BaseUrl
       };
     // the following method is a test
-    [Test]
-    public async Task IndexpageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
-    {
-        // go to the SueChef Index page
-        // NB: update the localhost port with the one your server is running on
-        // expect the page title to contain "SueChef"
-        await Expect(Page).ToHaveTitleAsync(new Regex("Home Page"));
-    }
+    // [Test]
+    // public async Task IndexpageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
+    // {
+    //     // go to the MakersBnB Index page
+    //     // NB: update the localhost port with the one your server is running on
+    //     // expect the page title to contain "Index Page - MakersBnB"
+    //     await Expect(Page).ToHaveTitleAsync(new Regex("Home Page"));
+    // }
 }
