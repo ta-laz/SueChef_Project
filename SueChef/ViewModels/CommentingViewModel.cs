@@ -9,5 +9,8 @@ namespace SueChef.ViewModels
         public string? Content { get; set; }
 
         public DateTime CreatedOn { get; set; }
+        public List<CommentingViewModel>? ContentList { get; set; }
+
+        
     }
 }
