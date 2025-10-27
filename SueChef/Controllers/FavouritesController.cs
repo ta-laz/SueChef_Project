@@ -29,6 +29,7 @@ public class FavouritesController : Controller
         var allFavourites = await _db.Favourites
             .Include(f => f.Recipe)
             .Where(f => f.UserId == currentUserId)
+            .OrderByDescending(f => f.Id)
             .Select(f => new FavouritesViewModel
             {
                 Id = f.Id,
@@ -46,5 +47,29 @@ public class FavouritesController : Controller
 
         return View(FavouritesPageViewModel);
     }
+
+    [Route("/Favourites/{id}")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddRecipe(int recipeId)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        bool exists = await _db.Favourites.AnyAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
+        if (exists)
+        {
+            // Show an error message in TempData
+            TempData["ErrorMessage"] = $"This recipe is already in Favourites.";
+            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        }
+        _db.Favourites.Add(new Favourite
+        {
+            UserId = currentUserId,
+            RecipeId = recipeId
+        });
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Recipe added to Favourites";
+        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
+
 
 }
