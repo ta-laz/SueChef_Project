@@ -12,6 +12,7 @@ public class SueChefDbContext : DbContext
     public DbSet<MealPlan>? MealPlans { get; set; }
     public DbSet<MealPlanRecipe>? MealPlanRecipes { get; set; }
     public DbSet<Rating>? Ratings { get; set; }
+    public DbSet<ShoppingList>? ShoppingLists { get; set; }
 
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {

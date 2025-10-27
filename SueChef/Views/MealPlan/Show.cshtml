@@ -41,6 +41,12 @@
             <div class="mb-2">
                 <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">@Model.MealPlan.MealPlanTitle - Recipes:</h2>
             </div>
+            <form asp-controller="ShoppingList" asp-action="Generate">
+                <input type="hidden" name="IngredientLists" id="ingredientsLists" value = @Model.RecipesList/>
+                <button type = submit class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400">
+                    Generate Shopping List
+                </button>
+            </form>
             <a asp-controller="Home" asp-action="Index">
                 <button class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
                     Add Recipes

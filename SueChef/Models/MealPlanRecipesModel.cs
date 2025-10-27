@@ -11,6 +11,8 @@ public class MealPlanRecipe
 
     public int? RecipeId { get; set; }
     public Recipe Recipe { get; set; } = null!;
-        public bool IsDeleted { get; set; } = false;  // NEW FLAG for soft-delete
+    public bool IsDeleted { get; set; } = false;  // NEW FLAG for soft-delete
+
+    public int? Servings { get; set; }
 
 }
