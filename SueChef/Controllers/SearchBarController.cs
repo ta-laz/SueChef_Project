@@ -18,7 +18,7 @@ public class SearchBarController : Controller
         _logger = logger;
         _db = db;
     }
-    
+
     [HttpGet("/search")]
     public async Task<IActionResult> Index(string SearchQuery)
     {
@@ -37,10 +37,30 @@ public class SearchBarController : Controller
             })
             .ToListAsync();
 
+        var ingredients = await _db.Ingredients
+            .OrderBy(i => i.Name)
+            .Select(i => i.Name!)
+            .ToListAsync();
+
+        var allCategories = await _db.Recipes
+            .Select(r => r.Category)
+            .Where(c => c != null)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+
+        var allChefs = await _db.Chefs
+            .OrderBy(c => c.Name)
+            .Select(c => c.Name!)
+            .ToListAsync();
+
         var viewModel = new SearchPageViewModel
         {
             SearchQuery = SearchQuery,
-            Recipes = recipeCards
+            Recipes = recipeCards,
+            AllIngredients = ingredients,
+            AllCategories = allCategories,
+            AllChefs = allChefs
         };
 
         return View(viewModel);
