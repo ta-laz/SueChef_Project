@@ -18,13 +18,13 @@ public class PlaywrightRecipeTests : PageTest
 
     }
 
-    // [SetUp]
-    // public async Task SetupDb()
-    // {
-    //     await using var context = DbFactory.Create();
-    //     await TestDataSeeder.ResetAndSeedAsync(context);
-    //     await Page.GotoAsync("/");
-    // }
+    [SetUp]
+    public async Task SetupDb()
+    {
+        await using var context = DbFactory.Create();
+        await TestDataSeeder.ResetAndSeedAsync(context);
+        await Page.GotoAsync("/");
+    }
     
 
     [Test]
