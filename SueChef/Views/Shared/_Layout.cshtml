@@ -1,30 +1,25 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SueChef</title>
     <script type="importmap"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SueChef.styles.css" asp-append-version="true" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="~/js/carousel.js"></script>
     <script src="~/js/backtotopbutton.js"></script>
     <script src="~/js/homepagemealplanbutton.js"></script>
+
     @* Adding this in here so we can use the Logo name with font if we wanted to *@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap" rel="stylesheet">
-
 </head>
 
-
-
 <body>
-
     @if (ViewData["HideNavAndFooter"] == null)
     {
         <header class="sticky top-0 border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
@@ -37,20 +32,20 @@
                 </svg>
             </button>
 
-        <!-- Logo in the Middle-->
-        <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center select-none">
-            <span class="text-white text-3xl md:text-3xl lg:text-4xl hover:text-orange-400"
-                style="font-family: 'Macondo Swash Caps', cursive;">
-                SueChef
-            </span>
-        </a>
-        <!-- Old code if we wanted to use image instead of font -->
+            <!-- Logo in the Middle-->
+            <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center select-none">
+                <span class="text-white text-3xl md:text-3xl lg:text-4xl hover:text-orange-400"
+                    style="font-family: 'Macondo Swash Caps', cursive;">
+                    SueChef
+                </span>
+            </a>
 
-        @* <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
+            <!-- Old code if we wanted to use image instead of font -->
+
+            @* <a href="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
             <img src="~/images/suechef-name.png" alt="SueChef logo"
                 class="w-24 h-24 md:w-30 md:h-30 lg:w-36 lg:h-36 hover:brightness-200 hover:saturate-200">
         </a> *@
-
 
             <!-- Search on right with the expanding search for web -->
             <div class="flex items-center ml-auto space-x-2">
@@ -67,12 +62,12 @@
                     </svg>
                 </button>
 
-            <!-- Lil guy on the right -->
-            <button id="accountButton" class="p-1 rounded-full hover:bg-rose-900">
-                <img src="~/images/account-icon.png" alt="Account icon" class="w-8 h-8 object-contain" />
-            </button>
-        </div>
-    </header>
+                <!-- Lil guy on the right -->
+                <button id="accountButton" class="p-1 rounded-full hover:bg-rose-900">
+                    <img src="~/images/account-icon.png" alt="Account icon" class="w-8 h-8 object-contain" />
+                </button>
+            </div>
+        </header>
 
         <!-- This bit is the burger menu for the main website navigation (for mobile in future, both for now) -->
         <div id="sideMenu"
@@ -99,7 +94,7 @@
         </div>
 
         <!-- Adding logic here to show logged in and logged out users different things -->
-            var userId = Context.Session.GetInt32("user_id");
+        var userId = Context.Session.GetInt32("user_id");
 
         <!-- This bit is the burger menu for account page stuff (for mobile in future, both for now) -->
         <div id="sideMenuAccount"
@@ -155,17 +150,17 @@
     {
         <!-- Normal pages -->
         <div class="container mx-auto">
-            <main id ="MainContent" role="main" class="pb-3">
+            <main id="MainContent" role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
 
-    <!-- Time for the footer now -->
+        <!-- Time for the footer now -->
 
-    <footer class="bg-gray-800 overscroll-none">
-    <div class="relative mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8 lg:pt-10">
-            <!-- This is the back to the top button -->
-            @* <div class="absolute right-6 top-4 sm:right-6 sm:top-6 lg:right-8 lg:top-8">
+        <footer class="bg-gray-800">
+            <div class="relative mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8 lg:pt-10">
+                <!-- This is the back to the top button -->
+                @* <div class="absolute right-6 top-4 sm:right-6 sm:top-6 lg:right-8 lg:top-8">
                 <a href="#MainContent"
                     class="inline-block rounded-full bg-white p-2 !text-gray-700 hover:!text-white shadow-sm transition hover:bg-rose-700 sm:p-3 lg:p-4">
                     <span class="sr-only">Back to top</span>
@@ -176,44 +171,46 @@
                     </svg>
                 </a>
             </div> *@
-            <div>
                 <div>
-                    <div class="flex flex-col items-center justify-center text-white lg:flex-row lg:justify-between lg:items-center gap-2">
-                        <span class="text-5xl font-semibold" style="font-family: 'Macondo Swash Caps', cursive;">
-                            SueChef
-                        </span>
-                        <p class="mt-3 lg:mt-0 text-sm leading-snug text-gray-400 lg:max-w-2xl text-center lg:text-left">
-                            Helping you find recipes as delightful as your dinner guests! <br/>Bon appetit!
-                        </p>
+                    <div>
+                        <div
+                            class="flex flex-col items-center justify-center text-white lg:flex-row lg:justify-between lg:items-center gap-2">
+                            <span class="text-5xl font-semibold" style="font-family: 'Macondo Swash Caps', cursive;">
+                                SueChef
+                            </span>
+                            <p
+                                class="mt-3 lg:mt-0 text-sm leading-snug text-gray-400 lg:max-w-2xl text-center lg:text-left">
+                                Helping you find recipes as delightful as your dinner guests! <br />Bon appetit!
+                            </p>
+                        </div>
                     </div>
+                    <ul class="mt-6 flex flex-wrap justify-center gap-4 md:gap-8 lg:mt-4 lg:justify-end lg:gap-12">
+                        <li><a href="#" class="relative inline-block !text-white transition duration-300
+                  after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
+                  after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
+                  hover:after:scale-x-100 ">About Us</a></li>
+                        <li><a href="#" class="relative inline-block !text-white transition duration-300
+                  after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
+                  after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
+                  hover:after:scale-x-100">Careers</a></li>
+                        <li><a href="#" class="relative inline-block !text-white transition duration-300
+                  after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
+                  after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
+                  hover:after:scale-x-100">Privacy</a></li>
+                        <li><a href="#" class="relative inline-block !text-white transition duration-300
+                  after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
+                  after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
+                  hover:after:scale-x-100">Contact</a></li>
+                    </ul>
                 </div>
-                <ul class="mt-6 flex flex-wrap justify-center gap-4 md:gap-8 lg:mt-4 lg:justify-end lg:gap-12">
-                    <li><a href="#" class="relative inline-block !text-white transition duration-300
-              after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
-              after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
-              hover:after:scale-x-100 ">About Us</a></li>
-                    <li><a href="#" class="relative inline-block !text-white transition duration-300
-              after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
-              after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
-              hover:after:scale-x-100">Careers</a></li>
-                    <li><a href="#" class="relative inline-block !text-white transition duration-300
-              after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
-              after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
-              hover:after:scale-x-100">Privacy</a></li>
-                    <li><a href="#" class="relative inline-block !text-white transition duration-300
-              after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full
-              after:origin-left after:scale-x-0 after:bg-white after:transition-transform after:duration-300
-              hover:after:scale-x-100">Contact</a></li>
-                </ul>
             </div>
-    </div>
-    </footer>
+        </footer>
+    }
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
     <script src="/js/navbar.js" asp-append-version="true"></script>
     <script src="/js/recipeDetails.js" asp-append-version="true"></script>
 </body>
