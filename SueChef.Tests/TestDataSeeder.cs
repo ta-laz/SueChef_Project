@@ -7,32 +7,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SueChef.Test
 {
-    using SueChef.Models;
-    internal static class TestDataSeeder
+  using Microsoft.AspNetCore.Identity;
+  using SueChef.Models;
+  internal static class TestDataSeeder
+  {
+
+    private static readonly PasswordHasher<User> Hasher = new();
+    private static readonly string PwHash = Hasher.HashPassword(new User(), "pass");
+
+    public static async Task EnsureDbReadyAsync(SueChefDbContext db)
     {
-        public static async Task EnsureDbReadyAsync(SueChefDbContext db)
-        {
-            Console.WriteLine("🔧 Ensuring database is ready (migrate)...");
-            await db.Database.MigrateAsync();
-            Console.WriteLine("✅ Database schema ready.");
-        }
+      Console.WriteLine("🔧 Ensuring database is ready (migrate)...");
+      await db.Database.MigrateAsync();
+      Console.WriteLine("✅ Database schema ready.");
+    }
 
-        public static async Task ResetAndSeedAsync(SueChefDbContext db)
-        {
-            Console.WriteLine("🧹 Resetting and reseeding SueChef test database...");
-            await db.Database.OpenConnectionAsync();
-            await using var tx = await db.Database.BeginTransactionAsync();
+    public static async Task ResetAndSeedAsync(SueChefDbContext db)
+    {
+      Console.WriteLine("🧹 Resetting and reseeding SueChef test database...");
+      await db.Database.OpenConnectionAsync();
+      await using var tx = await db.Database.BeginTransactionAsync();
 
-            try
-            {
-                // Clean slate
-                await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs"
+      try
+      {
+        // Clean slate
+        await db.Database.ExecuteSqlRawAsync("""
+                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
+                    "Ratings","MealPlanRecipes","MealPlans","Users"
                     RESTART IDENTITY CASCADE;
                 """);
 
-                // 1) Chefs (keep your names)
-                var chefs = new List<Chef>
+        // 1) Chefs (keep your names)
+        var chefs = new List<Chef>
                 {
                     new Chef { Name = "Karan Kullar" },
                     new Chef { Name = "Alex Lazar" },
@@ -42,103 +48,265 @@ namespace SueChef.Test
                     new Chef { Name = "Sarah Hunter" },
                     new Chef { Name = "Kiran Bhatt" },
                 };
-                db.AddRange(chefs);
-                await db.SaveChangesAsync();
+        db.AddRange(chefs);
+        await db.SaveChangesAsync();
 
-                // 2) Ingredient catalogue with realistic per-100g/ml macros
-                var ings = SeedIngredientCatalogue();
-                db.AddRange(ings);
-                await db.SaveChangesAsync();
+        // 2) Ingredient catalogue with realistic per-100g/ml macros
+        var ings = SeedIngredientCatalogue();
+        db.AddRange(ings);
+        await db.SaveChangesAsync();
 
-                // Index by name for quick lookup
-                var ingByName = ings.ToDictionary(i => (i.Name ?? string.Empty).ToLowerInvariant());
+        // Index by name for quick lookup
+        var ingByName = ings.ToDictionary(i => (i.Name ?? string.Empty).ToLowerInvariant());
 
-                // 3) Curated recipes (50), Serving = 1
-                var baseCreated = new DateTime(2025, 1, 1, 08, 00, 00, DateTimeKind.Utc);
-                var recipes = BuildRecipes(); // definitions only (names, cuisine, steps, items)
+        // 3) Curated recipes (50), Serving = 1
+        var baseCreated = new DateTime(2025, 1, 1, 08, 00, 00, DateTimeKind.Utc);
+        var recipes = BuildRecipes(); // definitions only (names, cuisine, steps, items)
 
-                int chefIx = 0, picIx = 1, recNo = 0;
-                foreach (var def in recipes)
-                {
-                    recNo++;
-                    var chef = chefs[chefIx % chefs.Count]; chefIx++;
-
-                    var (prep, cook) = EstimateTimes(def.DifficultyLevel, def.Items.Count, def.Cuisine, def.Title, recNo);
-
-                    var recipe = new Recipe
-                    {
-                        Title = def.Title,
-                        Description = def.Description,
-                        Method = def.Method,
-                        DifficultyLevel = def.DifficultyLevel,
-                        IsVegetarian = false,                          // set after we analyse ingredients
-                        IsDairyFree = false,                           // set after we analyse ingredients
-                        Category = def.Cuisine,                        // cuisine in Category
-                        ChefId = chef.Id,
-                        CreatedAt = baseCreated.AddMinutes(recNo * 17),
-                        RecipePicturePath = $"/images/recipes/{Slug(def.Title)}.jpg",
-                        PrepTime = prep,
-                        CookTime = cook
-                    };
-
-                    db.Recipes.Add(recipe);
-                    await db.SaveChangesAsync(); // need Id
-
-                    // Convert recipe items -> RecipeIngredients
-                    var selectedIngredients = new List<Ingredient>();
-                    foreach (var item in def.Items)
-                    {
-                        if (!ingByName.TryGetValue(item.Name.ToLowerInvariant(), out var ing))
-                        {
-                            throw new InvalidOperationException($"Ingredient '{item.Name}' not found in catalogue.");
-                        }
-
-                        selectedIngredients.Add(ing);
-
-                        db.RecipeIngredients.Add(new RecipeIngredient
-                        {
-                            RecipeId = recipe.Id,
-                            IngredientId = ing.Id,
-                            Quantity = item.Quantity,
-                            Unit = item.Unit // may be null (e.g. eggs)
-                        });
-                    }
-                    await db.SaveChangesAsync();
-
-                    // Compute diet flags from actual ingredients
-                    var (veg, dairyFree, vegan, gf, nutFree, pesc) = ComputeDietaryFlags(selectedIngredients);
-                    recipe.IsVegetarian = veg;
-                    recipe.IsDairyFree  = dairyFree;
-                    SetIfExists(recipe, "IsGlutenFree",  gf);
-                    SetIfExists(recipe, "IsVegan",       vegan);
-                    SetIfExists(recipe, "IsNutFree",     nutFree);
-                    SetIfExists(recipe, "IsPescatarian", pesc);
-
-                    db.Recipes.Update(recipe);
-                    await db.SaveChangesAsync();
-                }
-
-                await tx.CommitAsync();
-                Console.WriteLine("✅ Realistic recipes + ingredients seeded.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Reseed failed: {ex.Message}");
-                await tx.RollbackAsync();
-                throw;
-            }
-            finally
-            {
-                await db.Database.CloseConnectionAsync();
-            }
-        }
-
-        // ---------- Ingredients (realistic per 100g/ml) ----------
-        private static List<Ingredient> SeedIngredientCatalogue()
+        int chefIx = 0, picIx = 1, recNo = 0;
+        foreach (var def in recipes)
         {
-            // NOTE: values are approximate reference-label macros per 100g (or 100ml for liquids).
-            // You can refine later with your own data source if needed.
-            var L = new List<Ingredient>
+          recNo++;
+          var chef = chefs[chefIx % chefs.Count]; chefIx++;
+
+          var (prep, cook) = EstimateTimes(def.DifficultyLevel, def.Items.Count, def.Cuisine, def.Title, recNo);
+
+          var recipe = new Recipe
+          {
+            Title = def.Title,
+            Description = def.Description,
+            Method = def.Method,
+            DifficultyLevel = def.DifficultyLevel,
+            IsVegetarian = false,                          // set after we analyse ingredients
+            IsDairyFree = false,                           // set after we analyse ingredients
+            Category = def.Cuisine,                        // cuisine in Category
+            ChefId = chef.Id,
+            CreatedAt = baseCreated.AddMinutes(recNo * 17),
+            RecipePicturePath = $"/images/recipes/{Slug(def.Title)}.jpg",
+            PrepTime = prep,
+            CookTime = cook
+          };
+
+          db.Recipes.Add(recipe);
+          await db.SaveChangesAsync(); // need Id
+
+          // Convert recipe items -> RecipeIngredients
+          var selectedIngredients = new List<Ingredient>();
+          foreach (var item in def.Items)
+          {
+            if (!ingByName.TryGetValue(item.Name.ToLowerInvariant(), out var ing))
+            {
+              throw new InvalidOperationException($"Ingredient '{item.Name}' not found in catalogue.");
+            }
+
+            selectedIngredients.Add(ing);
+
+            db.RecipeIngredients.Add(new RecipeIngredient
+            {
+              RecipeId = recipe.Id,
+              IngredientId = ing.Id,
+              Quantity = item.Quantity,
+              Unit = item.Unit // may be null (e.g. eggs)
+            });
+          }
+          await db.SaveChangesAsync();
+
+          // Compute diet flags from actual ingredients
+          var (veg, dairyFree, vegan, gf, nutFree, pesc) = ComputeDietaryFlags(selectedIngredients);
+          recipe.IsVegetarian = veg;
+          recipe.IsDairyFree = dairyFree;
+          SetIfExists(recipe, "IsGlutenFree", gf);
+          SetIfExists(recipe, "IsVegan", vegan);
+          SetIfExists(recipe, "IsNutFree", nutFree);
+          SetIfExists(recipe, "IsPescatarian", pesc);
+
+          db.Recipes.Update(recipe);
+          await db.SaveChangesAsync();
+        }
+        // Create 10 users
+        var baseJoin = new DateOnly(2025, 1, 1);
+        var baseDob = new DateOnly(1992, 1, 1);
+
+        var users = Enumerable.Range(1, 10).Select(i => new User
+        {
+          UserName = $"user{i}",
+          Email = $"user{i}@example.com",
+          PasswordHash = PwHash,
+          DateJoined = baseJoin.AddDays(i * 10),
+          DOB = baseDob.AddDays(i * 37)
+        }).ToList();
+
+        db.Users.AddRange(users);
+        await db.SaveChangesAsync();
+
+        // Meal Plans (0–2 per user)
+        var mealPlans = new List<MealPlan>();
+        var today = new DateOnly(2025, 10, 26);
+        for (int i = 0; i < users.Count; i++)
+        {
+          var u = users[i];
+          if (i % 3 == 0) continue; // some users have none
+          int planCount = (i % 3 == 1) ? 1 : 2;
+          for (int j = 0; j < planCount; j++)
+          {
+            var created = today.AddDays(-(i * 2 + j));
+            mealPlans.Add(new MealPlan
+            {
+              UserId = u.Id,
+              MealPlanTitle = $"{u.UserName} Plan {j + 1}",
+              CreatedOn = created,
+              UpdatedOn = created.AddDays(1)
+            });
+          }
+        }
+        db.MealPlans.AddRange(mealPlans);
+        await db.SaveChangesAsync();
+
+        // MealPlanRecipes (3–5 random recipes per plan)
+        var totalRecipes = await db.Recipes.CountAsync();
+        var planRecipes = new List<MealPlanRecipe>();
+        var rand = new Random(42);
+
+        foreach (var plan in mealPlans)
+        {
+          int count = rand.Next(3, 6);
+          var picked = new HashSet<int>();
+          while (picked.Count < count)
+          {
+            int rid = rand.Next(1, totalRecipes + 1);
+            picked.Add(rid);
+          }
+          foreach (var rid in picked)
+          {
+            planRecipes.Add(new MealPlanRecipe
+            {
+              MealPlanId = plan.Id,
+              RecipeId = rid
+            });
+          }
+        }
+        db.MealPlanRecipes.AddRange(planRecipes);
+        await db.SaveChangesAsync();
+
+        // Ratings (each user rates 2–4 recipes)
+        var ratings = new List<Rating>();
+        int rateId = 1;
+        foreach (var u in users)
+        {
+          var picked = new HashSet<int>();
+          int rateCount = 2 + (u.Id % 3);
+          for (int j = 0; j < rateCount; j++)
+          {
+            int rid = ((u.Id * 7 + j * 11) % totalRecipes) + 1;
+            if (!picked.Add(rid)) continue;
+            ratings.Add(new Rating
+            {
+              RecipeId = rid,
+              UserId = u.Id,
+              Stars = 2 + ((u.Id + j) % 4),
+              CreatedOn = DateTime.UtcNow.AddDays(-u.Id * 3 - j)
+            });
+          }
+          rateId++;
+        }
+        db.Ratings.AddRange(ratings);
+        await db.SaveChangesAsync();
+
+        // Favorites (each user has 2–4)
+        // var favorites = new List<Favorite>();
+        // foreach (var u in users)
+        // {
+        //     var picked = new HashSet<int>();
+        //     int favCount = 2 + (u.Id % 3);
+        //     for (int j = 0; j < favCount; j++)
+        //     {
+        //         int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
+        //         if (!picked.Add(rid)) continue;
+        //         favorites.Add(new Favorite
+        //         {
+        //             UserId = u.Id,
+        //             RecipeId = rid
+        //         });
+        //     }
+        // }
+        // db.Favorites.AddRange(favorites);
+        // await db.SaveChangesAsync();
+
+// ---------- Comments ----------
+        // int totalUsers = await db.Users.CountAsync();
+        // int totalRecipes = await db.Recipes.CountAsync();
+
+        // if (totalUsers == 0 || totalRecipes == 0)
+        //   throw new InvalidOperationException("Seed users and recipes before comments.");
+
+        // var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
+        // var comments = new List<Comment>();
+        // var phrases = new[]
+        // {
+    //     "Loved this recipe — turned out amazing!",
+    //     "Made it last night and my family devoured it.",
+    //     "Super easy to follow and packed with flavour.",
+    //     "Will definitely make this again soon.",
+    //     "A bit spicy for me, but still really good.",
+    //     "Added some extra herbs — perfection.",
+    //     "Took longer than expected but worth it.",
+    //     "Brilliant weeknight dinner, thanks!",
+    //     "Used leftovers and it still worked great.",
+    //     "Simple, hearty and delicious."
+    // };
+
+        // var rand1 = new Random(99);
+        // var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
+
+        // foreach (var u in users)
+        // {
+        //   // Each user leaves 3 comments on different recipes
+        //   var picked = new HashSet<int>();
+        //   for (int j = 0; j < 3; j++)
+        //   {
+        //     int rid;
+        //     do
+        //     {
+        //       rid = rand1.Next(1, totalRecipes + 1);
+        //     } while (!picked.Add(rid));
+
+        //     string content = phrases[(u.Id + j + rand.Next(phrases.Length)) % phrases.Length];
+        //     var created = baseTime.AddDays(u.Id * 3 + j).AddMinutes(rand.Next(0, 300));
+
+        //     comments.Add(new Comment
+        //     {
+        //       UserId = u.Id,
+        //       RecipeId = rid,
+        //       Content = content,
+        //       CreatedOn = created
+        //     });
+        //   }
+        // }
+
+        // db.Comments.AddRange(comments);
+        // await db.SaveChangesAsync();
+
+        await tx.CommitAsync();
+        Console.WriteLine("✅ Database seeded.");
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"❌ Reseed failed: {ex.Message}");
+        await tx.RollbackAsync();
+        throw;
+      }
+      finally
+      {
+        await db.Database.CloseConnectionAsync();
+      }
+    }
+
+    // ---------- Ingredients (realistic per 100g/ml) ----------
+    private static List<Ingredient> SeedIngredientCatalogue()
+    {
+      // NOTE: values are approximate reference-label macros per 100g (or 100ml for liquids).
+      // You can refine later with your own data source if needed.
+      var L = new List<Ingredient>
             {
                 // Proteins / meats / fish / eggs
                 I("Chicken Breast",       "meat",    165, 31.0f, 3.6f,  0.0f),
@@ -247,28 +415,28 @@ namespace SueChef.Test
                 I("Paneer",               "dairy",   321, 21.0f, 25.0f, 3.6f),
             };
 
-            // Clamp to max lengths (Name/Category up to 100 in your migration)
-            foreach (var ing in L)
-            {
-                ing.Name = Truncate(ing.Name, 100);
-                ing.Category = Truncate(ing.Category, 100);
-            }
+      // Clamp to max lengths (Name/Category up to 100 in your migration)
+      foreach (var ing in L)
+      {
+        ing.Name = Truncate(ing.Name, 100);
+        ing.Category = Truncate(ing.Category, 100);
+      }
 
-            return L;
+      return L;
 
-            static Ingredient I(string name, string category, float kcal, float protein, float fat, float carbs)
-                => new Ingredient { Name = name, Category = category, Calories = kcal, Protein = protein, Fat = fat, Carbs = carbs };
-        }
+      static Ingredient I(string name, string category, float kcal, float protein, float fat, float carbs)
+          => new Ingredient { Name = name, Category = category, Calories = kcal, Protein = protein, Fat = fat, Carbs = carbs };
+    }
 
-        // ---------- Recipe definitions ----------
-        private static List<RecipeDef> BuildRecipes()
-        {
-            // Short helper to keep items compact
-            RecipeDef R(string title, string cuisine, int difficulty, string desc, string method, params (string Name, decimal Qty, string? Unit)[] items)
-                => new(title, cuisine, difficulty, desc, method, items.ToList());
+    // ---------- Recipe definitions ----------
+    private static List<RecipeDef> BuildRecipes()
+    {
+      // Short helper to keep items compact
+      RecipeDef R(string title, string cuisine, int difficulty, string desc, string method, params (string Name, decimal Qty, string? Unit)[] items)
+          => new(title, cuisine, difficulty, desc, method, items.ToList());
 
-            // 50 realistic dishes, Serving = 1; quantities chosen accordingly.
-          return new List<RecipeDef>
+      // 50 realistic dishes, Serving = 1; quantities chosen accordingly.
+      return new List<RecipeDef>
           {
               R("Classic Neapolitan Margherita Pizza","Italian",2,
                 """
@@ -861,83 +1029,83 @@ namespace SueChef.Test
               ),
           };
 
-        }
-
-        // ---------- Helpers ----------
-        private static (bool veg, bool dairyFree, bool vegan, bool glutenFree, bool nutFree, bool pesc)
-            ComputeDietaryFlags(IEnumerable<Ingredient> ingredients)
-        {
-            var cats  = ingredients.Select(i => (i.Category ?? "").ToLowerInvariant()).ToHashSet();
-            var names = ingredients.Select(i => (i.Name ?? "").ToLowerInvariant()).ToArray();
-
-            bool hasMeat   = cats.Contains("meat") || cats.Contains("poultry");
-            bool hasFish   = cats.Contains("fish") || cats.Contains("seafood");
-            bool hasDairy  = cats.Contains("dairy"); // includes eggs by our catalogue grouping
-            bool hasEggs   = names.Any(n => n.Contains("egg"));
-            bool hasNuts   = cats.Contains("nuts");
-            bool hasGluten = cats.Contains("pasta") || cats.Contains("bakery") || names.Any(n => n.Contains("wheat") || n.Contains("bread"));
-
-            bool isVegetarian = !hasMeat && !hasFish;
-            bool isVegan      = isVegetarian && !hasDairy && !hasEggs;
-            bool isDairyFree  = !hasDairy || isVegan;
-            bool isNutFree    = !hasNuts;
-            bool isGlutenFree = !hasGluten;
-            bool isPesc       = !hasMeat && hasFish;
-
-            return (isVegetarian, isDairyFree, isVegan, isGlutenFree, isNutFree, isPesc);
-        }
-
-        private static void SetIfExists(object obj, string propertyName, object? value)
-        {
-            var prop = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-            if (prop is { CanWrite: true })
-            {
-                if (prop.PropertyType == typeof(bool?) && value is bool b) prop.SetValue(obj, (bool?)b);
-                else if (prop.PropertyType == typeof(bool) && value is bool b2) prop.SetValue(obj, b2);
-                else prop.SetValue(obj, value);
-            }
-        }
-
-        private static string Truncate(string? s, int len) => string.IsNullOrEmpty(s) ? string.Empty : (s.Length <= len ? s : s[..len]);
-
-        private static string Slug(string title)
-        {
-            var s = new string((title ?? "").ToLowerInvariant()
-                .Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray());
-            while (s.Contains("--")) s = s.Replace("--", "-");
-            return s.Trim('-');
-        }
-
-        // ---------- Simple record types for recipe definitions ----------
-        private record RecipeDef(string Title, string Cuisine, int DifficultyLevel, string Description, string Method, List<(string Name, decimal Quantity, string? Unit)> Items);
-
-        private static (int prep, int cook) EstimateTimes(int difficulty, int itemCount, string cuisine, string title, int index)
-        {
-            // base minutes by difficulty
-            int basePrep = difficulty switch { 1 => 10, 2 => 15, _ => 20 };   // approx hands-on
-            int baseCook = difficulty switch { 1 => 10, 2 => 20, _ => 35 };   // approx simmer/roast
-
-            // scale a bit with ingredient count
-            basePrep += Math.Clamp(itemCount - 5, -1, 5) * 2;  // +/- up to ~10 mins
-            baseCook += Math.Clamp(itemCount - 5, -1, 5) * 3;  // +/- up to ~15 mins
-
-            // cuisine nudges (rough heuristics)
-            var c = cuisine.ToLowerInvariant();
-            if (c is "italian") baseCook += 5;           // sauces / bakes
-            else if (c is "indian" or "moroccan") baseCook += 10; // longer simmers
-            else if (c is "japanese") basePrep += 5;     // slicing/plating
-            else if (c is "mexican") basePrep += 3;
-
-            // make it deterministic but varied per recipe index
-            basePrep += (index % 3) * 2;
-            baseCook += (index % 4) * 5;
-
-            // clamp to sane ranges
-            basePrep = Math.Clamp(basePrep, 5, 45);
-            baseCook = Math.Clamp(baseCook, 5, 120);
-
-            return (basePrep, baseCook);
-        }
-
     }
+
+    // ---------- Helpers ----------
+    private static (bool veg, bool dairyFree, bool vegan, bool glutenFree, bool nutFree, bool pesc)
+        ComputeDietaryFlags(IEnumerable<Ingredient> ingredients)
+    {
+      var cats = ingredients.Select(i => (i.Category ?? "").ToLowerInvariant()).ToHashSet();
+      var names = ingredients.Select(i => (i.Name ?? "").ToLowerInvariant()).ToArray();
+
+      bool hasMeat = cats.Contains("meat") || cats.Contains("poultry");
+      bool hasFish = cats.Contains("fish") || cats.Contains("seafood");
+      bool hasDairy = cats.Contains("dairy"); // includes eggs by our catalogue grouping
+      bool hasEggs = names.Any(n => n.Contains("egg"));
+      bool hasNuts = cats.Contains("nuts");
+      bool hasGluten = cats.Contains("pasta") || cats.Contains("bakery") || names.Any(n => n.Contains("wheat") || n.Contains("bread"));
+
+      bool isVegetarian = !hasMeat && !hasFish;
+      bool isVegan = isVegetarian && !hasDairy && !hasEggs;
+      bool isDairyFree = !hasDairy || isVegan;
+      bool isNutFree = !hasNuts;
+      bool isGlutenFree = !hasGluten;
+      bool isPesc = !hasMeat && hasFish;
+
+      return (isVegetarian, isDairyFree, isVegan, isGlutenFree, isNutFree, isPesc);
+    }
+
+    private static void SetIfExists(object obj, string propertyName, object? value)
+    {
+      var prop = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+      if (prop is { CanWrite: true })
+      {
+        if (prop.PropertyType == typeof(bool?) && value is bool b) prop.SetValue(obj, (bool?)b);
+        else if (prop.PropertyType == typeof(bool) && value is bool b2) prop.SetValue(obj, b2);
+        else prop.SetValue(obj, value);
+      }
+    }
+
+    private static string Truncate(string? s, int len) => string.IsNullOrEmpty(s) ? string.Empty : (s.Length <= len ? s : s[..len]);
+
+    private static string Slug(string title)
+    {
+      var s = new string((title ?? "").ToLowerInvariant()
+          .Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray());
+      while (s.Contains("--")) s = s.Replace("--", "-");
+      return s.Trim('-');
+    }
+
+    // ---------- Simple record types for recipe definitions ----------
+    private record RecipeDef(string Title, string Cuisine, int DifficultyLevel, string Description, string Method, List<(string Name, decimal Quantity, string? Unit)> Items);
+
+    private static (int prep, int cook) EstimateTimes(int difficulty, int itemCount, string cuisine, string title, int index)
+    {
+      // base minutes by difficulty
+      int basePrep = difficulty switch { 1 => 10, 2 => 15, _ => 20 };   // approx hands-on
+      int baseCook = difficulty switch { 1 => 10, 2 => 20, _ => 35 };   // approx simmer/roast
+
+      // scale a bit with ingredient count
+      basePrep += Math.Clamp(itemCount - 5, -1, 5) * 2;  // +/- up to ~10 mins
+      baseCook += Math.Clamp(itemCount - 5, -1, 5) * 3;  // +/- up to ~15 mins
+
+      // cuisine nudges (rough heuristics)
+      var c = cuisine.ToLowerInvariant();
+      if (c is "italian") baseCook += 5;           // sauces / bakes
+      else if (c is "indian" or "moroccan") baseCook += 10; // longer simmers
+      else if (c is "japanese") basePrep += 5;     // slicing/plating
+      else if (c is "mexican") basePrep += 3;
+
+      // make it deterministic but varied per recipe index
+      basePrep += (index % 3) * 2;
+      baseCook += (index % 4) * 5;
+
+      // clamp to sane ranges
+      basePrep = Math.Clamp(basePrep, 5, 45);
+      baseCook = Math.Clamp(baseCook, 5, 120);
+
+      return (basePrep, baseCook);
+    }
+
+  }
 }
