@@ -157,7 +157,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "New to cooking? Try these!",
+            Text = "Easy Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "easy"
         })
@@ -168,7 +168,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "For those that want a bit more of a challenge",
+            Text = "Medium Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "medium"
         })
@@ -179,7 +179,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "SueChef herself would find these tricky",
+            Text = "Hard Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "hard"
         })
@@ -190,7 +190,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Short on time? You can whip these meals up in a jiffy",
+            Text = "Quick Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "quick"
         })
@@ -207,7 +207,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Our top 10 most highly rated recipes",
+            Text = "Top 10 Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "highlyrated"
         })
@@ -224,7 +224,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "Our users can't stop rating these recipes",
+            Text = "Most Popular Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "mostrated"
         })
@@ -235,7 +235,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "No dairy? No problem!",
+            Text = "Dairy-Free Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "dairyfree"
         })
@@ -246,7 +246,7 @@ public class HomeController : Controller
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
-            Text = "There's no meat in sight, we promise",
+            Text = "Vegetarian Recipes",
             RecipePicturePath = r.RecipePicturePath,
             Category = "vegetarian"
         })
