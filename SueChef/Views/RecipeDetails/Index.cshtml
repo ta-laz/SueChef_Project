@@ -214,10 +214,17 @@
         <div class="divide-y divide-gray-100 dark:divide-gray-700 px-4 py-2">
             @foreach (var i in Model.CommentsList)
             {
-                <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <p class="text-gray-700 text-sm mt-1 leading-snug text-gray-800 dark:text-gray-200 break-words">@i.Content</p>
-                    <small class="text-sm text-gray-500 dark:text-gray-400">@i.CreatedOn.ToString("g")</small>
-                </div>
+              <div class="min-w-0 flex-1">
+              <div class="rounded-xl border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <p class="text-left font-semibold text-sm leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+                  @i.Content
+                </p>
+                <time class="text-right mt-1 block text-xs text-gray-500 dark:text-gray-400">
+                  @i.CreatedOn.ToString("ddd d MMM yyyy, HH:mm")
+                </time>
+              </div>
+            </div>
+      
             }
         </div>
     }
@@ -229,13 +236,13 @@
     }
 </div>
   
-        <div class="flex-col bg-white rounded-b-lg w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)]">
+        <div class="flex-col min-screen bg-white rounded-b-lg w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)]">
             <h2 class="text-lg font-semibold mb-1">Add a comment</h2>
             <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
             @Html.AntiForgeryToken()
                 <textarea name="content" required
                     class="w-full resize-none border p-1 rounded-md focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-25 transition-shadow duration-200"
-                    name="Content" maxlength="2000" placeholder="Comment here! (max 2000 characters)"></textarea>
+                    name="Content" maxlength="2000" placeholder="Comment here!"></textarea>
                 <div class="flex justify-between items-center mt-0">
                     <button data-testid="comment-submit" type="submit"
                         class="bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-yellow-500">
