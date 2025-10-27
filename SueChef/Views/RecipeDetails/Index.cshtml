@@ -123,17 +123,33 @@
                   <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
 
-      <div>
+    
+<div class="mx-auto max-w-md h-72 overflow-y-auto rounded-xl bg-white shadow-md ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Comments (@Model.CommentsList.Count())
+        </h3>
+    </div>
 
-
-          @foreach (var i in Model.CommentsList)
-          {
-            <div data-testid="comment">
-              <h4>@i.Content</h4>
-              <p>@i.CreatedOn.ToString("g")</p>
-            </div>
-          }
-      </div>
+    @if (Model.CommentsList.Any())
+    {
+        <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+            @foreach (var i in Model.CommentsList)
+            {
+                <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <p class="text-gray-800 dark:text-gray-200 break-words">@i.Content</p>
+                    <small class="text-sm text-gray-500 dark:text-gray-400">@i.CreatedOn.ToString("g")</small>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+            No comments yet — be the first to comment!
+        </div>
+    }
+</div>
   
     <h3>Comment on this recipe</h3>
 <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
