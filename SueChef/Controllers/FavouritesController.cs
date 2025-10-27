@@ -86,7 +86,7 @@ public class FavouritesController : Controller
 
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteFavourite(int favouriteId)
@@ -94,6 +94,7 @@ public class FavouritesController : Controller
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
         var favourite = await _db.Favourites
+            .Include(f => f.Recipe)
             .FirstOrDefaultAsync(f => f.Id == favouriteId && f.UserId == currentUserId);
 
         if (favourite == null)
@@ -105,10 +106,29 @@ public class FavouritesController : Controller
         favourite.IsDeleted = true;
         await _db.SaveChangesAsync();
 
+        // Store info in TempData for success message + undo
+        TempData["DeletedRecipeId"] = favourite.Recipe.Id;
+        TempData["DeletedRecipeName"] = favourite.Recipe.Title;
         TempData["Success"] = "Recipe removed from favourites.";
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> UndoDeleteFavourite(int id)
+    {
+        var recipe = await _db.Favourites
+            .Include(f => f.Recipe)
+            .FirstOrDefaultAsync(f => f.RecipeId == id && f.IsDeleted);
+        if (recipe == null)
+        {
+            TempData["ErrorMessage"] = "Unable to undo deletion.";
+            return RedirectToAction("Index");
+        }
+        recipe.IsDeleted = false;
+        await _db.SaveChangesAsync();
+        TempData["SuccessMessage"] = $"Recipe: {recipe.Recipe.Title} restored successfully!";
+        return RedirectToAction("Index");
+    }
 
     // NONE OF THIS IS WORKING FMLLLLL
     // [Route("/Favourites/Delete/{id}")]
