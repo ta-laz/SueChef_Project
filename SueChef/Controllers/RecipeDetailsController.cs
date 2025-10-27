@@ -89,10 +89,22 @@ public class RecipeDetailsController : Controller
             UserRating = userRating //Passing all the ratings and user rating in the controller so we know if they have or haven't rated. 
         };
 
+        // Logic to collect all Meal Plans belonging to signed in user
+        var mealPlans = await _db.MealPlans
+            .Where(mp => mp.UserId == currentUserId)
+            .Select(mp => new MealPlanViewModel
+            {
+                Id = mp.Id,
+                MealPlanTitle = mp.MealPlanTitle,
+                UpdatedOn = mp.UpdatedOn
+            })
+            .ToListAsync();
+
         var AllViewModels = new IndividualRecipePageViewModel
         {
             IndividualRecipe = viewModel,
-            IsFavourited = isFavourited
+            IsFavourited = isFavourited,
+            UserMealPlans = mealPlans
         };
         return View(AllViewModels);
 

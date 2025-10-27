@@ -109,13 +109,13 @@ public class MealPlanController : Controller
                 }).ToList(),
             }).ToList();
         var mealPlan = _db.MealPlans
-        .Where(mp => mp.Id == id)
-        .Select(mp => new MealPlanViewModel
-        {
-            Id = mp.Id,
-            MealPlanTitle = mp.MealPlanTitle
-        })
-        .FirstOrDefault();
+            .Where(mp => mp.Id == id)
+            .Select(mp => new MealPlanViewModel
+            {
+                Id = mp.Id,
+                MealPlanTitle = mp.MealPlanTitle
+            })
+            .FirstOrDefault();
 
     var viewModel = new SingleMealPlanPageViewModel
     {
@@ -126,33 +126,76 @@ public class MealPlanController : Controller
     return View(viewModel);
     }
 
-    [Route("/MealPlans/{id}")]
+    [Route("/MealPlans/AddRecipe")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddRecipe(int id, int recipeId)
-    {   
-        string MealPlanTitle = await _db.MealPlanRecipes
-            .Where(mp => mp.MealPlanId == id)
-            .Select(mp => mp.MealPlan.MealPlanTitle)
-            .FirstOrDefaultAsync();
-        bool exists = await _db.MealPlanRecipes
-            .AnyAsync(mpr => mpr.MealPlanId == id && mpr.RecipeId == recipeId && !mpr.IsDeleted);
+    public async Task<IActionResult> AddRecipe(int recipeId, List<int> mealPlanIds)
+    {
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
 
-        if (exists)
+        if (currentUserId == null)
         {
-            // Show an error message in TempData
-            TempData["ErrorMessage"] = $"This recipe is already in {MealPlanTitle}.";
+            TempData["ErrorMessage"] = "You must be logged in to add recipes to a meal plan.";
             return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
-        }     
-        _db.MealPlanRecipes.Add(new MealPlanRecipe
+        }
+
+        if (mealPlanIds == null || mealPlanIds.Count == 0)
         {
-            MealPlanId = id,
-            RecipeId = recipeId
-        });
-        await _db.SaveChangesAsync();
-        TempData["Success"] = $"Recipe added to {MealPlanTitle}";
+            TempData["ErrorMessage"] = "Please select at least one meal plan.";
+            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        }
+
+        var mealPlans = await _db.MealPlans
+            .Include(mp => mp.MealPlanRecipes)
+            .Where(mp => mealPlanIds.Contains(mp.Id) && mp.UserId == currentUserId)
+            .ToListAsync();
+
+        if (!mealPlans.Any())
+        {
+            TempData["ErrorMessage"] = "No valid meal plans found.";
+            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        }
+
+        int addedCount = 0;
+        foreach (var plan in mealPlans)
+        {
+            // Skip if recipe already exists in plan
+            bool exists = plan.MealPlanRecipes.Any(mpr => mpr.RecipeId == recipeId && !mpr.IsDeleted);
+            if (exists)
+                continue;
+
+            plan.MealPlanRecipes.Add(new MealPlanRecipe
+            {
+                RecipeId = recipeId,
+                MealPlanId = plan.Id
+            });
+
+            // plan.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+            addedCount++;
+        }
+
+        if (addedCount > 0)
+        {
+            await _db.SaveChangesAsync();
+
+            if (addedCount == 1)
+            {
+                string addedTitle = mealPlans.First().MealPlanTitle ?? "Meal Plan";
+                TempData["Success"] = $"Recipe added to {addedTitle}.";
+            }
+            else
+            {
+                TempData["Success"] = $"Recipe added to {addedCount} meal plans.";
+            }
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "This recipe is already in all selected meal plans.";
+        }
+
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
     }
+
 
     [Route("/MealPlans/DeleteRecipe/{id}")]
     [HttpPost]

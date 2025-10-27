@@ -11,29 +11,44 @@
               <div class="inline-flex rounded-lg shadow">
 
                <!-- Favourite Button SVG is a heart-->
-              <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
-                <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
-                <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
-                <button id="favourite_button" class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="@(Model.IsFavourited ? "white" : "none")" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                  Favourite
-                </button>
-              </form>
+               <div class="relative">
+                <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
+                  <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
+                  <button id="favourite_button" class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="@(Model.IsFavourited ? "white" : "none")" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    Favourite
+                  </button>
+                </form>
 
-              <!-- Hidden Save to Meal Plans button -->
-            <form>
-              <button id="save_mealplan_button" class="hidden rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="white" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                Save to Meal Plans
-              </button>
-            </form>
+                <!-- Hidden Save to Meal Plans button -->
+                <form asp-controller="MealPlan" asp-action="AddRecipe" method="post">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
 
+                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full p-2">
+                      @foreach (var plan in Model.UserMealPlans)
+                      {
+                          <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                              <label class="flex items-center gap-2 cursor-pointer w-full">
+                                  <input type="checkbox" name="mealPlanIds" value="@plan.Id" class="hidden peer" />
+                                  <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                                  <span class="text-gray-700 text-sm">@plan.MealPlanTitle</span>
+                              </label>
+                          </li>
+                      }
+                  </div>
+                  <button id="save_mealplan_button" class="hidden rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="white" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save to Meal Plans
+                  </button>
+                </form>
+              </div>
             
-
 
               <!-- Dropdown Toggle -->
               <div class="relative">
@@ -43,7 +58,8 @@
                   </svg>
                 </button>
 
-                <!-- Dropdown Menu -->
+
+                @* <!-- Dropdown Menu -->
                 <ul id="dropdownMenu" class="hidden absolute right-0 mt-1 w-48 bg-orange-50 border border-orange-300 rounded-lg shadow-lg z-10 max-h-64">
                   <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0"><!-- Each drop down -->                 
                     <label class="flex items-center gap-2 cursor-pointer"><!-- It's linking label -->
@@ -73,7 +89,7 @@
                       <span class="text-gray-700 text-sm">Meal Plan 4</span>
                     </label>
                   </li>
-                </ul>
+                </ul> *@
               </div>
             </div>
         <!-- </div> -->
