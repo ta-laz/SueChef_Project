@@ -73,11 +73,11 @@ if (dropdownButton && dropdownMenu) {
     dropdownButton.addEventListener("click", (e) => {
         e.stopPropagation();
 
-        // **Check if user is signed in**
-        if (dropdownButton.dataset.signedIn !== "true") {
-            window.location.href = "/signin?error=You must be signed in to add recipes to your favourites";
-            return; // Stop execution so dropdown does not open
-        }
+        // // **Check if user is signed in**
+        // if (dropdownButton.dataset.signedIn !== "true") {
+        //     window.location.href = "/signin?error=You must be signed in to add recipes to your favourites";
+        //     return; // Stop execution so dropdown does not open
+        // }
         dropdownMenu.classList.toggle("hidden");
     
 

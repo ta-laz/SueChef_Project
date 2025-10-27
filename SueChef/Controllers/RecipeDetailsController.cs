@@ -106,7 +106,7 @@ public class RecipeDetailsController : Controller
             IndividualRecipe = viewModel,
             IsFavourited = isFavourited,
             UserMealPlans = mealPlans,
-            IsSignedIn = currentUserId != null
+            // IsSignedIn = currentUserId != null
         };
         return View(AllViewModels);
 
