@@ -144,26 +144,6 @@
               
         </section>
 
-
-            <!-- Add to plan / Select Plan placeholders Non functional -->
-
-      <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
-        <p class="font-medium">Add to Meal Plan</p>
-        <form asp-action="AddRecipe" asp-controller="Favourites" method="post" asp-route-id="id">
-          <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
-          <input type="hidden" name="id" value="1" />
-          <button type="submit" class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
-            Add to Plan
-          </button>
-        </form>
-        <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
-          Select Plan
-        </button>
-      </section>
-
-      
-
-
             <!-- Toggle buttons for ingredients and nutrition -->
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
