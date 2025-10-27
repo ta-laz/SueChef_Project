@@ -29,6 +29,22 @@ public class CategoriesController : Controller
 
         string pageTitle = "";
 
+        // Compute average rating and join directly in the DB
+        var topRated = await _db.Ratings
+            .Where(rt => rt.Stars.HasValue)
+            .GroupBy(rt => rt.RecipeId)
+            .Select(g => new
+            {
+                RecipeId = g.Key,
+                Average = g.Average(rt => rt.Stars.Value),
+                Count = g.Count()
+            })
+            .OrderByDescending(g => g.Average)
+            .Take(10)
+            .ToListAsync();
+
+        var topIds = topRated.Select(r => r.RecipeId).ToList();
+
         // if the string provided is vegetarian, use the query to find all vegetarian recipes, set the pageTitle to vegetarian recipes
         // if not try the next case
         switch (category.ToLower())
@@ -60,21 +76,9 @@ public class CategoriesController : Controller
             case "highlyrated":
                 pageTitle = "Top 10 Recipes";
 
-                // Compute average rating and join directly in the DB
-                var topRated = await _db.Ratings
-                    .Where(rt => rt.Stars.HasValue)
-                    .GroupBy(rt => rt.RecipeId)
-                    .Select(g => new
-                    {
-                        RecipeId = g.Key,
-                        Average = g.Average(rt => rt.Stars.Value),
-                        Count = g.Count()
-                    })
-                    .OrderByDescending(g => g.Average)
-                    .Take(10)
-                    .ToListAsync();
-
-                var topIds = topRated.Select(r => r.RecipeId).ToList();
+                var top10recipes = await _db.Recipes
+                .Where(r => topIds.Contains(r.Id))
+                .ToListAsync();
 
                 query = _db.Recipes.Where(r => topIds.Contains(r.Id));
                 break;
@@ -116,6 +120,13 @@ public class CategoriesController : Controller
             .Average(rt => (double?)rt.Stars) ?? 0
         })
         .ToListAsync();
+
+        if (category.ToLower() == "highlyrated")
+        {
+            recipes = recipes
+                .OrderBy(r => topIds.IndexOf(r.Id ?? -1)) // default to -1 if null
+                .ToList();
+        }
 
         // make the title the pageTitle and the recipes the newly created list of recipecardviewmodel objects
         var viewModel = new CategoryPageViewModel
