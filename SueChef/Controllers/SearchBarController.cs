@@ -113,7 +113,8 @@ public class SearchBarController : Controller
             Recipes = recipeCards,
             AllIngredients = allIngredients,
             AllCategories = allCategories,
-            AllChefs = allChefs
+            AllChefs = allChefs,
+            HasSearch = hasSearch
         };
 
         return View(viewModel);

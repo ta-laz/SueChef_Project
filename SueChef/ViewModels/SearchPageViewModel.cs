@@ -7,5 +7,7 @@ namespace SueChef.ViewModels
         public List<string> AllIngredients { get; set; } = new();
         public List<string> AllCategories { get; set; } = new();
         public List<string> AllChefs { get; set; } = new();
+        public bool HasSearch { get; set; }
+
     }
 }
