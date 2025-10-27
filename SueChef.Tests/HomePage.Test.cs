@@ -46,7 +46,7 @@ public class HomePage : PageTest
             );
         await Expect(Page.GetByTestId("recipe-title Fluffy Buttered Breakfast Pancakes")).ToBeVisibleAsync();
     }
-    
+
     [Test]
     public async Task MiddleFeaturedRecipe_HomePage_RedirectsToRecipe47()
     {
@@ -55,5 +55,25 @@ public class HomePage : PageTest
                 Page.WaitForURLAsync($"{BaseUrl}/Recipe/47")
             );
         await Expect(Page.GetByTestId("recipe-title Spinach Ricotta Cannelloni Bake")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task BottomFeaturedRecipe_HomePage_RedirectsToRecipe2()
+    {
+        await Task.WhenAll(
+                Page.GetByTestId("Featured Recipe 2").ClickAsync(),
+                Page.WaitForURLAsync($"{BaseUrl}/Recipe/2")
+            );
+        await Expect(Page.GetByTestId("recipe-title Authentic Chicken Tikka Masala Curry")).ToBeVisibleAsync();
+    }
+    
+    [Test]
+    public async Task EasyCategory_HomePage_RedirectsEasyCategoryPage()
+    {
+        await Task.WhenAll(
+                Page.GetByTestId("Featured Recipe 2").ClickAsync(),
+                Page.WaitForURLAsync($"{BaseUrl}/Recipe/2")
+            );
+        await Expect(Page.GetByTestId("recipe-title Authentic Chicken Tikka Masala Curry")).ToBeVisibleAsync();
     }
 }
