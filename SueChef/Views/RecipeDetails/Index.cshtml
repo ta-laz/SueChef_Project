@@ -41,14 +41,39 @@
 
       <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
         <p class="font-medium">Add to Meal Plan</p>
-        <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
-          Add to Plan
-        </button>
+        <form asp-action="AddRecipe" asp-controller="MealPlan" method="post" asp-route-id="id">
+          <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
+          <input type="hidden" name="id" value="1" />
+          <button type="submit" class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
+            Add to Plan
+          </button>
+        </form>
         <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
           Select Plan
         </button>
       </section>
-              
+
+      @* Success Message for Adding to Meal Plan *@
+      <section>
+        @if(TempData["Success"]!= null) 
+          {
+            <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                  </svg>
+                    <span class="font-medium">@TempData["Success"]</span>
+                </div>
+          }
+        
+        @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-message bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+      </section>
+
+
             <!-- Toggle buttons for ingredients and nutrition -->
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
