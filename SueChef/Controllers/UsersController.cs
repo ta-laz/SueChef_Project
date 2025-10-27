@@ -5,6 +5,10 @@ using SueChef.ActionFilters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using System.Security.Claims;
+
 
 namespace SueChef.Controllers;
 
@@ -72,4 +76,40 @@ public class UsersController : Controller
         HttpContext.Session.SetInt32("user_id", user.Id);
         return new RedirectResult("/");
     }
+
+    [Route("/signin-google")]
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        var claims = result.Principal?.Identities.FirstOrDefault()?.Claims;
+        var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+        if (email == null)
+            return Redirect("/signup"); // fallback
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = email,
+                UserName = name ?? email.Split('@')[0],
+                DateJoined = DateOnly.FromDateTime(DateTime.Today)
+            };
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+        }
+
+        HttpContext.Session.SetInt32("user_id", user.Id);
+        return Redirect("/");
+    }
+
+    [HttpGet("/login/google")]
+    public IActionResult GoogleLogin()
+    {
+        var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
 }

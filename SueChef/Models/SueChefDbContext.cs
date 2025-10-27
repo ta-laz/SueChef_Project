@@ -9,6 +9,8 @@ public class SueChefDbContext : DbContext
     public DbSet<Ingredient>? Ingredients { get; set; }
     public DbSet<RecipeIngredient>? RecipeIngredients { get; set; }
     public DbSet<User>? Users { get; set; }
+    public DbSet<MealPlan>? MealPlans { get; set; }
+    public DbSet<MealPlanRecipe>? MealPlanRecipes { get; set; }
     public DbSet<Rating>? Ratings { get; set; }
 
     public DbSet<Comment>? Comments { get; set; }
@@ -17,13 +19,42 @@ public class SueChefDbContext : DbContext
     {
     }
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        // Update MealPlan UpdatedOn for direct modifications
+        foreach (var entry in ChangeTracker.Entries<MealPlan>())
+        {
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
+            {
+                entry.Entity.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+            }
+        }
+
+        // Update MealPlan UpdatedOn if related MealPlanRecipe was added or deleted
+        foreach (var entry in ChangeTracker.Entries<MealPlanRecipe>())
+        {
+            if (entry.State == EntityState.Added || entry.State == EntityState.Deleted)
+            {
+                var mealPlan = await MealPlans.FindAsync(entry.Entity.MealPlanId);
+                if (mealPlan != null)
+                {
+                    mealPlan.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+                    // Mark it as modified so EF updates it
+                    Entry(mealPlan).State = EntityState.Modified;
+                }
+            }
+        }
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // --- Chef → Recipe (one-to-many)
         modelBuilder.Entity<Chef>()
-            .HasMany(c => c.Recipe)
+            .HasMany(c => c.Recipes)
             .WithOne(r => r.Chef)
             .HasForeignKey(r => r.ChefId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -77,12 +108,34 @@ public class SueChefDbContext : DbContext
             .Property(i => i.Category)
             .HasMaxLength(100);
 
-        // --- RecipeIngredient composite uniqueness
-        modelBuilder.Entity<RecipeIngredient>()
-            .HasIndex(ri => new { ri.RecipeId, ri.IngredientId })
-            .IsUnique();
+        // --- User → MealPlan (one-to-many)
+        modelBuilder.Entity<MealPlan>(b =>
+        {
+            b.Property(mp => mp.MealPlanTitle).HasMaxLength(200);
+            b.Property(mp => mp.CreatedOn).HasDefaultValueSql("CURRENT_DATE");
+            b.Property(mp => mp.UpdatedOn).HasDefaultValueSql("CURRENT_DATE");
+            b.HasOne(mp => mp.User)
+             .WithMany(u => u.MealPlans)             // rename property on User
+             .HasForeignKey(mp => mp.UserId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
 
+        // --- MealPlanRecipe (join)
+        modelBuilder.Entity<MealPlanRecipe>(b =>
+        {
+            b.HasOne(mpr => mpr.MealPlan)
+             .WithMany(mp => mp.MealPlanRecipes)
+             .HasForeignKey(mpr => mpr.MealPlanId)
+             .OnDelete(DeleteBehavior.Cascade);
 
+            b.HasOne(mpr => mpr.Recipe)
+             .WithMany(r => r.MealPlanRecipes)
+             .HasForeignKey(mpr => mpr.RecipeId)
+             .OnDelete(DeleteBehavior.Restrict);
 
+            b.HasIndex(mpr => new { mpr.MealPlanId, mpr.RecipeId }).IsUnique();
+        });
     }
+
 }
+

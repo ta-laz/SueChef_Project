@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SueChef.Models;
@@ -11,9 +12,11 @@ using SueChef.Models;
 namespace SueChef.Migrations
 {
     [DbContext(typeof(SueChefDbContext))]
-    partial class SueChefDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023120545_MealPlanTables")]
+    partial class MealPlanTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,31 +39,6 @@ namespace SueChef.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Chefs");
-                });
-
-            modelBuilder.Entity("SueChef.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("SueChef.Models.Ingredient", b =>
@@ -136,9 +114,6 @@ namespace SueChef.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<int?>("MealPlanId")
                         .HasColumnType("integer");
 
@@ -153,33 +128,6 @@ namespace SueChef.Migrations
                         .IsUnique();
 
                     b.ToTable("MealPlanRecipes");
-                });
-
-            modelBuilder.Entity("SueChef.Models.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Stars")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
@@ -320,15 +268,6 @@ namespace SueChef.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("SueChef.Models.Rating", b =>
-                {
-                    b.HasOne("SueChef.Models.Recipe", "Recipe")
-                        .WithMany("Ratings")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Recipe");
-                });
-
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
                     b.HasOne("SueChef.Models.Chef", "Chef")
@@ -377,8 +316,6 @@ namespace SueChef.Migrations
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
                     b.Navigation("MealPlanRecipes");
-
-                    b.Navigation("Ratings");
 
                     b.Navigation("RecipeIngredients");
                 });

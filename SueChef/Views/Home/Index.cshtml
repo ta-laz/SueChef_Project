@@ -9,64 +9,150 @@
 
 <body class="bg-orange-50">
 
-    <!-- FEATURED RECIPE SECTION -->
-    <section class="relative w-full max-w-6xl mx-auto mb-4 rounded-md overflow-hidden shadow-md">
+    <!-- TOP FEATURED RECIPE SECTION -->
+    <section class="mb-8">
+        <partial name="_FeaturedRecipePartial" model="Model.TopFeaturedRecipe" />
+    </section>
 
-        <!-- Background image -->
-        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.FeaturedRecipe.Id"
-            class="block transition-all duration-300">
-            <img src="@Model.FeaturedRecipe.RecipePicturePath" alt="Recipe Picture"
-                class="w-full h-[70vh] object-cover" />
+    <!-- RECIPE CATEGORIES CAROUSEL SECTION -->
+    <section class="mb-4">
+        <partial name="_CategoryCarouselPartial" model="Model.CategoryCarouselViewModel" />
+    </section>
 
-            <!-- Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t to-transparent">
-            </div>
+    <!-- EASY RECIPES CAROUSEL SECTION -->
 
-            <!-- Text Box -->
-            <div
-                class="absolute bottom-8 translate-x-4 bg-white/30 backdrop-blur-md rounded-md p-6 max-w-xl w-[90%] shadow-lg">
-                <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
-                    @Model.FeaturedRecipe.Title
-                </h2>
-                <p class="text-gray-800 text-md line-clamp-3 mb-4 drop-shadow-sm">
-                    @Model.FeaturedRecipe.Description
-                </p>
-                <button
-                    class="inline-block bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-8 py-2 rounded-full transition">
-                    View Recipe
-                </button>
-            </div>
-        </a>
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.EasyRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="easy"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Easy Recipes
+            </a>
+        </div>
     </section>
 
 
+    <!-- MEDIUM RECIPES CAROUSEL SECTION -->
 
-    <!-- ALL VERTICAL RECIPES CAROUSEL SECTION -->
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.MediumRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="medium"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Medium Recipes
+            </a>
+        </div>
+    </section>
 
-    <section class="mb-8">
-        <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
+    <!-- HARD RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.HardRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="hard"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Hard Recipes
+            </a>
+        </div>
+    </section>
+
+    <!-- QUICK RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.QuickRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="quick"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Quick Meals
+            </a>
+        </div>
+    </section>
+
+    <!-- MIDDLE FEATURED RECIPE SECTION -->
+    <section class="mt-12 mb-12 md:mb-4">
+        <partial name="_FeaturedRecipePartial" model="Model.MiddleFeaturedRecipe" />
+    </section>
+
+    <!-- HIGHLY RATED RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.HighlyRatedRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="highlyrated"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Highly Rated Recipes
+            </a>
+        </div>
+    </section>
+
+    <!-- MOST RATED RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.MostRatedRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="mostrated"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Most Popular Recipes
+            </a>
+        </div>
+    </section>
+
+    <!-- DAIRY FREE RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.DairyFreeRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="dairyfree"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Dairy-Free Recipes
+            </a>
+        </div>
     </section>
 
     <!-- VEGETARIAN RECIPES CAROUSEL SECTION -->
 
-    <section class="mb-8">
+    <section class="mb-12 md:mb-4">
         <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="vegetarian"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                Vegetarian Recipes
+            </a>
+        </div>
+    </section>
+
+    <!-- ALL VERTICAL RECIPES CAROUSEL SECTION -->
+
+    <section class="mb-12 md:mb-4">
+        <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
+        <div class="flex justify-center">
+            <a asp-controller="categories" asp-action="Index" asp-route-category="allrecipes"
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition">
+                All Recipes
+            </a>
+        </div>
     </section>
 
     <!-- HORIZONTAL RECIPES SECTION -->
 
-    <section class="mb-8">
-        <div class="max-w-6xl mx-auto mb-2">
-            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">5 Random Recipes</h2>
+    <section class="mb-8 px-5 sm:px-6 md:px-0">
+        <div class="max-w-6xl mx-auto mb-2 ">
+            <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 tracking-tight">Don't know what to make? Here's
+                a random selection</h2>
         </div>
         @{
-            var horizontalRecipes = Model.RecipeCards.Skip(5).Take(5);
+            var horizontalRecipes = Model.RecipeCards.Take(5);
         }
 
         @foreach (var recipe in horizontalRecipes)
         {
             <partial name="_RecipeCardHorizontalPartial" model="recipe" />
         }
+    </section>
+
+    <!-- BOTTOM FEATURED RECIPE SECTION -->
+    <section class="mb-8">
+        <partial name="_FeaturedRecipePartial" model="Model.BottomFeaturedRecipe" />
     </section>
 
 </body>

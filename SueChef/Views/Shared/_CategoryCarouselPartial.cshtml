@@ -1,9 +1,9 @@
-@model SueChef.ViewModels.RecipeCarouselViewModel
+@model SueChef.ViewModels.CategoryCarouselViewModel
 
-<section class="mb-2">
+<section class="mb-4">
     <div class="flex justify-center md:justify-start max-w-6xl mx-auto mb-2">
-        <h2 class="text-2xl font-semibold text-gray-800 tracking-tight ">
-            @Model.Title
+        <h2 class="text-2xl font-semibold text-gray-800  tracking-tight">
+            Categories
         </h2>
     </div>
 
@@ -11,7 +11,7 @@
 
         <!-- Left Button (&#8592 is the left arrow symbol) -->
         <button type="button"
-            class="carousel-left absolute left-10 md:-left-2 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full flex items-center justify-center w-8 h-8 border border-gray-400 shadow-md">
+            class="carousel-left absolute left-16 md:-left-2 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-8 h-8 border border-gray-400 flex items-center justify-center shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -20,18 +20,18 @@
 
         <!-- Carousel Track -->
         <div
-            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-2 sm:gap-4 md:gap-2 justify-start hide-scrollbar px-[10%] sm:px-[10%] md:px-[10%]">
-            @foreach (var recipe in Model.Recipes)
+            class="carousel-track flex overflow-x-auto scroll-smooth snap-x snap-mandatory transition-all duration-500 gap-4 sm:gap-4 md:gap-2 justify-start hide-scrollbar px-[15%] sm:px-[10%] md:px-[10%]">
+            @foreach (var category in Model.Categories)
             {
                 <div class="carousel-card snap-center flex-shrink-0 w-[90%] sm:w-[60%] md:w-[40%] lg:w-[24.25%]">
-                    <partial name="_RecipeCardVerticalPartial" model="recipe" />
+                    <partial name="_CategoryCardPartial" model="category" />
                 </div>
             }
         </div>
 
         <!-- Right Button (&#8594 is the right arrow symbol) -->
         <button type="button"
-            class="carousel-right absolute right-10 md:-right-2 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-8 h-8 border border-gray-400 flex items-center justify-center shadow-md">
+            class="carousel-right absolute right-16 md:-right-2 top-1/4 -translate-y-1/2 bg-orange-100 hover:bg-orange-300 text-gray-700 rounded-full w-8 h-8 border border-gray-400 border border-gray-200 flex items-center justify-center shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
