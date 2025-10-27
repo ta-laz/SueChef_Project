@@ -5,21 +5,21 @@
     ViewData["HideNavAndFooter"] = true;
 }
 
-<main class="w-full max-w-sm bg-gray-900 rounded-lg shadow-lg p-8 flex flex-col items-center justify-center">
+<main class="w-full max-w-sm rounded-lg  p-8 flex flex-col items-center justify-center">
 
     <!-- Logo -->
     <a href="/" class="flex justify-center">
-        <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-32 h-auto">
+        <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-64 h-auto">
     </a>
 
-    <h2 class="text-center text-gray-100 text-2xl font-medium mb-8">Sign in</h2>
+    <h2 class="text-center text-gray-100 text-2xl font-medium mb-8" data-testid="sign-in-text">Sign in</h2>
 
 
     <!-- Error data for if user tries to rate a dish without being logged in -->
     @if (TempData["ErrorMessage"] != null)
     {
         <div
-            class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md shadow mb-6">
+            class="flex items-center justify-center bg-orange-100 border-l-4 border-orange-700 text-orange-800 p-4 rounded-md mb-6">
             <svg class="w-6 h-6 mr-2 text-orange-700" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -58,7 +58,7 @@
                 <input asp-for="Password" data-testid="password" id="password"
                     class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-rose-800 outline-none rounded-md"
                     placeholder="Password*" />
-                <button type="button" class="absolute inset-y-0 right-3 flex items-center text-rose-800"
+                <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-800"
                     onclick="togglePassword()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
