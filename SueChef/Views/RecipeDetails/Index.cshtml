@@ -11,7 +11,7 @@
               <div class="inline-flex rounded-lg shadow">
 
                <!-- Quick Add Button SVG is a heart-->
-              <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post" asp-route-id="@Model.IndividualRecipe.Id">
+              <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
                 <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
                 <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
                 <button id="favourite_button" class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">

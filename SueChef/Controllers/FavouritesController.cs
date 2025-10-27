@@ -48,7 +48,7 @@ public class FavouritesController : Controller
         return View(FavouritesPageViewModel);
     }
 
-    [Route("/Favourites/{id}")]
+    // [Route("/Favourites/{recipeId}")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavourite(int recipeId)
@@ -80,11 +80,33 @@ public class FavouritesController : Controller
                 IsDeleted = false
             });
 
-        await _db.SaveChangesAsync();
-        TempData["Success"] = "Recipe added to favourites.";
-    }
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Recipe added to favourites.";
+        }
 
-    return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteFavourite(int favouriteId)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
+        var favourite = await _db.Favourites
+            .FirstOrDefaultAsync(f => f.Id == favouriteId && f.UserId == currentUserId);
+
+        if (favourite == null)
+        {
+            TempData["ErrorMessage"] = "Favourite not found.";
+            return RedirectToAction("Index"); // Or wherever your All Favourites view is
+        }
+
+        favourite.IsDeleted = true;
+        await _db.SaveChangesAsync();
+
+        TempData["Success"] = "Recipe removed from favourites.";
+        return RedirectToAction("Index");
     }
 
 
