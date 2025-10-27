@@ -202,7 +202,7 @@
               </form> 
 
     
-<div class="mx-auto max-w-md h-72 overflow-y-auto rounded-xl bg-white shadow-md ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+<div class="mx-auto max-w h-72 overflow-y-auto rounded-xl bg-white shadow-md ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 mb-2">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Comments (@Model.CommentsList.Count())
@@ -211,15 +211,15 @@
 
     @if (Model.CommentsList.Any())
     {
-        <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+        <div class="divide-y divide-gray-100 dark:divide-gray-700 px-4 py-2">
             @foreach (var i in Model.CommentsList)
             {
-                <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <p class="text-gray-800 dark:text-gray-200 break-words">@i.Content</p>
+                <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <p class="text-gray-700 text-sm mt-1 leading-snug text-gray-800 dark:text-gray-200 break-words">@i.Content</p>
                     <small class="text-sm text-gray-500 dark:text-gray-400">@i.CreatedOn.ToString("g")</small>
-                </li>
+                </div>
             }
-        </ul>
+        </div>
     }
     else
     {
@@ -229,14 +229,22 @@
     }
 </div>
   
-    <h3>Comment on this recipe</h3>
-<form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
-  @Html.AntiForgeryToken()
-  <textarea name="content" required></textarea>
-  <button type="submit">Comment</button>
-</form>
-</div>
-  <div>
+        <div class="flex-col bg-white rounded-b-lg w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)]">
+            <h2 class="text-lg font-semibold mb-1">Add a comment</h2>
+            <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
+            @Html.AntiForgeryToken()
+                <textarea name="content" required
+                    class="w-full resize-none border p-1 rounded-md focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-25 transition-shadow duration-200"
+                    name="Content" maxlength="2000" placeholder="Comment here! (max 2000 characters)"></textarea>
+                <div class="flex justify-between items-center mt-0">
+                    <button data-testid="comment-submit" type="submit"
+                        class="bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-yellow-500">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+   
 
 
   </body>
