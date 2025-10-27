@@ -138,10 +138,10 @@ public class HomeController : Controller
             .Where(r => r.AverageRating > 4).ToList()
         };
 
-        var mostRatedRecipesCarousel = new RecipeCarouselViewModel
+        var mostPopularRecipesCarousel = new RecipeCarouselViewModel
         {
             Title = "Most Popular Recipes",
-            CarouselId = "mostRatedCarousel",
+            CarouselId = "mostPopularCarousel",
             Recipes = recipeCards
             .OrderByDescending(r => r.RatingCount)
             .Take(10)
@@ -213,20 +213,20 @@ public class HomeController : Controller
         })
         .FirstOrDefaultAsync();
 
-        var mostRatedRecipe = recipeCards
+        var mostPopularRecipe = recipeCards
         .OrderByDescending(r => r.RatingCount)
         .FirstOrDefault();
 
-        int? mostRatedRecipeId = mostRatedRecipe.Id;
+        int? mostPopularRecipeId = mostPopularRecipe.Id;
 
-        var mostRatedCategory = await _db.Recipes
-        .Where(r => r.Id == mostRatedRecipeId)
+        var mostPopularCategory = await _db.Recipes
+        .Where(r => r.Id == mostPopularRecipeId)
         .Select(r => new CategoryCardViewModel
         {
             Id = r.Id,
             Text = "Most Popular Recipes",
             RecipePicturePath = r.RecipePicturePath,
-            Category = "mostrated"
+            Category = "mostpopular"
         })
         .FirstOrDefaultAsync();
 
@@ -254,7 +254,7 @@ public class HomeController : Controller
 
         var categoryCarouselViewModel = new CategoryCarouselViewModel
         {
-            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostRatedCategory, dairyFreeCategory, vegetarianCategory }
+            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostPopularCategory, dairyFreeCategory, vegetarianCategory }
         };
 
         // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
@@ -272,7 +272,7 @@ public class HomeController : Controller
             HardRecipesCarousel = hardRecipesCarousel,
             QuickRecipesCarousel = quickRecipesCarousel,
             HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel,
-            MostRatedRecipesCarousel = mostRatedRecipesCarousel,
+            MostPopularRecipesCarousel = mostPopularRecipesCarousel,
             CategoryCarouselViewModel = categoryCarouselViewModel
         };
 

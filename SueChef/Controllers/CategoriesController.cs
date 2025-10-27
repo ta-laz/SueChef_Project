@@ -43,7 +43,7 @@ public class CategoriesController : Controller
                 break;
             case "quick":
                 query = query.Where(r => (r.PrepTime + r.CookTime) < 60);
-                pageTitle = "Quick Meals";
+                pageTitle = "Quick Recipes";
                 break;
             case "easy":
                 query = query.Where(r => r.DifficultyLevel == 1);
@@ -51,14 +51,14 @@ public class CategoriesController : Controller
                 break;
             case "medium":
                 query = query.Where(r => r.DifficultyLevel == 2);
-                pageTitle = "Medium Difficulty Recipes";
+                pageTitle = "Medium Recipes";
                 break;
             case "hard":
                 query = query.Where(r => r.DifficultyLevel == 3);
                 pageTitle = "Hard Recipes";
                 break;
             case "highlyrated":
-                pageTitle = "Highest Rated Recipes";
+                pageTitle = "Top 10 Recipes";
 
                 // Compute average rating and join directly in the DB
                 var topRated = await _db.Ratings
@@ -78,10 +78,10 @@ public class CategoriesController : Controller
 
                 query = _db.Recipes.Where(r => topIds.Contains(r.Id));
                 break;
-            case "mostrated":
-                pageTitle = "Most Rated Recipes";
+            case "mostpopular":
+                pageTitle = "Most Popular Recipes";
 
-                var mostRatedIds = await _db.Ratings
+                var mostPopularIds = await _db.Ratings
                     .Where(rt => rt.Stars.HasValue)
                     .GroupBy(rt => rt.RecipeId)
                     .OrderByDescending(g => g.Count())
@@ -89,7 +89,7 @@ public class CategoriesController : Controller
                     .Take(10)
                     .ToListAsync();
 
-                query = _db.Recipes.Where(r => mostRatedIds.Contains(r.Id));
+                query = _db.Recipes.Where(r => mostPopularIds.Contains(r.Id));
                 break;
 
             default:
