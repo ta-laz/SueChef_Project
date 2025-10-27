@@ -18,7 +18,7 @@ public class Tests : PageTest
     [SetUp]
     public async Task SetupDb()
     {
-        await Page.GotoAsync("/");
+        await Page.GotoAsync($"{BaseUrl}/");
         await using var context = DbFactory.Create();
         await TestDataSeeder.ResetAndSeedAsync(context);
     }
