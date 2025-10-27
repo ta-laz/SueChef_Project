@@ -232,28 +232,29 @@ namespace SueChef.Test
         // db.Favorites.AddRange(favorites);
         // await db.SaveChangesAsync();
 
-        int totalUsers = await db.Users.CountAsync();
-        int totalRecipes = await db.Recipes.CountAsync();
-
-        if (totalUsers == 0 || totalRecipes == 0)
-          throw new InvalidOperationException("Seed users and recipes before comments.");
-
-        var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
-        var comments = new List<Comment>();
-        var phrases = new[]
-        {
-        "Loved this recipe — turned out amazing!",
-        "Made it last night and my family devoured it.",
-        "Super easy to follow and packed with flavour.",
-        "Will definitely make this again soon.",
-        "A bit spicy for me, but still really good.",
-        "Added some extra herbs — perfection.",
-        "Took longer than expected but worth it.",
-        "Brilliant weeknight dinner, thanks!",
-        "Used leftovers and it still worked great.",
-        "Simple, hearty and delicious."
-    };
 // ---------- Comments ----------
+        // int totalUsers = await db.Users.CountAsync();
+        // int totalRecipes = await db.Recipes.CountAsync();
+
+        // if (totalUsers == 0 || totalRecipes == 0)
+        //   throw new InvalidOperationException("Seed users and recipes before comments.");
+
+        // var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
+        // var comments = new List<Comment>();
+        // var phrases = new[]
+        // {
+    //     "Loved this recipe — turned out amazing!",
+    //     "Made it last night and my family devoured it.",
+    //     "Super easy to follow and packed with flavour.",
+    //     "Will definitely make this again soon.",
+    //     "A bit spicy for me, but still really good.",
+    //     "Added some extra herbs — perfection.",
+    //     "Took longer than expected but worth it.",
+    //     "Brilliant weeknight dinner, thanks!",
+    //     "Used leftovers and it still worked great.",
+    //     "Simple, hearty and delicious."
+    // };
+
         // var rand1 = new Random(99);
         // var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
 
@@ -282,8 +283,8 @@ namespace SueChef.Test
         //   }
         // }
 
-        db.Comments.AddRange(comments);
-        await db.SaveChangesAsync();
+        // db.Comments.AddRange(comments);
+        // await db.SaveChangesAsync();
 
         await tx.CommitAsync();
         Console.WriteLine("✅ Database seeded.");
