@@ -44,6 +44,14 @@ public class RecipeDetailsController : Controller
         if (recipe == null)
             return NotFound();//Return not found page if no recipe is found 
 
+        // Logic for checking is current user has favourited this recipe:
+        bool isFavourited = false;
+        if (currentUserId.HasValue)
+        {
+            isFavourited = await _db.Favourites
+                .AnyAsync(f => f.RecipeId == id && f.UserId == currentUserId && !f.IsDeleted);
+        }
+
         //Calories per serving logic, Dividing calories by 100 so we have the calorie per g and then multiplying by the quantity in the recipe. 
         decimal caloriesPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Calories / 100m) * ri.Quantity);
         decimal proteinPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Protein / 100m) * ri.Quantity);
@@ -83,7 +91,8 @@ public class RecipeDetailsController : Controller
 
         var AllViewModels = new IndividualRecipePageViewModel
         {
-            IndividualRecipe = viewModel
+            IndividualRecipe = viewModel,
+            IsFavourited = isFavourited
         };
         return View(AllViewModels);
 

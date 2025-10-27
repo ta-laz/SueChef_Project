@@ -28,7 +28,7 @@ public class FavouritesController : Controller
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
         var allFavourites = await _db.Favourites
             .Include(f => f.Recipe)
-            .Where(f => f.UserId == currentUserId)
+            .Where(f => f.UserId == currentUserId && !f.IsDeleted)
             .OrderByDescending(f => f.Id)
             .Select(f => new FavouritesViewModel
             {
@@ -51,25 +51,71 @@ public class FavouritesController : Controller
     [Route("/Favourites/{id}")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddRecipe(int recipeId)
+    public async Task<IActionResult> ToggleFavourite(int recipeId)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-        bool exists = await _db.Favourites.AnyAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
-        if (exists)
+
+        // Check if a favourite record already exists (including soft-deleted)
+        var favourite = await _db.Favourites
+            .FirstOrDefaultAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
+
+        if (favourite != null)
         {
-            // Show an error message in TempData
-            TempData["ErrorMessage"] = $"This recipe is already in Favourites.";
-            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+            // Toggle IsDeleted
+            favourite.IsDeleted = !favourite.IsDeleted;
+
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = favourite.IsDeleted
+                ? "Recipe removed from favourites."
+                : "Recipe added to favourites.";
         }
-        _db.Favourites.Add(new Favourite
+        else
         {
-            UserId = currentUserId,
-            RecipeId = recipeId
-        });
+            // Add new favourite
+            _db.Favourites.Add(new Favourite
+            {
+                UserId = currentUserId,
+                RecipeId = recipeId,
+                IsDeleted = false
+            });
+
         await _db.SaveChangesAsync();
-        TempData["Success"] = $"Recipe added to Favourites";
-        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        TempData["Success"] = "Recipe added to favourites.";
     }
+
+    return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
+
+
+    // NONE OF THIS IS WORKING FMLLLLL
+    // [Route("/Favourites/Delete/{id}")]
+    // [HttpPost]
+    // [ValidateAntiForgeryToken]
+    // public async Task<IActionResult> DeleteFavourite(int id)
+    // {
+    //     int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
+    //     var favourite = await _db.Favourites
+    //         .Include(f => f.Recipe)
+    //         .FirstOrDefaultAsync(f => f.Id == id && f.UserId == currentUserId && !f.IsDeleted);
+
+    //     if (favourite == null)
+    //     {
+    //         TempData["ErrorMessage"] = "Favourite not found or already deleted.";
+    //         return RedirectToAction("Index");
+    //     }
+
+    //     favourite.IsDeleted = true;
+    //     await _db.SaveChangesAsync();
+
+    //     TempData["DeletedFavouriteId"] = favourite.Id;
+    //     TempData["DeletedRecipeName"] = favourite.Recipe.Title;
+    //     TempData["SuccessMessage"] = $"Recipe '{favourite.Recipe.Title}' removed from favourites.";
+
+    //     return RedirectToAction("Index");
+    // }
+
 
 
 }

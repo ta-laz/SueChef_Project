@@ -11,4 +11,5 @@ public class Favourite
     public int? RecipeId { get; set; }
     public Recipe Recipe { get; set; } = null!;
     public int? Servings { get; set; } = 4;
+    public bool IsDeleted { get; set; } = false;  // NEW FLAG for soft-delete
 }

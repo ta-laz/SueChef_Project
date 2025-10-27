@@ -24,7 +24,7 @@
                             @Model.Recipe.Title
                         </h3>
                         @* ************* NOTE: CHANGE THIS TO DELETE RECIPE FROM FAVOURITES *@
-                        @* <form asp-controller="MealPlan" asp-action="DeleteRecipe" asp-route-id="@Model.Recipe.MealPlanRecipeId" method="post" onsubmit="return confirm('Are you sure you want to delete this recipe?');" class="inline-flex items-center">
+                        @* <form asp-controller="Favourites" asp-action="DeleteFavourite" method="post" onsubmit="return confirm('Are you sure you want to delete this recipe?');" class="inline-flex items-center">
                                     @Html.AntiForgeryToken()
                                         <button data-testid="" 
                                                 type="submit" 
