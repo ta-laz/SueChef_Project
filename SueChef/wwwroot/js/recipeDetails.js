@@ -65,12 +65,26 @@ setTimeout(() => { //Short script to make the alert messages fade away after a f
 
 const dropdownButton = document.getElementById("dropdownButton");  //Dropdown for add to meal plan on recipe page 
 const dropdownMenu = document.getElementById("dropdownMenu");
+const favouriteButton = document.getElementById("favourite_button"); //Favourite button
+const saveMealplanButton = document.getElementById("save_mealplan_button"); //Hidden Save to Meal Plans button
 
 if (dropdownButton && dropdownMenu) {
     // Toggle dropdown on button click
     dropdownButton.addEventListener("click", (e) => {
         e.stopPropagation();
         dropdownMenu.classList.toggle("hidden");
+    
+
+    // Toggle the buttons based on dropdown visibility
+        if (dropdownMenu.classList.contains("hidden")) {
+            // Dropdown closed → show Favourite button
+            favouriteButton.classList.remove("hidden");
+            saveMealplanButton.classList.add("hidden");
+        } else {
+            // Dropdown open → show Save button
+            favouriteButton.classList.add("hidden");
+            saveMealplanButton.classList.remove("hidden");
+        }
     });
 
     // Prevent clicks inside the menu from closing it
@@ -79,9 +93,19 @@ if (dropdownButton && dropdownMenu) {
     });
 
     // Close dropdown if clicking anywhere else
-    document.addEventListener("click", () => {
-        if (!dropdownMenu.classList.contains("hidden")) {
-            dropdownMenu.classList.add("hidden");
+    document.addEventListener("click", (event) => {
+        const clickedInsideDropdown = dropdownMenu.contains(event.target);
+        const clickedDropdownButton = dropdownButton.contains(event.target);
+
+        // If click is outside both menu and button → close + reset
+        if (!clickedInsideDropdown && !clickedDropdownButton) {
+            if (!dropdownMenu.classList.contains("hidden")) {
+                dropdownMenu.classList.add("hidden");
+            }
+
+            // Reset button states
+            favouriteButton.classList.remove("hidden");
+            saveMealplanButton.classList.add("hidden");
         }
     });
 }
