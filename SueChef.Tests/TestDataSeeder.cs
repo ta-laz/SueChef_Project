@@ -213,24 +213,24 @@ namespace SueChef.Test
         await db.SaveChangesAsync();
 
         // Favorites (each user has 2–4)
-        // var favorites = new List<Favorite>();
-        // foreach (var u in users)
-        // {
-        //     var picked = new HashSet<int>();
-        //     int favCount = 2 + (u.Id % 3);
-        //     for (int j = 0; j < favCount; j++)
-        //     {
-        //         int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
-        //         if (!picked.Add(rid)) continue;
-        //         favorites.Add(new Favorite
-        //         {
-        //             UserId = u.Id,
-        //             RecipeId = rid
-        //         });
-        //     }
-        // }
-        // db.Favorites.AddRange(favorites);
-        // await db.SaveChangesAsync();
+        var favourites = new List<Favourite>();
+        foreach (var u in users)
+        {
+            var picked = new HashSet<int>();
+            int favCount = 2 + (u.Id % 3);
+            for (int j = 0; j < favCount; j++)
+            {
+                int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
+                if (!picked.Add(rid)) continue;
+                favourites.Add(new Favourite
+                {
+                    UserId = u.Id,
+                    RecipeId = rid
+                });
+            }
+        }
+        db.Favourites.AddRange(favourites);
+        await db.SaveChangesAsync();
 
 // ---------- Comments ----------
         // int totalUsers = await db.Users.CountAsync();

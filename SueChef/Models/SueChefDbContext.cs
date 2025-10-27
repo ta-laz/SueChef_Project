@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 public class SueChefDbContext : DbContext
 {
-    public DbSet<Chef>? Chefs { get; set; }
-    public DbSet<Recipe>? Recipes { get; set; }
-    public DbSet<Ingredient>? Ingredients { get; set; }
-    public DbSet<RecipeIngredient>? RecipeIngredients { get; set; }
-    public DbSet<User>? Users { get; set; }
-    public DbSet<MealPlan>? MealPlans { get; set; }
-    public DbSet<MealPlanRecipe>? MealPlanRecipes { get; set; }
-    public DbSet<Rating>? Ratings { get; set; }
+    public DbSet<Chef>? Chefs { get; set; } = null!;
+    public DbSet<Recipe>? Recipes { get; set; } = null!;
+    public DbSet<Ingredient>? Ingredients { get; set; } = null!;
+    public DbSet<RecipeIngredient>? RecipeIngredients { get; set; } = null!;
+    public DbSet<User>? Users { get; set; } = null!;
+    public DbSet<MealPlan>? MealPlans { get; set; } = null!;
+    public DbSet<MealPlanRecipe>? MealPlanRecipes { get; set; } = null!;
+    public DbSet<Rating>? Ratings { get; set; } = null!;
+    public DbSet<Favourite>? Favourites { get; set; } = null!;
 
     public SueChefDbContext(DbContextOptions<SueChefDbContext> options) : base(options)
     {
@@ -82,8 +83,11 @@ public class SueChefDbContext : DbContext
             .HasForeignKey(ri => ri.UserId);
         });
     
-
-
+        
+        // Sets servings to 4 as default in favourites table
+        modelBuilder.Entity<Favourite>()
+            .Property(f => f.Servings)
+            .HasDefaultValue(4);
 
 
         
