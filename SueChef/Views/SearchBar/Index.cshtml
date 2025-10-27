@@ -12,6 +12,8 @@
     }
 </section> *@
 
+@model SueChef.ViewModels.SearchPageViewModel
+
 <div class="m-10 w-screen max-w-screen-md">
 
     <div class="flex flex-col">
@@ -76,4 +78,10 @@
         </div>
     </div>
 
+            @foreach (var recipe in Model.Recipes)
+            {
+                <div class="pb-6">
+                    <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+                </div>
+            }
 </div>

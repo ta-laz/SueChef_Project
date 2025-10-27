@@ -37,6 +37,12 @@ public class SearchBarController : Controller
             })
             .ToListAsync();
 
-        return View(recipeCards);
+        var viewModel = new SearchPageViewModel
+        {
+            SearchQuery = SearchQuery,
+            Recipes = recipeCards
+        };
+
+        return View(viewModel);
     }
 }
