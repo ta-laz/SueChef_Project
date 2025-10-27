@@ -177,9 +177,65 @@ public class HomePage : PageTest
     }
 
     [Test]
-    public async Task EasyRecipesUnderCarousel_HomePage_RedirectsToEasyCategoriesPage()
+    public async Task EasyRecipesButtonUnderCarousel_HomePage_RedirectsToEasyCategoriesPage()
     {
         await Page.GetByTestId("easy-recipes-under-carousel-button").ClickAsync();
         await Expect(Page.GetByTestId("Title-Easy Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task MediumRecipesButtonUnderCarousel_HomePage_RedirectsToMediumCategoriesPage()
+    {
+        await Page.GetByTestId("medium-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Medium Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task HardRecipesButtonUnderCarousel_HomePage_RedirectsToHardCategoriesPage()
+    {
+        await Page.GetByTestId("hard-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Hard Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task QuickRecipesButtonUnderCarousel_HomePage_RedirectsToQuickCategoriesPage()
+    {
+        await Page.GetByTestId("Quick-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Quick Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task HighlyRatedRecipesButtonUnderCarousel_HomePage_RedirectsToHighlyRatedCategoriesPage()
+    {
+        await Page.GetByTestId("HighlyRated-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Top 10 Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task MostPopularRecipesButtonUnderCarousel_HomePage_RedirectsToMostPopularCategoriesPage()
+    {
+        await Page.GetByTestId("MostPopular-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Most Popular Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task DairyFreeRecipesButtonUnderCarousel_HomePage_RedirectsToDairyFreeCategoriesPage()
+    {
+        await Page.GetByTestId("DairyFree-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Dairy-Free Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task VegetarianRecipesButtonUnderCarousel_HomePage_RedirectsToVegetarianCategoriesPage()
+    {
+        await Page.GetByTestId("Vegetarian-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Vegetarian Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task AllRecipesButtonUnderCarousel_HomePage_RedirectsToAllRecipesCategoriesPage()
+    {
+        await Page.GetByTestId("All-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-All Recipes")).ToBeVisibleAsync();
     }
 }
