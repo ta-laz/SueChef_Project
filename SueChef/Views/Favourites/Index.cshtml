@@ -1,0 +1,22 @@
+<!-- VIEW FOR ALL FAVOURITES -->
+
+@model SueChef.ViewModels.FavouritesPageViewModel
+
+<div class="justify-center p-3">
+
+    <!-- Main central container -->
+    <div class="w-full max-w-4xl mx-auto">
+
+        <section class="mb-8">
+            <div class="mb-2">
+                <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">Your Favourite Recipes:</h2>
+            </div>
+
+            <!-- Each recipe card: -->
+            @foreach (SueChef.ViewModels.FavouritesViewModel recipe in Model.Favourites)
+            {
+                <partial name="_FavouritesRecipeCardPartial" model="recipe" />
+            }
+        </section>
+    </div>
+</div>
