@@ -71,9 +71,10 @@ public class SearchBarController : Controller
             if (!string.IsNullOrWhiteSpace(category))
                 query = query.Where(r => r.Category == category);
 
-            // Ingredient checkboxes
+            // Ingredient checkboxes (only if all ingredients are in there)
             if (ingredients != null && ingredients.Any())
-                query = query.Where(r => r.RecipeIngredients.Any(ri => ingredients.Contains(ri.Ingredient.Name!)));
+                query = query.Where(r => ingredients.All(selected =>
+                        r.RecipeIngredients.Any(ri => ri.Ingredient.Name == selected)));
 
             // Chef filter
             if (!string.IsNullOrWhiteSpace(chef))
@@ -93,6 +94,18 @@ public class SearchBarController : Controller
                 })
                 .ToListAsync();
         }
+
+        // Logic for the reset button
+        if (Request.Query.ContainsKey("clear"))
+        {
+            return View(new SearchPageViewModel
+            {
+                AllIngredients = allIngredients,
+                AllCategories = allCategories,
+                AllChefs = allChefs
+            });
+        }
+
 
         var viewModel = new SearchPageViewModel
         {
