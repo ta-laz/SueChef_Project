@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SueChef.Models;
 using SueChef.ViewModels;
 using SueChef.ActionFilters;
-
+using Newtonsoft.Json;
 
 namespace SueChef.Controllers;
 
@@ -117,13 +117,21 @@ public class MealPlanController : Controller
         })
         .FirstOrDefault();
 
-    var viewModel = new SingleMealPlanPageViewModel
-    {
-        RecipesList = recipes,
-        MealPlan = mealPlan
-    };
 
-    return View(viewModel);
+
+        var viewModel = new SingleMealPlanPageViewModel
+        {
+            RecipesList = recipes,
+            MealPlan = mealPlan
+
+        };
+        
+        if (TempData["ShoppingList"] is string json)
+        {
+            var shoppingList = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, (decimal, string)>>>(json);
+            viewModel.ShoppingList = shoppingList;
+        }
+        return View(viewModel);
     }
 
     [Route("/MealPlans/{id}")]
