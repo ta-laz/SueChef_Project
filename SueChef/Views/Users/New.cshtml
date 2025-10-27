@@ -9,12 +9,15 @@
 
     <!-- Logo -->
     <a href="/" class="flex justify-center">
-        <img src="~/images/suechef-name.png" alt="SueChef logo" class="w-64 h-auto">
+        <h1 class="text-white text-6xl hover:text-orange-400 mb-8"
+            style="font-family: 'Macondo Swash Caps', cursive;">
+            SueChef
+        </h1>
     </a>
 
     <!-- Create an account -->
 
-    <h2 class="text-center text-gray-100 text-2xl font-medium mb-4">Create an account</h2>
+    <h2 class="text-center text-gray-100 text-xl font-medium mb-4">Create an account</h2>
 
     <p class="text-center text-gray-100 text-xs">Create your free SueChef account and receive our
         exclusive email newsletters</p>
@@ -26,8 +29,7 @@
             novalidate>
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly"
-                class="text-gray-100 mb-2">
+            <div asp-validation-summary="ModelOnly" class="text-gray-100 mb-2">
             </div>
 
 
@@ -90,7 +92,7 @@
 
             <div class="relative">
                 <label for="confirmpassword" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="ConfirmPassword" data-testid="confirmpassword"id="confirmpassword" type="password"
+                <input asp-for="ConfirmPassword" data-testid="confirmpassword" id="confirmpassword" type="password"
                     class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
                     placeholder="Confirm Password" />
                 <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-800"
@@ -173,17 +175,20 @@
         color: #e11d48;
         font-weight: bold;
     }
-
-    
 </style>
 
 <!-- Ensures boxes have consistent backgrounds regardless of input and browser settings -->
 <style>
-    input, select, textarea {
-        background-color: #f9fafb; /* matches Tailwind's gray-50 */
+    input,
+    select,
+    textarea {
+        background-color: #f9fafb;
+        /* matches Tailwind's gray-50 */
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
         background-color: #f9fafb;
     }
 
@@ -193,5 +198,3 @@
         -webkit-text-fill-color: #000 !important;
     }
 </style>
-
-
