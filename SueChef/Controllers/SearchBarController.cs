@@ -46,11 +46,12 @@ public class SearchBarController : Controller
              || !string.IsNullOrWhiteSpace(chef)
              || (ingredients != null && ingredients.Any());
 
+        // Set up the recipeCards outside the if statement cause it will break the view otherwise
         var recipeCards = new List<RecipeCardViewModel>();
 
+        // Check if anything has been searched and then run through the logic of bringing the right bits out 
         if (hasSearch)
         {
-
             var query = _db.Recipes
                 .Include(r => r.Chef)
                 .Include(r => r.RecipeIngredients)
@@ -94,8 +95,7 @@ public class SearchBarController : Controller
                 })
                 .ToListAsync();
         }
-
-        // Logic for the reset button
+        // Logic for the reset button to clear the page 
         if (Request.Query.ContainsKey("clear"))
         {
             return View(new SearchPageViewModel
@@ -106,7 +106,7 @@ public class SearchBarController : Controller
             });
         }
 
-
+        // ViewModel yay!
         var viewModel = new SearchPageViewModel
         {
             SearchQuery = searchQuery,
