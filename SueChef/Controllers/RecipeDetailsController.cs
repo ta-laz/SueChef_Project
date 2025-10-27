@@ -89,15 +89,25 @@ public class RecipeDetailsController : Controller
             {
                 Id = c.Id,
                 RecipeId = c.RecipeId,
+                userName = c.User.UserName,
                 Content = c.Content,
                 CreatedOn = c.CreatedOn
             })
             .ToListAsync();
 
+            // var usernames = await _db.Users //going to pull the username and the the id priamry key 
+            // .Where(u => u.Id == id)
+            // .Select(u => new UserViewModel 
+            // {
+            //     Id = u.Id,
+            //     UserName = u.UserName
+            // })
+            // .ToListAsync();
+
         var AllViewModels = new IndividualRecipePageViewModel
         {
             IndividualRecipe = viewModel,
-            CommentsList = comments
+            CommentsList = comments,
         };
         return View(AllViewModels);
 

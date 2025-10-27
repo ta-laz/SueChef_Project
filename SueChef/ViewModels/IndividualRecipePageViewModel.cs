@@ -6,4 +6,5 @@ public class IndividualRecipePageViewModel
 
     //public CommentingViewModel commenting { get; set; } = new CommentingViewModel();
     public List<CommentingViewModel> CommentsList { get; set; } =  new();
+    
 }
