@@ -6,7 +6,7 @@
         <!-- Welcome to suechef/sign text  -->
 
         <h1 id="greeting" class="text-3xl font-bold text-gray-700 text-center">Welcome To SueChef!</h1>
-        <h2 class="text-xl font-semibold text-gray-700 text-center mb-6">Sign In</h2>
+        <h2 data-testid="sign-in-text"class="text-xl font-semibold text-gray-700 text-center mb-6">Sign In</h2>
         <!-- Error data for if user tries to rate a dish without being logged in --> 
         @if (TempData["ErrorMessage"] != null)
             {
