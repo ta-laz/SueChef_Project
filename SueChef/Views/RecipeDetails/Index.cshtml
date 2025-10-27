@@ -28,7 +28,7 @@
                   @Html.AntiForgeryToken()
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
 
-                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full p-2">
+                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-orange-50 border border-orange-300 rounded-lg shadow-lg w-full p-2">
                       @foreach (var plan in Model.UserMealPlans)
                       {
                           <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
@@ -52,7 +52,7 @@
 
               <!-- Dropdown Toggle -->
               <div class="relative">
-                <button  id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
+                <button  id="dropdownButton" data-signed-in="@Model.IsSignedIn" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
