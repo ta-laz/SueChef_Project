@@ -1,7 +1,7 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
 <div
-    class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0 h-full h-[90%] sm:h-[90%] md:h-full lg:h-full">
+    class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0 h-full rounded-lg md:rounded-[0%]">
 
     <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col ">
 
@@ -9,79 +9,137 @@
         <!-- Row one: picture -->
         <div class="w-full">
             <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                class="w-full h-96 sm:h-96 md:h-52 lg:h-52 object-cover" />
+                class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" />
         </div>
 
         <div class="flex-1 flex flex-col justify-between p-2 min-h-32">
             <!-- Row two: title -->
             <h3
-                class="text-xl text-gray-700 md:text-xl lg:text-xl line-clamp-2 font-medium hover:text-orange-800 transition mb-1 min-h-14">
+                class="text-2xl text-gray-700 md:text-xl lg:text-xl line-clamp-2 font-medium hover:text-orange-800 transition mb-2 md:mb-1 min-h-16 md:min-h-16">
                 @Model.Title
             </h3>
 
             <!-- Row three: stars -->
             <div class="flex items-center gap-1 mb-1 text-yellow-400">
-                @for (int i = 0; i < 5; i++)
+                @{
+                    double avg = Model.AverageRating ?? 0;
+                    int fullStars = (int)Math.Floor(avg);
+                    bool hasHalfStar = (avg - fullStars) >= 0.5;
+                }
+
+                @for (int i = 1; i <= 5; i++)
                 {
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="w-4 h-4 md:w-4 md:h-4 lg:w-5 lg:h-5">
-                        <path
-                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.94.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
-                    </svg>
+                    if (i <= fullStars)
+                    {
+                        <!-- full star -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 md:w-5 md:h-5 fill-yellow-400 stroke-yellow-400"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                        </svg>
+                    }
+                    else if (i == fullStars + 1 && hasHalfStar)
+                    {
+                        <!-- half star -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 md:w-5 md:h-5 fill-yellow-400 stroke-yellow-400"
+                            viewBox="0 0 24 24">
+                            <defs>
+                                <linearGradient id="half">
+                                    <stop offset="50%" stop-color="currentColor" />
+                                    <stop offset="50%" stop-color="transparent" />
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#half)" stroke="currentColor"
+                                d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                        </svg>
+                    }
+                    else
+                    {
+                        <!-- empty star -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 md:w-5 md:h-5 stroke-yellow-400" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2">
+                            <path
+                                d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                        </svg>
+                    }
                 }
             </div>
 
             <!-- Row four: ratings -->
-            <div class="flex items-center text-gray-700 mb-1 md:text-sm lg:text-md">
-                947 ratings
-            </div>
-        </div>
-
-        <!-- Row five: categories bar -->
-        <div
-            class="flex flex-wrap rounded-md justify-start items-center text-center border-t-2 border-gray-200 py-1 p-2 max-h-18">
-            <div class="flex w-full">
-                <!-- Category -->
-                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                    <img src="images/flag.png" alt="Category"
-                        class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                    <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">@Model.Category</span>
-                </div>
-
-                <!-- Vegetarian -->
-                @if (@Model.IsVegetarian)
-                {
-                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                        <img src="images/vegetariancartoon.png" alt="Vegetarian"
-                            class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Vegetarian</span>
-                    </div>
-                }
-            </div>
-
-            <div class="flex w-full">
-                <!-- Dairy Free -->
-                @if (@Model.IsDairyFree)
-                {
-                    <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                        <img src="images/dairyfree.png" alt="Dairy Free"
-                            class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                        <span class="text-xs md:text-xs lg:text-xs text-gray-500 truncate">Dairy Free</span>
-                    </div>
-                }
-
-                <!-- Difficulty -->
-                <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
-                    <img src="~/images/chefshat.png" alt="Difficulty"
-                        class="w-7 h-7 object-contain rounded-full border-1 border-gray-500" />
-                    <span
-                        class="text-xs font-medium
-                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs" : "text-red-600 md:text-xs lg:text-xs")">
-                        @(Model.DifficultyLevel == 1 ? "Easy" :
-                                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
-                    </span>
-                </div>
-            </div>
-        </div>
+            @{
+                string ratingText = $"{Model.RatingCount} rating{(Model.RatingCount != 1 ? "s" : "")}";
+            }
+            <div class="flex justify-between text-gray-700 mb-1 text-lg md:text-sm lg:text-md">
+                @ratingText
     </a>
+
+    <!-- Add to Meal Plan Button -->
+    <div class="">
+        <button
+            class="meal-plan-btn flex items-center justify-center bg-orange-500 hover:opacity-90 text-white w-8 h-8 shadow-sm rounded-full transition"
+            onclick="toggleMealPlan(this)">
+            <!-- Plus Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 plus-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+
+            <!-- Tick Icon (hidden initially) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden tick-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        </button>
+    </div>
 </div>
+</div>
+
+<!-- Row five: tags bar -->
+<div
+    class="flex flex-wrap justify-start items-center text-center border-t-2 border-gray-200 py-3 md:py-1 p-2 min-h-24 md:min-h-18">
+
+    <div class="flex w-full">
+
+        <!-- Time -->
+        <div class="flex items-center flex-1 w-48 p-1 gap-1">
+            <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
+            <span
+                class="text-md md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">@Model.TotalTimeDisplay</span>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="flex items-center flex-1  max-w-[50%] p-1 gap-1">
+            <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
+            <span
+                class="text-md font-medium
+                    @(Model.DifficultyLevel == 1 ? "text-green-600 md:text-xs lg:text-xs tracking-tight" : Model.DifficultyLevel == 2 ? "text-orange-500 md:text-xs lg:text-xs tracking-tight" : "text-red-600 md:text-xs lg:text-xs tracking-tight")">
+                @(Model.DifficultyLevel == 1 ? "Easy" :
+                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
+            </span>
+        </div>
+    </div>
+
+    <div class="flex w-full">
+
+        <!-- Dairy Free -->
+        @if (@Model.IsDairyFree)
+        {
+            <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
+                <span class="text-md md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">Dairy Free</span>
+            </div>
+        }
+
+        <!-- Vegetarian -->
+        @if (@Model.IsVegetarian)
+        {
+            <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
+                <i data-lucide="vegan" class="w-6 h-6 text-gray-500"></i>
+                <span class="text-md md:text-xs lg:text-xs text-gray-500 truncate tracking-tight">Vegetarian</span>
+            </div>
+        }
+    </div>
+
+</div>
+</div>
+
