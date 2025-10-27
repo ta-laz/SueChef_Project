@@ -71,9 +71,9 @@ public class HomePage : PageTest
     public async Task EasyCategory_HomePage_RedirectsEasyCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByTestId("Featured Recipe 2").ClickAsync(),
-                Page.WaitForURLAsync($"{BaseUrl}/Recipe/2")
+                Page.GetByText("Easy Recipes").First.ClickAsync(),
+                Page.WaitForURLAsync($"{BaseUrl}/Categories?category=easy")
             );
-        await Expect(Page.GetByTestId("recipe-title Authentic Chicken Tikka Masala Curry")).ToBeVisibleAsync();
+        await Expect(Page.GetByText("Easy Recipes")).ToBeVisibleAsync();
     }
 }

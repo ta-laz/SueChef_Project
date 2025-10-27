@@ -3,10 +3,9 @@
 <section
     class="relative group hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 flex-shrink-0 mb-12">
 
-    <a asp-controller="Categories" asp-action="Index" asp-route-category="@Model.Category" data-testid="category @Model." class="block w-full h-full">
+    <a asp-controller="Categories" asp-action="Index" asp-route-category="@Model.Category" data-testid="category-@Model.Category" class="block w-full h-full">
 
-        <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-            class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" />
+        <img src="@Model.RecipePicturePath" alt="Recipe Picture" class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" />
 
         <!-- Overlay -->
         <div class="absolute inset-0 bg-gradient-to-t to-transparent pointer-events-none">
