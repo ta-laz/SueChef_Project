@@ -113,3 +113,20 @@
         pwd.type = pwd.type === 'password' ? 'text' : 'password';
     }
 </script>
+
+<!-- Ensures boxes have consistent backgrounds regardless of input and browser settings -->
+<style>
+    input, select, textarea {
+        background-color: #f9fafb; /* matches Tailwind's gray-50 */
+    }
+
+    input:focus, select:focus, textarea:focus {
+        background-color: #f9fafb;
+    }
+
+    /* Prevent Chrome autofill from using yellow background */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+</style>

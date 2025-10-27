@@ -155,27 +155,6 @@
     }
 </script>
 
-
-@* @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
-<!-- JS for toggle password  -->
-
-<script>
-    function togglePasswordVisibility() {
-        var pass = document.getElementById("password");
-        var confirm = document.getElementById("confirmpassword");
-        if (pass.type === "password") {
-            pass.type = "text";
-            confirm.type = "text";
-        } else {
-            pass.type = "password";
-            confirm.type = "password";
-        }
-    }
-</script> *@
-
-
 <style>
     /* highlight invalid fields */
     input.input-validation-error {
@@ -194,4 +173,25 @@
         color: #e11d48;
         font-weight: bold;
     }
+
+    
 </style>
+
+<!-- Ensures boxes have consistent backgrounds regardless of input and browser settings -->
+<style>
+    input, select, textarea {
+        background-color: #f9fafb; /* matches Tailwind's gray-50 */
+    }
+
+    input:focus, select:focus, textarea:focus {
+        background-color: #f9fafb;
+    }
+
+    /* Prevent Chrome autofill from using yellow background */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+</style>
+
+
