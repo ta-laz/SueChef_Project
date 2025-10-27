@@ -71,70 +71,85 @@ public class HomePage : PageTest
     public async Task EasyCategory_HomePage_RedirectsEasyCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Easy Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-easy").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=easy")
             );
-        await Expect(Page.GetByText("Easy Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Easy Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task MediumCategory_HomePage_RedirectsMediumCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Medium Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-medium").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=medium")
             );
-        await Expect(Page.GetByText("Medium Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Medium Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task HardCategory_HomePage_RedirectsHardCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Hard Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-hard").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=hard")
             );
-        await Expect(Page.GetByText("Hard Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Hard Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task QuickCategory_HomePage_RedirectsQuickCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Quick Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-quick").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=quick")
             );
-        await Expect(Page.GetByText("Quick Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Quick Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task HighlyRatedCategory_HomePage_RedirectsHighlyRatedCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Top 10 Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-highlyrated").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=highlyrated")
             );
-        await Expect(Page.GetByText("Top 10 Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Top 10 Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task MostPopularCategory_HomePage_RedirectsMostPopularCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Most Popular Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-mostpopular").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=mostpopular")
             );
-        await Expect(Page.GetByText("Most Popular Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Most Popular Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
     public async Task DairyFreeCategory_HomePage_RedirectsDairyFreeCategoryPage()
     {
         await Task.WhenAll(
-                Page.GetByText("Dairy-Free Recipes").First.ClickAsync(),
+                Page.GetByTestId("category-dairyfree").First.ClickAsync(),
                 Page.WaitForURLAsync($"{BaseUrl}/Categories?category=dairyfree")
             );
-        await Expect(Page.GetByText("Dairy-Free Recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("Title-Dairy-Free Recipes")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task VegetarianCategory_HomePage_RedirectsVegetarianCategoryPage()
+    {
+        await Page.GetByTestId("category-carousel-right-button").ClickAsync();
+
+        await Page.WaitForSelectorAsync(".carousel-track");
+
+        await Page.GetByTestId("category-vegetarian").First.ScrollIntoViewIfNeededAsync();
+        await Task.WhenAll(
+                Page.GetByTestId("category-vegetarian").First.ClickAsync(),
+                Page.WaitForURLAsync($"{BaseUrl}/Categories?category=vegetarian")
+            );
+        await Expect(Page.GetByTestId("Title-Vegetarian Recipes")).ToBeVisibleAsync();
     }
 
     [Test]
@@ -149,15 +164,22 @@ public class HomePage : PageTest
         await Expect(Page.GetByTestId("category-carousel-left-button")).ToBeVisibleAsync();
     }
 
-    
-    
-    // [Test]
-    // public async Task VegetarianCategory_HomePage_RedirectsVegetarianCategoryPage()
-    // {
-    //     await Task.WhenAll(
-    //             Page.GetByText("Vegetarian Recipes").First.ClickAsync(),
-    //             Page.WaitForURLAsync($"{BaseUrl}/Categories?category=vegetarian")
-    //         );
-    //     await Expect(Page.GetByText("Vegetarian Recipes")).ToBeVisibleAsync();
-    // }
+    [Test]
+    public async Task RecipeCarouselLeftButton_HomePage_IsVisible()
+    {
+        await Expect(Page.GetByTestId("recipe-carousel-left-button").First).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task RecipeCarouselRightButton_HomePage_IsVisible()
+    {
+        await Expect(Page.GetByTestId("recipe-carousel-right-button").First).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task EasyRecipesUnderCarousel_HomePage_RedirectsToEasyCategoriesPage()
+    {
+        await Page.GetByTestId("easy-recipes-under-carousel-button").ClickAsync();
+        await Expect(Page.GetByTestId("Title-Easy Recipes")).ToBeVisibleAsync();
+    }
 }
