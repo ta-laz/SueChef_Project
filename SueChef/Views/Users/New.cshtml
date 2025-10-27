@@ -46,7 +46,7 @@
 
             <div>
                 <label for="username" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="UserName" id="username"
+                <input asp-for="UserName" id="username" data-testid="username"
                     class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
                     placeholder="Username*" />
                 <span asp-validation-for="UserName" class="text-gray-100 text-sm font-bold" id="username-error"></span>
@@ -56,7 +56,7 @@
 
             <div>
                 <label for="dob" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="DOB" id="dob" type="date"
+                <input asp-for="DOB" id="dob" type="date" data-testid="dob"
                     class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2" />
                 <span asp-validation-for="DOB" class="text-gray-100 text-sm font-bold" id="dob-error"></span>
             </div>
@@ -90,7 +90,7 @@
 
             <div class="relative">
                 <label for="confirmpassword" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="ConfirmPassword" id="confirmpassword" type="password"
+                <input asp-for="ConfirmPassword" data-testid="confirmpassword"id="confirmpassword" type="password"
                     class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
                     placeholder="Confirm Password" />
                 <button type="button" class="absolute inset-y-0 right-3 flex items-center text-rose-800"
@@ -109,7 +109,7 @@
             <!-- Sign-up submit form -->
 
             <div class="flex justify-center">
-                <button id="submit" data-testid="signup-submit" type="submit"
+                <button id="submit" data-testid="signup-submit" type="submit" data-testid="submit-signup"
                     class="bg-orange-500 hover:bg-orange-600 text-gray-100 text-sm font-medium w-48 px-4 py-2 rounded-full">Sign
                     Up</button>
             </div>

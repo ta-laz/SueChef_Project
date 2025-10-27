@@ -15,6 +15,15 @@ public class PlaywrightRecipeTests : PageTest
     {
         await using var context = DbFactory.Create();
         await TestDataSeeder.EnsureDbReadyAsync(context);
+
+    }
+
+    [SetUp]
+    public async Task SetupDb()
+    {
+        await Page.GotoAsync($"{BaseUrl}/");
+        await using var context = DbFactory.Create();
+        await TestDataSeeder.ResetAndSeedAsync(context);
     }
 
     [Test]
@@ -26,7 +35,7 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
         // Verify that the correct title is shown
-        await Expect(Page.Locator("body"))
+        await Expect(Page.GetByTestId("recipe-title"))
             .ToContainTextAsync("Authentic Chicken Tikka Masala Curry");
     }
 
@@ -38,7 +47,7 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
         // Look for the Ingredients section heading
-        await Expect(Page.Locator("body"))
+        await Expect(Page.GetByTestId("recipe-tab-toggle"))
             .ToContainTextAsync("Ingredients");
     }
 
@@ -48,13 +57,8 @@ public class PlaywrightRecipeTests : PageTest
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-        // Make sure the ingredient "Chicken Breast" appears
-        await Expect(Page.Locator("body"))
-            .ToContainTextAsync("Chicken Breast");
-
-        // And confirm its measurement appears as well 
-        await Expect(Page.Locator("body"))
-            .ToContainTextAsync("600g");
+        // Make sure the ingredient "Chicken Breast" appears and 600g 
+        await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("600g Chicken Breast");
     }
 
 
@@ -64,7 +68,7 @@ public class PlaywrightRecipeTests : PageTest
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-        await Expect(Page.Locator("body"))
+        await Expect(Page.GetByTestId("Rate-the-recipe"))
         .ToContainTextAsync("Rate this recipe");
     }
 
@@ -76,39 +80,64 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
         // Click the Nutrition tab 
-        await Page.GetByText("Nutrition").ClickAsync();
+        await Page.GetByTestId("toggle-nutrition").ClickAsync();
 
         // Expect the nutrition labels to be visible
-        await Expect(Page.Locator("body")).ToContainTextAsync("Calories per Serving");
-        await Expect(Page.Locator("body")).ToContainTextAsync("Protein per Serving");
-        await Expect(Page.Locator("body")).ToContainTextAsync("Carbs per Serving");
-        await Expect(Page.Locator("body")).ToContainTextAsync("Fats per Serving");
-        await Expect(Page.Locator("body")).ToContainTextAsync("904.48"); // Calories
-        await Expect(Page.Locator("body")).ToContainTextAsync("62.5");  // Protein
-        await Expect(Page.Locator("body")).ToContainTextAsync("82.9");  // Carbs
-        await Expect(Page.Locator("body")).ToContainTextAsync("34.9");  // Fats
+        await Expect(Page.GetByTestId("calories")).ToContainTextAsync("Calories 904 Kcal");
+        await Expect(Page.GetByTestId("protein")).ToContainTextAsync("Protein 62.5g");
+        await Expect(Page.GetByTestId("carbs")).ToContainTextAsync("Carbs 82.9g");
+        await Expect(Page.GetByTestId("fats")).ToContainTextAsync("Fats 34.9g");
     }
 
 
     [Test]
-    public async Task IndividualPage_ShowsRatingForm_WhenRateTheRecipeClicked()
+    public async Task IndividualPage_RedirectsToLoginWhenRating()
     {
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-        // Scroll to the bottom to make sure the "Rate the Recipe" button is visible
-        await Page.EvaluateAsync("window.scrollTo(0, document.body.scrollHeight)");
+        await Page.GetByTestId("star-rating-1").ClickAsync();
 
-        // Click the "Rate the Recipe" button or link
-        await Page.GetByText("Rate this recipe").ClickAsync();
+        await Task.WhenAll(
+        Page.GetByTestId("rating-submit-button").ClickAsync(),
+        Page.WaitForURLAsync($"{BaseUrl}/signin")
+        );
 
-        // Expect the rating form or modal to appear
-        await Expect(Page.Locator("body")).ToContainTextAsync("Rating");
+        await Expect(Page.GetByTestId("sign-in-text")).ToBeVisibleAsync();
 
-        // check if rating input is visible
-        await Expect(Page.Locator("input[type='number'], .star-rating, .rating-stars"))
-        .ToBeVisibleAsync();
-
+    }
+    [Test]
+    public async Task IndividualPage_LoggedInUserCanRateRecipe()
+    {
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.GetByTestId("username").FillAsync("TestingUser");
+        await Page.GetByTestId("dob").FillAsync("1995-08-10");
+        await Page.GetByTestId("email").FillAsync("test@testmail.com");
+        await Page.GetByTestId("password").FillAsync("Password123!");
+        await Page.GetByTestId("confirmpassword").FillAsync("Password123!");
+        await Page.GetByTestId("submit-signup").ClickAsync();
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.GetByTestId("star-rating-1").ClickAsync();
+        await Page.GetByTestId("rating-submit-button").ClickAsync();
+        await Expect(Page.GetByTestId("thanks-for-rating")).ToBeVisibleAsync();
+    }
+    [Test]
+    public async Task IndividualPage_MethodFormatsFromDBCorrectly()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Expect(Page.GetByTestId("method-steps")).ToContainTextAsync("Step 1: Marinate chicken Step 2: Grill Step 3: Simmer sauce with tomato, cream and spices Step 4: Combine and simmer.");
+    }
+    [Test]
+    public async Task IndividualPage_ServingsButtonChangesIngredientAmounts()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        // Make sure the ingredient "Chicken Breast" appears and 600g 
+        await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("600g Chicken Breast");
+        await Page.GetByTestId("serving-input").FillAsync("1");
+        await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("150g Chicken Breast");
 
     }
 }

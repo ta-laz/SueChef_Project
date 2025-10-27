@@ -3,10 +3,60 @@
     <main class="max-w-3xl mx-auto p-6 space-y-8">
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
-        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 object-cover rounded-lg shadow md:w-[75%] md:mx-auto"/>
-        <!-- <div class="border border-orange-700 w-[75%] mx-auto my-auto rounded-lg items-center">  -->
-            <h1 class="text-3xl font-bold mt-4">@Model.IndividualRecipe.Title</h1>
-            <h2 class="text-lg text-gray-700">By @Model.IndividualRecipe.ChefName</h2>
+        <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
+            <h1 data-testid="recipe-title" class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
+            <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
+              <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
+
+              <div class="inline-flex rounded-lg shadow">
+
+               <!-- Quick Add Button SVG is a heart-->
+              <button class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>Favourite</button>
+
+              <!-- Dropdown Toggle -->
+              <div class="relative">
+                <button  id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <ul id="dropdownMenu" class="hidden absolute right-0 mt-1 w-48 bg-orange-50 border border-orange-300 rounded-lg shadow-lg z-10 max-h-64">
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0"><!-- Each drop down -->                 
+                    <label class="flex items-center gap-2 cursor-pointer"><!-- It's linking label -->
+                      <input type="checkbox" value="mp1" class="hidden peer"><!-- Checkbox with mealplan linked -->
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span><!-- Styling for the checkbox -->
+                      <span class="text-gray-700 text-sm">Meal Plan 1</span><!-- Text all repeated below likely will just need one with a foreach meal plan loop  -->
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 2</span>
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 3</span>
+                    </label>
+                  </li>
+                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" value="mp1" class="hidden peer">
+                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                      <span class="text-gray-700 text-sm">Meal Plan 4</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
         <!-- </div> -->
         </header>
                     <!-- Recipe Description for boss sarah-->
@@ -24,7 +74,7 @@
           </div>
           <!-- Serves -->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Serves:</strong>
-            <input type="number" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
+            <input type="number" data-testid="serving-input" id="serving" name="serving" min="1" max="12" value="4" class="w-16 text-center border border-orange-400 rounded-lg bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 appearance-none" />
           </div>
           <!-- Rating -->
           <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
@@ -34,6 +84,8 @@
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Prep Time:</strong><span>@Model.IndividualRecipe.PrepTime mins</span></div>
           <!-- Cook Time in mins (do we want hours for longer?) -->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Cook Time:</strong><span>@Model.IndividualRecipe.CookTime mins</span></div>
+        </section>
+              
         </section>
 
 
@@ -78,21 +130,22 @@
 
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
         <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
-          <button id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
-          <button id="nutritionButton" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
+          <button data-testid="recipe-tab-toggle" id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
+          <button data-testid="toggle-nutrition" id="nutritionButton" class="flex-1 py-2 bg-orange-100 text-orange-700 font-semibold border-l-2 border-orange-800">Nutrition</button>
         </div>
           
           <div id = "ingredientsToggle">       <!-- Displayed by default -->
           @foreach(var i in Model.IndividualRecipe.Ingredients)
           {
-                <p class="p-2 mb-1 border-b-2 border-orange-700 italic ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity">@i.Quantity</span>@i.Unit @i.Name </p> 
+                <p data-testid="recipe-ingredients-@i.Name" class="tracking-wide p-2 mb-1 border-b-2 border-orange-700 ingredient" data-base-quantity="@i.Quantity" data-unit="@i.Unit"><span class="ingredient-quantity font-bold">@i.Quantity</span><strong>@i.Unit</strong> @i.Name </p> 
           }
           </div>
           <div id="nutritionToggle" style="display:none">       <!-- Hidden until toggled-->
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Calories per Serving: <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Protein per Serving: <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Carbs per Serving: <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
-              <p class="p-2 mb-1 border-b-2 border-orange-700 italic">Fats per Serving: <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
+              <p class="p-2 mb-1 border-b-2 border-orange-700 text-right italic">Nutrition: Per serving</p>
+              <p data-testid="calories" class="p-2 mb-1 border-b-2 border-orange-700 font-b"><strong>Calories</strong> <span id="caloriesPerServing">@Model.IndividualRecipe.CaloriesPerServing.ToString("0") Kcal</span></p>
+              <p data-testid="protein" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Protein</strong> <span id="proteinPerServing">@Model.IndividualRecipe.ProteinPerServing.ToString("0.0")g</span></p>
+              <p data-testid="carbs" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Carbs</strong> <span id="carbsPerServing">@Model.IndividualRecipe.CarbsPerServing.ToString("0.0")g</span></p>
+              <p data-testid="fats" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Fats</strong> <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
               <!-- Logic to split the method and change it into step: 1, etc. -->
@@ -102,12 +155,12 @@
         var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
         var counter = 1;
       }
-      <section>
+      <section data-testid="method-steps">
         <h2 class="text-xl font-semibold mb-2">Method</h2>
         <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
         @foreach(var step in steps)
         { 
-          <p class="">Step @counter: @step.Trim()</p>
+          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
           counter++;
         }
         </ul>
@@ -121,12 +174,12 @@
                   <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
                   </svg>
-                    <span class="font-medium">@TempData["SuccessMessage"]</span>
+                    <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
                 </div>
             }
       
       <div class="text-center p-4 border-t">
-              <h2 class="text-xl font-semibold mb-2">Rate this recipe</h2>
+              <h2 data-testid="Rate-the-recipe"class="text-xl font-semibold mb-2">Rate this recipe</h2>
               
               <form method="post" action="@Url.Action("Rate", "RecipeDetails")" id="ratingForm">  
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />  <!-- Sends the recipe ID back to the controller so controller knows what is recipe is being rated -->
@@ -134,74 +187,15 @@
                       @for (int i = 5; i >= 1; i--) //Generate 5 stars 
                       {
                           <input type="radio" id="star-@i" name="rating" value="@i" class="hidden peer" @(Model.IndividualRecipe.UserRating == i ? "checked" : "") required /> //Hidden radio buttons so we know what the user has rated 1-5 
-                          <label for="star-@i" class="peer-checked:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
+                          <label data-testid="star-rating-@i" for="star-@i" class="peer-checked:text-yellow-400 peer-hover:text-yellow-400 [&:hover~label]:text-yellow-400 text-gray-700 cursor-pointer transition-colors duration-150">&#9733;</label> //Formatting for stars, gray normally but when clicked turn yellow
                       }
                   </div>
                   
-                  <button type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
 
         
       </div>
     </main>
   </body>
-</html>
-
-<script>
-  //Saving all the IDs to variables so it knows where to go
-    const ingredientsBtn = document.getElementById('ingredientsButton');
-    const nutritionBtn = document.getElementById('nutritionButton');
-    const ingredientsTab = document.getElementById('ingredientsToggle');
-    const nutritionTab = document.getElementById('nutritionToggle');
-    const servingInput = document.getElementById('serving');
-    const baseServings = 4; 
-    const ingredientEls = Array.from(document.querySelectorAll('.ingredient')); //Creates an array of ingredient elements 
-
-    servingInput.addEventListener('input', () => { //When input changes execute the following
-      let servings = parseFloat(servingInput.value) || baseServings; //Turns the value into a float and defaults to base servings if not filled in. 
-      if (servings < 1 ) servings = 1; 
-      if (servings > 12) servings = 12;
-      servingInput.value = servings; 
-
-
-      ingredientEls.forEach(el => { //Logic to take the quantity and multiply it by the servings, to scale 
-          const baseQty = parseFloat(el.dataset.baseQuantity);
-          const newQty = baseQty * servings;
-          el.querySelector('.ingredient-quantity').textContent = newQty; //Find the .ingredient-quantity class and update it to the new amount 
-      });
-    });
-    servingInput.dispatchEvent(new Event('input')); //Run the script on load so that it starts as 4 
-
-    // JS waiting for the button to be clicked 
-    ingredientsBtn.addEventListener('click', () => {
-        ingredientsTab.style.display = 'block'; //Logic so when its clicked it either hides or shows. 
-        nutritionTab.style.display = 'none';
-
-        // Logic so that when clicked it is adding or removing styling based on whats active 
-        ingredientsBtn.classList.add('bg-orange-700', 'text-white');
-        ingredientsBtn.classList.remove('bg-orange-100', 'text-orange-700');
-
-        // This resets the othe button - Logic repeats below so it goes both ways 
-        nutritionBtn.classList.remove('bg-orange-700', 'text-white');
-        nutritionBtn.classList.add('bg-orange-100', 'text-orange-700');
-    });
-
-    nutritionBtn.addEventListener('click', () => {
-        ingredientsTab.style.display = 'none';
-        nutritionTab.style.display = 'block';
-        nutritionBtn.classList.add('bg-orange-700', 'text-white');
-        nutritionBtn.classList.remove('bg-orange-100', 'text-orange-700');
-        ingredientsBtn.classList.remove('bg-orange-700', 'text-white');
-        ingredientsBtn.classList.add('bg-orange-100', 'text-orange-700');
-        //see above notes if unsure 
-    });
-      setTimeout(() => { //Short script to make the alert messages fade away after a few seconds
-        document.querySelectorAll('.alert-message').forEach(el => {
-          el.style.transition = 'opacity 1s ease';
-          el.style.opacity = '0';
-      setTimeout(() => el.remove(), 1000);
-    });
-    }, 4000);
-    
-</script>
 
