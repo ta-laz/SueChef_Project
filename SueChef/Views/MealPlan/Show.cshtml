@@ -1,32 +1,33 @@
 @using SueChef.ViewModels
 <!-- VIEW FOR SINGLE MEAL PLANS -->
-
 @model SingleMealPlanPageViewModel
 
+<body class='bg-orange-50'></body>
 <div class="justify-center p-3">
-
-<!-- Main central container -->
+    <!-- Main central container -->
     <div class="w-full max-w-4xl mx-auto">
-
-    <!-- Container for Success Messages: -->
-    <div>
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
-                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="font-medium">@TempData["SuccessMessage"]</span>
-                @if (TempData["DeletedRecipeId"] != null)
-                {
-                    <a asp-action="UndoDeleteRecipe" asp-route-id="@TempData["DeletedRecipeId"]" class="alert-link">
-                        <button class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
-                            Undo
-                        </button>
-                    </a>
-                }
-            </div>
-        }
+        <!-- Container for Success Messages: -->
+        <div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div
+                    class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+                    <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-medium">@TempData["SuccessMessage"]</span>
+                    @if (TempData["DeletedRecipeId"] != null)
+                    {
+                        <a asp-action="UndoDeleteRecipe" asp-route-id="@TempData["DeletedRecipeId"]" class="alert-link">
+                            <button
+                                class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
+                                Undo
+                            </button>
+                        </a>
+                    }
+                </div>
+            }
 
             @if (TempData["ErrorMessage"] != null)
             {
@@ -34,61 +35,66 @@
                     @TempData["ErrorMessage"]
                 </div>
             }
-    </div>
+        </div>
 
-        <!-- Meal Plan Title -->
-        <section class="flex mb-2 justify-between items-end">
-            <div class="mb-2">
-                <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">@Model.MealPlan.MealPlanTitle - Recipes:</h2>
+        <section class="text-center mb-8">
+            <!-- Meal Plan Title -->
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-tight">@Model.MealPlan.MealPlanTitle - Recipes</h2>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-row justify-center items-center gap-1 mb-6">
+                <form asp-controller="ShoppingList" asp-action="Generate" method="post" class="flex-1">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="MealPlanId" value="@Model.MealPlan.Id" />
+                    <div class="flex flex-row justify-center items-center gap-1 mb-6">
+                        <button type="submit"class="w-full sm:w-48 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
+                            Generate Shopping List
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="w-full sm:w-48">
+                            <button type="button" class="w-full sm:w-48 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
+                                Add Recipes
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Recipe Cards  -->
+                    <section class="mb-8 flex flex-col items-center gap-4 w-full">
+                        @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
+                        {
+                            <partial name="_MealPlanRecipeCardPartial" model="recipe" />
+                        }
+                    </section>
+                </form>
             </div>
-            <form asp-controller="ShoppingList" asp-action="Generate" method="post">
-            @Html.AntiForgeryToken()
-                <input type="hidden" name="MealPlanId" id="mealPlanId" value="@Model.MealPlan.Id"/>
-                <button type = submit class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400">
-                    Generate Shopping List
-                </button>
-            <section class="mb-8">
-                <!-- Each recipe card: -->
-                @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
-                {
-                    <partial name="_MealPlanRecipeCardPartial" model="recipe" />
-                }
-            </section>
-            </form>
-            <a asp-controller="Home" asp-action="Index">
-                <button class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
-                    Add Recipes
-                </button>
-            </a>
         </section>
 
+        <!-- Shopping List Partial Work In Progress! -->
+        <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
 
-        <section class="mb-8">
-            <!-- Each recipe card: -->
-            @if (Model.ShoppingList != null)
-            {
-                foreach (var category in Model.ShoppingList)
-                {
-                    <strong>@category.Key</strong>
-                    foreach (var ingredient in category.Value)
-                    {
-                        <p>@ingredient.Key : @ingredient.Value.Item1 @ingredient.Value.Item2</p>;
-                    }
-                }
-            }
-        </section>
     </div>
 </div>
 
 <script>
     //Short script to make the alert messages fade away after a few seconds
-    setTimeout(() => 
-    { 
-        document.querySelectorAll('.alert').forEach(el => 
-        {
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => {
             el.style.transition = 'opacity 1s ease';
             el.style.opacity = '0';
             setTimeout(() => el.remove(), 1000);
         });
     }, 4000);
+</script>
+
+<script>
+    // Toggle Crossed out Thingy when clicked
+    document.querySelectorAll('.ingredient-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+            const label = e.target.nextElementSibling;
+            if (e.target.checked) {
+                label.classList.add('line-through', 'text-gray-400');
+            } else {
+                label.classList.remove('line-through', 'text-gray-400');
+            }
+        });
+    });
 </script>
