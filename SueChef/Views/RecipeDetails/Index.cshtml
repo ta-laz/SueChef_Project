@@ -52,49 +52,21 @@
 
               <!-- Dropdown Toggle -->
               <div class="relative">
-                <button  id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
+                <button  id="dropdownButton" data-logged-in="@Model.IsLoggedIn.ToString().ToLower()" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-
-
-                @* <!-- Dropdown Menu -->
-                <ul id="dropdownMenu" class="hidden absolute right-0 mt-1 w-48 bg-orange-50 border border-orange-300 rounded-lg shadow-lg z-10 max-h-64">
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0"><!-- Each drop down -->                 
-                    <label class="flex items-center gap-2 cursor-pointer"><!-- It's linking label -->
-                      <input type="checkbox" value="mp1" class="hidden peer"><!-- Checkbox with mealplan linked -->
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span><!-- Styling for the checkbox -->
-                      <span class="text-gray-700 text-sm">Meal Plan 1</span><!-- Text all repeated below likely will just need one with a foreach meal plan loop  -->
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 2</span>
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 3</span>
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 4</span>
-                    </label>
-                  </li>
-                </ul> *@
               </div>
             </div>
-        <!-- </div> -->
 
         </header>
+              
+
+              @* Error Message for clicking toggle dropdown when not signed in *@
+              <div id="loginError" class="hidden text-red-800 text-right">
+                  You must be signed in to save recipes to your meal plans.
+              </div>
 
         @* Success Message for Adding to Meal Plan *@
       <section>

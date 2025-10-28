@@ -33,6 +33,7 @@ public class RecipeDetailsController : Controller
         int TotalRatings = ratings.Count(); //Counts total ratings 
 
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        bool isLoggedIn = currentUserId != null; // If the user is logged in, this variable is True
         var userRating = currentUserId != null //If the user is logged in - get the rating from the database, otherwise use the default  
                                         ? await _db.Ratings
                                             .Where(r => r.RecipeId == id && r.UserId == currentUserId.Value)
@@ -104,7 +105,8 @@ public class RecipeDetailsController : Controller
         {
             IndividualRecipe = viewModel,
             IsFavourited = isFavourited,
-            UserMealPlans = mealPlans
+            UserMealPlans = mealPlans,
+            IsLoggedIn = isLoggedIn
         };
         return View(AllViewModels);
 

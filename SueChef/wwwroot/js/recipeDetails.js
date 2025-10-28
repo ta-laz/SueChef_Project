@@ -67,11 +67,31 @@ const dropdownButton = document.getElementById("dropdownButton");  //Dropdown fo
 const dropdownMenu = document.getElementById("dropdownMenu");
 const favouriteButton = document.getElementById("favourite_button"); //Favourite button
 const saveMealplanButton = document.getElementById("save_mealplan_button"); //Hidden Save to Meal Plans button
+const isLoggedIn = dropdownButton.dataset.loggedIn === "true";
 
 if (dropdownButton && dropdownMenu) {
     // Toggle dropdown on button click
     dropdownButton.addEventListener("click", (e) => {
         e.stopPropagation();
+
+        // If a user is not signed in:
+        if (!isLoggedIn) {
+        const alertBox = document.getElementById("loginError");
+        alertBox.classList.remove("hidden");
+
+        // Fade after 3s like existing alerts
+        setTimeout(() => {
+            alertBox.style.transition = 'opacity 1s ease';
+            alertBox.style.opacity = '0';
+            setTimeout(() => {
+                alertBox.classList.add("hidden");
+                alertBox.style.opacity = '1';
+            }, 1000);
+        }, 3000);
+
+        return; // Stop here, do NOT open dropdown
+        }
+
         dropdownMenu.classList.toggle("hidden");
     
 
