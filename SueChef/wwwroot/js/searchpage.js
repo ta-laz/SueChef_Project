@@ -16,3 +16,21 @@ document.addEventListener("click", (e) => {
         dropdownList.classList.add("hidden");
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleBtn = document.getElementById("toggleFiltersBtn");
+    const filters = document.getElementById("filtersContainer");
+    let visible = true;
+
+    toggleBtn.addEventListener("click", () => {
+        visible = !visible;
+
+        if (visible) {
+            filters.classList.remove("hidden");
+            toggleBtn.innerHTML = "Hide filters";
+        } else {
+            filters.classList.add("hidden");
+            toggleBtn.innerHTML = "Show filters";
+        }
+    });
+});
