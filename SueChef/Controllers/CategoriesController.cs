@@ -29,6 +29,22 @@ public class CategoriesController : Controller
 
         string pageTitle = "";
 
+        // Compute average rating and join directly in the DB
+        var topRated = await _db.Ratings
+            .Where(rt => rt.Stars.HasValue)
+            .GroupBy(rt => rt.RecipeId)
+            .Select(g => new
+            {
+                RecipeId = g.Key,
+                Average = g.Average(rt => rt.Stars.Value),
+                Count = g.Count()
+            })
+            .OrderByDescending(g => g.Average)
+            .Take(10)
+            .ToListAsync();
+
+        var topIds = topRated.Select(r => r.RecipeId).ToList();
+
         // if the string provided is vegetarian, use the query to find all vegetarian recipes, set the pageTitle to vegetarian recipes
         // if not try the next case
         switch (category.ToLower())
@@ -43,7 +59,7 @@ public class CategoriesController : Controller
                 break;
             case "quick":
                 query = query.Where(r => (r.PrepTime + r.CookTime) < 60);
-                pageTitle = "Quick Meals";
+                pageTitle = "Quick Recipes";
                 break;
             case "easy":
                 query = query.Where(r => r.DifficultyLevel == 1);
@@ -51,37 +67,25 @@ public class CategoriesController : Controller
                 break;
             case "medium":
                 query = query.Where(r => r.DifficultyLevel == 2);
-                pageTitle = "Medium Difficulty Recipes";
+                pageTitle = "Medium Recipes";
                 break;
             case "hard":
                 query = query.Where(r => r.DifficultyLevel == 3);
                 pageTitle = "Hard Recipes";
                 break;
             case "highlyrated":
-                pageTitle = "Highest Rated Recipes";
+                pageTitle = "Top 10 Recipes";
 
-                // Compute average rating and join directly in the DB
-                var topRated = await _db.Ratings
-                    .Where(rt => rt.Stars.HasValue)
-                    .GroupBy(rt => rt.RecipeId)
-                    .Select(g => new
-                    {
-                        RecipeId = g.Key,
-                        Average = g.Average(rt => rt.Stars.Value),
-                        Count = g.Count()
-                    })
-                    .OrderByDescending(g => g.Average)
-                    .Take(10)
-                    .ToListAsync();
-
-                var topIds = topRated.Select(r => r.RecipeId).ToList();
+                var top10recipes = await _db.Recipes
+                .Where(r => topIds.Contains(r.Id))
+                .ToListAsync();
 
                 query = _db.Recipes.Where(r => topIds.Contains(r.Id));
                 break;
-            case "mostrated":
-                pageTitle = "Most Rated Recipes";
+            case "mostpopular":
+                pageTitle = "Most Popular Recipes";
 
-                var mostRatedIds = await _db.Ratings
+                var mostPopularIds = await _db.Ratings
                     .Where(rt => rt.Stars.HasValue)
                     .GroupBy(rt => rt.RecipeId)
                     .OrderByDescending(g => g.Count())
@@ -89,7 +93,7 @@ public class CategoriesController : Controller
                     .Take(10)
                     .ToListAsync();
 
-                query = _db.Recipes.Where(r => mostRatedIds.Contains(r.Id));
+                query = _db.Recipes.Where(r => mostPopularIds.Contains(r.Id));
                 break;
 
             default:
@@ -116,6 +120,13 @@ public class CategoriesController : Controller
             .Average(rt => (double?)rt.Stars) ?? 0
         })
         .ToListAsync();
+
+        if (category.ToLower() == "highlyrated")
+        {
+            recipes = recipes
+                .OrderBy(r => topIds.IndexOf(r.Id ?? -1)) // default to -1 if null
+                .ToList();
+        }
 
         // make the title the pageTitle and the recipes the newly created list of recipecardviewmodel objects
         var viewModel = new CategoryPageViewModel

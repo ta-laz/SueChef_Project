@@ -4,7 +4,7 @@
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
-            <h1 data-testid="recipe-title" class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
+            <h1 data-testid="recipe-title @Model.IndividualRecipe.Title" class="text-3xl font-bold mt-4 text-left">@Model.IndividualRecipe.Title</h1>
             <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
