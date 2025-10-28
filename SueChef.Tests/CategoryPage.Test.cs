@@ -166,7 +166,7 @@ public class CategoryPage : PageTest
     }
 
     [Test]
-    public async Task DairyFreeCategoryPage_CategoriesPage_ShowsOnlyDairyFreeRecipe()
+    public async Task DairyFreeCategoryPage_CategoriesPage_ShowsOnlyDairyFreeRecipes()
     {
         await Page.GotoAsync("/Categories?category=dairyfree");
         await Expect(Page.GetByTestId("Title-Dairy-Free Recipes")).ToBeVisibleAsync();
@@ -176,10 +176,37 @@ public class CategoryPage : PageTest
         var recipeCount = await recipeCards.CountAsync();
         for (int i = 0; i < recipeCount; i++)
         {
-            var dairyFreeText = await recipeCards.Nth(i).Locator("[data-testid='dairy-free-text']").IsVisibleAsync();
+            await recipeCards.Nth(i).Locator("[data-testid='dairy-free-tag']").IsVisibleAsync();
         }
     }
 
-    // , dairy free, vegetarian, all recipes
+    [Test]
+    public async Task VegetarianCategoryPage_CategoriesPage_ShowsOnlyVegetarianRecipes()
+    {
+        await Page.GotoAsync("/Categories?category=vegetarian");
+        await Expect(Page.GetByTestId("Title-Vegetarian Recipes")).ToBeVisibleAsync();
+
+        var recipeCards = Page.Locator(".recipe-card");
+
+        var recipeCount = await recipeCards.CountAsync();
+        for (int i = 0; i < recipeCount; i++)
+        {
+            await recipeCards.Nth(i).Locator("[data-testid='vegetarian-tag']").IsVisibleAsync();
+        }
+    }
+
+    [Test]
+    public async Task AllRecipesCategoryPage_CategoriesPage_ShowsAllRecipes()
+    {
+        await Page.GotoAsync("/Categories?category=allrecipes");
+        await Expect(Page.GetByTestId("Title-All Recipes")).ToBeVisibleAsync();
+
+        var recipeCards = Page.Locator(".recipe-card");
+
+        var recipeCount = await recipeCards.CountAsync();
+        Assert.That(recipeCount, Is.EqualTo(58));
+    }
+
+    // , vegetarian, all recipes
 
 }
