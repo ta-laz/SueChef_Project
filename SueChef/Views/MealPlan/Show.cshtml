@@ -12,15 +12,15 @@
     <div>
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
-                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+            <div class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-2 rounded-md shadow mb-6">
+                <svg class="w-8 h-8 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
                 </svg>
                 <span class="font-medium">@TempData["SuccessMessage"]</span>
                 @if (TempData["DeletedRecipeId"] != null)
                 {
                     <a asp-action="UndoDeleteRecipe" asp-route-id="@TempData["DeletedRecipeId"]" class="alert-link">
-                        <button class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
+                        <button class="bg-orange-600 text-white text-sm font-medium w-20 px-3 py-1 rounded-md hover:bg-orange-400 m-2">
                             Undo
                         </button>
                     </a>
@@ -36,7 +36,7 @@
             }
     </div>
 
-        <!-- Meal Plan Title -->
+        <!-- Meal Plan Title and Add Recipes button -->
         <section class="flex mb-2 justify-between items-end">
             <div class="mb-2">
                 <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">@Model.MealPlan.MealPlanTitle - Recipes:</h2>
@@ -58,15 +58,3 @@
     </div>
 </div>
 
-<script>
-    //Short script to make the alert messages fade away after a few seconds
-    setTimeout(() => 
-    { 
-        document.querySelectorAll('.alert').forEach(el => 
-        {
-            el.style.transition = 'opacity 1s ease';
-            el.style.opacity = '0';
-            setTimeout(() => el.remove(), 1000);
-        });
-    }, 4000);
-</script>

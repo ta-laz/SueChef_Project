@@ -51,7 +51,7 @@ public class MealPlanController : Controller
 
             if (exists)
             {
-                ModelState.AddModelError("", "Meal Plan Title must be unique");
+                ModelState.AddModelError("", "This Meal Plan Title has been used before.");
             }
             else
             {
@@ -249,15 +249,39 @@ public class MealPlanController : Controller
         var mealPlan = _db.MealPlans.Find(id);
         if (mealPlan == null)
             return NotFound();
-        _db.MealPlans.Remove(mealPlan);
+        mealPlan.IsDeleted = true; // Mark as deleted instead of removing
         await _db.SaveChangesAsync();
+
+        // Store info in TempData for success message + undo
+        TempData["DeletedMealPlanId"] = mealPlan.Id;
+        TempData["DeletedMealPlanName"] = mealPlan.MealPlanTitle;
+        TempData["SuccessMessage"] = $"{mealPlan.MealPlanTitle} deleted successfully.";
+
         return RedirectToAction("Index");
     }
+
+    [Route("/MealPlans/UndoDeleteMealPlan/{id}")]
+    [HttpGet]
+    public async Task<IActionResult> UndoDeleteMealPlan(int id)
+    {
+        var mealPlan = await _db.MealPlans
+            .FirstOrDefaultAsync(mp => mp.Id == id && mp.IsDeleted);
+        if (mealPlan == null)
+        {
+            TempData["ErrorMessage"] = "Unable to undo deletion.";
+            return RedirectToAction("Index");
+        }
+        mealPlan.IsDeleted = false;
+        await _db.SaveChangesAsync();
+        TempData["SuccessMessage"] = $"{mealPlan.MealPlanTitle} restored successfully";
+        return RedirectToAction("Index");
+    }
+
 
     private async Task<List<MealPlanViewModel>> GetMealPlansForUserAsync(int userId)
     {
         var mealPlans = await _db.MealPlans
-            .Where(mp => mp.UserId == userId)
+            .Where(mp => mp.UserId == userId && !mp.IsDeleted)
             .OrderByDescending(mp => mp.UpdatedOn)
             .Select(mp => new MealPlanViewModel
             {
