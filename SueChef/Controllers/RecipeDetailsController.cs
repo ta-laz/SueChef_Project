@@ -93,6 +93,7 @@ public class RecipeDetailsController : Controller
         // Logic to collect all Meal Plans belonging to signed in user
         var mealPlans = await _db.MealPlans
             .Where(mp => mp.UserId == currentUserId)
+            .OrderByDescending(mp => mp.UpdatedOn)
             .Select(mp => new MealPlanViewModel
             {
                 Id = mp.Id,

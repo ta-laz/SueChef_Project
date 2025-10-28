@@ -32,7 +32,7 @@ public class SueChefDbContext : DbContext
         // Update MealPlan UpdatedOn if related MealPlanRecipe was added or deleted
         foreach (var entry in ChangeTracker.Entries<MealPlanRecipe>())
         {
-            if (entry.State == EntityState.Added || entry.State == EntityState.Deleted)
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified ||  entry.State == EntityState.Deleted)
             {
                 var mealPlan = await MealPlans.FindAsync(entry.Entity.MealPlanId);
                 if (mealPlan != null)
