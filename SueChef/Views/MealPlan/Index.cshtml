@@ -5,90 +5,107 @@
 <body class="bg-orange-50">
 
     <!-- Main central container -->
-    <section class="w-full max-w-4xl mx-auto h-full">
-
-        @* Error messages to display if post request unsuccessful *@
-        <div asp-validation-summary="All" class="bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+    <section class="mb-8">
+        <div class="max-w-6xl justify-center items-center flex flex-col items-center w-full mb-6 mt-6 p-6 bg-white border-2 border-gray-200 rounded-md">
+            <h2 class="text-4xl font-semibold text-gray-800">Meal Plans</h2>
+            <p class="text-gray-600 text-lg">@Model.MealPlanCount Plans</p>
         </div>
 
-        <style>
-            /* Hides the errors until there are errors */
-            .validation-summary-valid {
-                display: none;
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            <!-- Create new meal plan card -->
+            <div class="border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center p-8 hover:bg-gray-50 transition cursor-pointer"
+                id="add-newplan">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400 mb-2" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-gray-500 text-lg font-medium">Create a new meal plan</span>
+            </div>
+
+            <!-- Existing meal plans -->
+            @foreach (var mealPlan in Model.MealPlans)
+            {
+                <partial name="_MealPlanPartial" model="mealPlan" />
             }
-
-            .validation-summary-errors {
-                display: block;
-                /* adds the errors */
-            }
-        </style>
-
-
-        @* Form to Create a new meal plan *@
-        <div class="m-2">
-            <form asp-action="Create" asp-controller="MealPlan" method="post" id="newplan-form"
-                data-testid="newplan-form" label="newplan form" class="hidden">
-                @Html.AntiForgeryToken()
-
-                <input type="text" name="MealPlanTitle" label="newplan name" id="newplan-name-input"
-                    data-testid="newplan-name-input" class="border border-gray-300 rounded-md p-2 w-full"
-                    placeholder="New Meal Plan" />
-                <button type="button" id="cancel-newplan"
-                    class="bg-gray-300 text-gray-800 text-sm w-36 px-4 py-2 rounded-md hover:bg-gray-400 mt-2">
-                    Cancel
-                </button>
-                <button id="submit-newplan" data-testid="submit-newplan" type="submit"
-                    class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">Save
-                </button>
-            </form>
         </div>
-
-
-        @* List of All Meal Plans: *@
-        <section class="mb-8">
-            <div class="flex justify-center items-center w-full h-full mb-2 p-8 bg-white border-2 border-gray-200">
-                <h2 class=" text-4xl font-semibold text-gray-800">Meal Plans</h2>
-                <div>
-                <h2 class=" text-4xl font-semibold text-gray-800">@Model.MealPlanCount Plans</h2>
-                </div>
-            </div>
-
-
-            <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md gap-8 overflow-hidden">
-                @foreach (SueChef.ViewModels.MealPlanViewModel mealPlan in Model.MealPlans)
-                {
-                    <partial name="_MealPlanPartial" model="mealPlan" />
-                }
-            </div>
-        </section>
-
-        @* Button to send POST request - Add Recipe to Meal Plan *@
-        <button id="add-newplan"
-            class="justify-end bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
-            Create New Meal Plan
-        </button>
-
-
-        @* Script to unhide form when Creating new meal plan  *@
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                // Create New Meal Plan
-                const button = document.getElementById('add-newplan');
-                const form = document.getElementById('newplan-form');
-                const cancel = document.getElementById("cancel-newplan");
-
-                if (button && form && cancel) {
-                    button.addEventListener('click', () => {
-                        form.classList.remove('hidden');
-                        button.classList.add('hidden');
-                    });
-
-                    cancel.addEventListener('click', () => {
-                        form.classList.add('hidden');
-                        button.classList.remove('hidden');
-                    });
-                }
-            });
-        </script>
     </section>
+
+    @* Error messages to display if post request unsuccessful *@
+    <div asp-validation-summary="All" class="bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+    </div>
+
+    <style>
+        /* Hides the errors until there are errors */
+        .validation-summary-valid {
+            display: none;
+        }
+
+        .validation-summary-errors {
+            display: block;
+            /* adds the errors */
+        }
+    </style>
+
+
+    @* Form to Create a new meal plan *@
+    @* <div class="m-2">
+        <form asp-action="Create" asp-controller="MealPlan" method="post" id="newplan-form" data-testid="newplan-form"
+            label="newplan form" class="hidden">
+            @Html.AntiForgeryToken()
+
+            <input type="text" name="MealPlanTitle" label="newplan name" id="newplan-name-input"
+                data-testid="newplan-name-input" class="border border-gray-300 rounded-md p-2 w-full"
+                placeholder="New Meal Plan" />
+            <button type="button" id="cancel-newplan"
+                class="bg-gray-300 text-gray-800 text-sm w-36 px-4 py-2 rounded-md hover:bg-gray-400 mt-2">
+                Cancel
+            </button>
+            <button id="submit-newplan" data-testid="submit-newplan" type="submit"
+                class="bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 mt-2">Save
+            </button>
+        </form>
+    </div> *@
+
+
+    @* List of All Meal Plans: *@
+    @* <section class="mb-8">
+
+
+
+        <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md gap-8 overflow-hidden">
+            @foreach (SueChef.ViewModels.MealPlanViewModel mealPlan in Model.MealPlans)
+            {
+                <partial name="_MealPlanPartial" model="mealPlan" />
+            }
+        </div>
+    </section> *@
+
+    @* Button to send POST request - Add Recipe to Meal Plan *@
+    <button id="add-newplan"
+        class="justify-end bg-orange-600 text-white text-sm font-medium w-36 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
+        Create New Meal Plan
+    </button>
+
+
+    @* Script to unhide form when Creating new meal plan  *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Create New Meal Plan
+            const button = document.getElementById('add-newplan');
+            const form = document.getElementById('newplan-form');
+            const cancel = document.getElementById("cancel-newplan");
+
+            if (button && form && cancel) {
+                button.addEventListener('click', () => {
+                    form.classList.remove('hidden');
+                    button.classList.add('hidden');
+                });
+
+                cancel.addEventListener('click', () => {
+                    form.classList.add('hidden');
+                    button.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
 </body>
