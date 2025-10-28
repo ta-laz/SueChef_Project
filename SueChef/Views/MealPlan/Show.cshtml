@@ -70,8 +70,12 @@
 
         <!-- Shopping List Partial Work In Progress! -->
         <a id="shopping-list-anchor"></a>
-        <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
-
+        
+        <form asp-controller="ShoppingList" asp-action="Save" class="flex justify-center w-full max-w-4xl mx-auto">
+        @Html.AntiForgeryToken()
+            <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
+        </form>
+        
     </div>
 </div>
 

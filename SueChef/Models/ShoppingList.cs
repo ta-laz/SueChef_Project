@@ -9,12 +9,13 @@ public class ShoppingList
     public int UserId {get; set;}
     public User? User { get; set; }
 
-    public int? RecipeIngredientId { get; set; } = null;
-    public RecipeIngredient RecipeIngredient { get; set; } = null!;
-    public bool IsPurchased { get; set; } = false;  
+    public string? Category { get; set; }
+    public string? IngredientName { get; set; } = null;
+    public decimal? Quantity { get; set; } = null;
+    public string? Unit { get; set; } = null;
 
-    public int? Servings { get; set; }
     public string? Additional { get; set; } = null;
     public string? AdditionalQuantity { get; set; } = null;
+    public bool IsPurchased { get; set; } = false;  
 
 }
