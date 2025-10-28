@@ -78,7 +78,7 @@ async function toggleFavourite(button) {
             }
 
             // Show inline message
-            showFavouriteMessage(button, "You must be signed in to favourite recipes.");
+            showFavouriteMessage("You must be signed in to favourite recipes.");
             return;
         }
 
@@ -115,19 +115,17 @@ async function toggleFavourite(button) {
             plusIcon.classList.remove('hidden');
         }
 
-        showFavouriteMessage(button, err.message || 'Failed to update favourites. Please try again.');
+        showFavouriteMessage(err.message || 'Failed to update favourites. Please try again.');
     }
 }
 
 // Helper to show a small inline message below the button
-function showFavouriteMessage(button, message) {
-    let msgEl = button.parentElement.querySelector('.favourite-message');
-    if (!msgEl) {
-        msgEl = document.createElement('div');
-        msgEl.className = 'favourite-message text-red-600 text-sm mt-1';
-        button.parentElement.appendChild(msgEl);
-    }
-    msgEl.textContent = message;
-    // auto-hide after 5 seconds
-    setTimeout(() => { msgEl.textContent = ''; }, 5000);
+function showFavouriteMessage(message) {
+    const box = document.getElementById("floatingMessage");
+    box.textContent = message;
+    box.classList.remove("hidden");
+
+    setTimeout(() => {
+        box.classList.add("hidden");
+    }, 3000);
 }

@@ -54,7 +54,7 @@ public class FavouritesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavourite(int recipeId)
     {
-        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
 
         if (currentUserId == null)
     {
@@ -142,7 +142,7 @@ public class FavouritesController : Controller
     [Route("Favourites/ToggleAjax")]
     public async Task<IActionResult> ToggleFavouriteAjax([FromForm] int recipeId)
     {
-        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
 
         if (currentUserId == null)
         {
