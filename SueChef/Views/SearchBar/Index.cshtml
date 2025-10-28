@@ -14,14 +14,13 @@
                         <path
                             d="M10 2a8 8 0 105.293 14.293l4.707 4.707a1 1 0 001.414-1.414l-4.707-4.707A8 8 0 0010 2z" />                   
                             </svg>
-
                 </div>
 
                  <!-- Toggle button for filters -->
-                <div class="flex justify-end">
+                <div class="flex justify-right">
                     <button type="button" id="toggleFiltersBtn"
-                        class="text-sm font-medium text-rose-700 underline hover:text-rose-900 transition">
-                        Hide Filters
+                        class="text-smfont-medium text-rose-700 underline hover:text-rose-900 transition">
+                        Hide Filter
                     </button>
                 </div>
 
@@ -139,17 +138,17 @@
                                     </select>
                                 </div>
 
-                        <!-- This bit handles the submit and reset buttons -->
-
                     </div>                        
-                    <div class="mt-6 grid w-full grid-cols-2 justify-end pl-6 space-x-4 md:flex">
+
+                    </div>       
+                    <!-- This bit handles the submit and reset buttons -->
+                    <div class="grid w-full grid-cols-2 justify-end pl-6 space-x-4 md:flex">
                                 <button type="submit"
                                 class="w-32 h-10 rounded-lg bg-orange-600 px-4 py-2 font-medium text-white outline-none hover:opacity-80 focus:ring">Search</button> <button type="submit" name="clear" value="true"
                                 class="w-32 h-10 rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">Reset</button>
                     </div>
             </form>
             </div>
-        </div>
 
             <!-- Text that says what the search was and how many results -->
             @if (Model.HasSearch)
@@ -192,8 +191,7 @@
         <p class="text-gray-500 text-center mt-6">No recipes found.</p>
     }
 
-</div>
+    </div>
 </body>
-
 
 <script src="~/js/searchpage.js"></script>
