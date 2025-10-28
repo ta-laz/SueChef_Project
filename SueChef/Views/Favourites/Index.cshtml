@@ -19,7 +19,7 @@
                     @if (TempData["DeletedRecipeId"] != null)
                     {
                         <a asp-action="UndoDeleteFavourite" asp-route-id="@TempData["DeletedRecipeId"]" class="alert-link">
-                            <button class="bg-orange-600 text-white text-sm font-medium w-20 h-8 px-4 py-2 rounded-md hover:bg-orange-400 m-2">
+                            <button class="bg-orange-600 text-white text-sm font-medium w-20 px-3 py-1 rounded-md hover:bg-orange-400 m-2">
                                 Undo
                             </button>
                         </a>
