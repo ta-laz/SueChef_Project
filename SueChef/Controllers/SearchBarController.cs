@@ -20,7 +20,7 @@ public class SearchBarController : Controller
     }
 
     [HttpGet("/search")]
-    public async Task<IActionResult> Index(string? searchQuery, string? category, string? chef, List<string>? ingredients)
+    public async Task<IActionResult> Index(string? searchQuery, string? category, string? chef, List<string>? ingredients, string? dietary, int? difficulty, string? duration)
     {
         // Populating the drop downs here from the database
         var allIngredients = await _db.Ingredients
@@ -81,6 +81,34 @@ public class SearchBarController : Controller
             if (!string.IsNullOrWhiteSpace(chef))
                 query = query.Where(r => r.Chef != null && r.Chef.Name == chef);
 
+            if (!string.IsNullOrWhiteSpace(dietary))
+            {
+                if (dietary == "vegetarian")
+                {
+                    query = query.Where(r => r.IsVegetarian == true);
+                }
+                else if (dietary == "diaryfree")
+                {
+                    query = query.Where(r => r.IsDairyFree == true);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(duration))
+            {
+                if (duration == "under20")
+                {
+                    query = query.Where(r => (r.PrepTime + r.CookTime) < 20);
+                }
+                else if (duration == "20to40")
+                {
+                    query = query.Where(r => (r.PrepTime + r.CookTime) >= 20 && (r.PrepTime + r.CookTime) <= 40);
+                }
+                else if (duration == "over40")
+                {
+                    query = query.Where(r => (r.PrepTime + r.CookTime) > 40);
+                }
+            }
+
             recipeCards = await query
                 .Select(r => new RecipeCardViewModel
                 {
@@ -117,7 +145,10 @@ public class SearchBarController : Controller
             HasSearch = hasSearch,
             SearchCategory = category,
             SearchChef = chef,
-            SelectedIngredients = ingredients
+            SelectedIngredients = ingredients,
+            Dietary = dietary,
+            Difficulty = difficulty,
+            DurationBucket = duration
         };
 
         return View(viewModel);
