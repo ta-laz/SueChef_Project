@@ -60,41 +60,33 @@ public class FavouritesController : Controller
         if (currentUserId == null)
         {
             TempData["ErrorMessage"] = "You must be signed in to favourite recipes.";
-            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
         }
         // If the user is signed in:
-        // Check if a favourite record already exists (including soft-deleted)
+        // Check if a recipe already exists in favourites table (including soft-deleted)
         var favourite = await _db.Favourites
             .FirstOrDefaultAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
-
         if (favourite != null)
         {
-            // Toggle IsDeleted
+            // If already favourited, Toggle IsDeleted to un-favourite
             favourite.IsDeleted = !favourite.IsDeleted;
-
             await _db.SaveChangesAsync();
-
-            TempData["Success"] = favourite.IsDeleted
-                ? "Recipe removed from favourites."
-                : "Recipe added to favourites.";
         }
         else
         {
-            // Add new favourite
+            // Add recipe to favourites table
             _db.Favourites.Add(new Favourite
             {
                 UserId = currentUserId,
                 RecipeId = recipeId,
                 IsDeleted = false
             });
-
             await _db.SaveChangesAsync();
             TempData["Success"] = "Recipe added to favourites.";
         }
-
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
     }
 
+    // Delete favourite - used in Favourites page button
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteFavourite(int favouriteId)
@@ -117,7 +109,7 @@ public class FavouritesController : Controller
         // Store info in TempData for success message + undo
         TempData["DeletedRecipeId"] = favourite.Recipe.Id;
         TempData["DeletedRecipeName"] = favourite.Recipe.Title;
-        TempData["Success"] = "Recipe removed from favourites.";
+        TempData["Success"] = " removed from favourites.";
         return RedirectToAction("Index");
     }
 
