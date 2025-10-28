@@ -1,6 +1,6 @@
 @model SueChef.ViewModels.IndividualRecipePageViewModel
   <body class="bg-orange-50 text-gray-700">
-    <main class="max-w-3xl mx-auto p-6 space-y-8">
+    <main class="max-w-3xl mx-auto p-6 ">
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
@@ -63,16 +63,17 @@
         </header>
               
 
-              @* Error Message for clicking toggle dropdown when not signed in *@
-              <div id="loginError" class="hidden text-red-800 text-right">
-                  You must be signed in to save recipes to your meal plans.
-              </div>
+  <div id="messageZone" class="h-9 flex items-center justify-center mt-5">
+      @* Error Message for clicking toggle dropdown when not signed in *@
+      <div id="loginError" class="hidden text-red-800 text-right">
+          You must be signed in to save recipes to your meal plans.
+      </div>
 
         @* Success Message for Adding to Meal Plan *@
-      <section>
+      <div class="flex justify-center">
         @if(TempData["Success"]!= null) 
           {
-            <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+            <div class="alert-message flex items-center max-w-80 max-h-10 justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
                   <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
                   </svg>
@@ -86,8 +87,10 @@
                     @TempData["ErrorMessage"]
                 </div>
             }
-      </section>
+      </div>
+  </div>
       
+    <div class="space-y-8">
       <!-- Recipe Description for boss sarah-->
         <section class="leading-relaxed text-gray-700">
           <p>@Model.IndividualRecipe.Description</p>
@@ -155,7 +158,7 @@
         }
         </ul>
       </section>
-
+</div>
             <!-- Rate this recipe section  -->
 
             @if (TempData["SuccessMessage"] != null)
