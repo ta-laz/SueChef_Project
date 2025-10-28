@@ -45,6 +45,14 @@ public class CategoriesController : Controller
 
         var topIds = topRated.Select(r => r.RecipeId).ToList();
 
+        var mostPopularIds = await _db.Ratings
+                    .Where(rt => rt.Stars.HasValue)
+                    .GroupBy(rt => rt.RecipeId)
+                    .OrderByDescending(g => g.Count())
+                    .Select(g => g.Key)
+                    .Take(10)
+                    .ToListAsync();
+
         // if the string provided is vegetarian, use the query to find all vegetarian recipes, set the pageTitle to vegetarian recipes
         // if not try the next case
         switch (category.ToLower())
@@ -85,14 +93,6 @@ public class CategoriesController : Controller
             case "mostpopular":
                 pageTitle = "Most Popular Recipes";
 
-                var mostPopularIds = await _db.Ratings
-                    .Where(rt => rt.Stars.HasValue)
-                    .GroupBy(rt => rt.RecipeId)
-                    .OrderByDescending(g => g.Count())
-                    .Select(g => g.Key)
-                    .Take(10)
-                    .ToListAsync();
-
                 query = _db.Recipes.Where(r => mostPopularIds.Contains(r.Id));
                 break;
 
@@ -121,10 +121,19 @@ public class CategoriesController : Controller
         })
         .ToListAsync();
 
+        // reorder recipes pulled from database according to the order in topIds list so that the highest rated is first
         if (category.ToLower() == "highlyrated")
         {
             recipes = recipes
                 .OrderBy(r => topIds.IndexOf(r.Id ?? -1)) // default to -1 if null
+                .ToList();
+        }
+
+        // reorder recipes pulled from database according to the order in mostPopularIds list so that the most rated is first
+        if (category.ToLower() == "mostpopular")
+        {
+            recipes = recipes
+                .OrderBy(r => mostPopularIds.IndexOf(r.Id ?? -1)) // default to -1 if null
                 .ToList();
         }
 
