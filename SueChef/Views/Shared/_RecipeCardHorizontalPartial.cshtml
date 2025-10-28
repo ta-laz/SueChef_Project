@@ -17,9 +17,9 @@
                 <div class="flex flex-col md:w-[65%] flex-grow h-full">
 
                     <!-- Recipe Title -->
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center" data-testid="recipe-title-div">
                         <h3
-                            class="text-lg text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition flex-1 mr-3 leading-tight line-clamp-2">
+                            class="text-lg text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition flex-1 mr-3 leading-tight line-clamp-2" data-testid="recipe-title-@Model.Title">
                             @Model.Title
                         </h3>
         </a>
@@ -102,10 +102,10 @@
 
     <!-- Tags bar -->
     <div class="flex rounded-md justify-around items-center text-center gap-4 mt-1 md:mt-2">
-        <!-- Category -->
+        <!-- Time -->
         <div class="flex flex-col items-center w-1/4">
             <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
-            <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.TotalTimeDisplay</span>
+            <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate" data-testid="recipe-time">@Model.TotalTimeDisplay</span>
         </div>
 
         <!-- Difficulty -->
@@ -127,7 +127,7 @@
         {
             <div class="flex flex-col items-center w-1/4">
                 <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
-                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
+                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate" data-testid="dairy-free-text">Dairy Free</span>
             </div>
         }
         <!-- Vegetarian -->
