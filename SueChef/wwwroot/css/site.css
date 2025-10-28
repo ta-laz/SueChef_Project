@@ -35,3 +35,22 @@ html,
 body {
   overscroll-behavior-y: none;
 }
+
+/* Adding this so we can make the text logo glow (if not using image)
+.logo-text {
+  transition: text-shadow 0.3s ease, filter 0.3s ease;
+}
+
+/* Glow only on hover */
+/* .logo-text:hover {
+  text-shadow:
+    0 0 3px rgba(255, 255, 255, 0.5),
+    0 0 5px rgba(255, 255, 255, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.2);
+  filter: brightness(1.1);
+} */
+
+/* Used this to debug which element was sticking out too much on the side (it outlines all elements in red) */
+/* * {
+  outline: 1px solid red !important;
+} */
