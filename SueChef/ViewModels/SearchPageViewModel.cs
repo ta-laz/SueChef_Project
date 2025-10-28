@@ -8,6 +8,8 @@ namespace SueChef.ViewModels
         public List<string> AllCategories { get; set; } = new();
         public List<string> AllChefs { get; set; } = new();
         public bool HasSearch { get; set; }
-
+        public string? SearchCategory { get; set; }
+        public string? SearchChef { get; set; }
+        public List<string>? SelectedIngredients { get; set; }
     }
 }

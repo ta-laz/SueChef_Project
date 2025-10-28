@@ -114,7 +114,10 @@ public class SearchBarController : Controller
             AllIngredients = allIngredients,
             AllCategories = allCategories,
             AllChefs = allChefs,
-            HasSearch = hasSearch
+            HasSearch = hasSearch,
+            SearchCategory = category,
+            SearchChef = chef,
+            SelectedIngredients = ingredients
         };
 
         return View(viewModel);
