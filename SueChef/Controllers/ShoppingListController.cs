@@ -110,6 +110,6 @@ public class ShoppingListController : Controller
             }
         }
         TempData["ShoppingList"] = JsonConvert.SerializeObject(shoppingList);
-        return RedirectToAction("Show", "MealPlan", new { id = MealPlanId });
+        return RedirectToAction("Show", "MealPlan", new { id = MealPlanId, scroll = "shopping" });
     }
 }

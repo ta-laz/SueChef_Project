@@ -69,6 +69,7 @@
         </section>
 
         <!-- Shopping List Partial Work In Progress! -->
+        <a id="shopping-list-anchor"></a>
         <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
 
     </div>
@@ -97,4 +98,16 @@
             }
         });
     });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('scroll') === 'shopping') {
+      const el = document.getElementById('shopping-list-anchor');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
 </script>
