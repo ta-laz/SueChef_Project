@@ -1,10 +1,13 @@
 namespace SueChef.Tests;
 
 using System.Text.RegularExpressions;
+using Microsoft.Playwright;            
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using SueChef.Test;
 using SueChef.TestHelpers;
+
+
 
 public class PlaywrightRecipeTests : PageTest
 {
@@ -140,6 +143,68 @@ public class PlaywrightRecipeTests : PageTest
         await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("150g Chicken Breast");
 
     }
+
+    [Test]
+    public async Task IndividualPage_ShowsCommentFormAndButton()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+        await Expect(Page.GetByText("Comment on this Recipe")).ToBeVisibleAsync();
+        await Expect(Page.Locator("textarea[name='content']")).ToBeVisibleAsync();
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Comment" })).ToBeVisibleAsync();
+    }
+
+
+
+    [Test]
+    public async Task IndividualPage_UserCanTypeCommentText()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+        var commentBox = Page.Locator("textarea[name='content']");
+        await commentBox.FillAsync("This recipe was amazing — I will definitely make it again!");
+
+        var text = await commentBox.InputValueAsync();
+        Assert.That(text, Is.EqualTo("This recipe was amazing — I will definitely make it again!"));
+
+    }
+
+
+
+    [Test]
+    public async Task IndividualPage_UserCanSubmitComment()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+        await Page.FillAsync("textarea[name='content']", "Loved this recipe, the flavors were incredible!");
+        await Page.ClickAsync("button[type='submit']");
+
+        // Wait briefly for message
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Expect either a success message or that the comment appears again
+        await Expect(Page.Locator("body")).ToContainTextAsync("Loved this recipe");
+    }
+    
+
+
+    [Test]
+    public async Task IndividualPage_ShowsValidationError_WhenCommentIsEmpty()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+        await Page.WaitForSelectorAsync("button[type='submit']");
+        await Page.ClickAsync("button[type='submit']");
+
+    // Browser’s HTML5 required validation should prevent submission
+        var isValid = await Page.EvaluateAsync<bool>("document.querySelector('textarea[name=\"content\"]').checkValidity()");
+        Assert.That(isValid, Is.False,"Textarea should be required and invalid when empty.");
+}
+
 }
 
 
