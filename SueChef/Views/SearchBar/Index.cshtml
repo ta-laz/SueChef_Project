@@ -16,12 +16,25 @@
                             </svg>
                 </div>
 
-                 <!-- Toggle button for filters -->
-                <div class="flex justify-right">
+                <!-- Control bar for filters and actions -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <!-- Left: Toggle filters -->
                     <button type="button" id="toggleFiltersBtn"
-                        class="text-smfont-medium text-rose-700 underline hover:text-rose-900 transition">
-                        Hide Filter
+                        class="text-sm font-medium text-rose-700 underline hover:text-rose-900 transition">
+                        Hide Filters
                     </button>
+
+                    <!-- Right: Search + Reset buttons -->
+                    <div class="flex gap-3">
+                        <button type="submit"
+                            class="w-28 h-9 rounded-lg bg-orange-600 font-medium text-white outline-none hover:opacity-80 focus:ring">
+                            Search
+                        </button>
+                        <button type="submit" name="clear" value="true"
+                            class="w-28 h-9 rounded-lg bg-gray-200 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">
+                            Reset
+                        </button>
+                    </div>
                 </div>
 
                 <!-- This is to hide the filters on small screens -->
@@ -84,7 +97,7 @@
                             <div class="flex flex-col">
                                 <span class="text-sm font-medium text-stone-600">Dietary</span>
                                 <div class="rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] shadow-sm text-gray-700">
-                                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                                    <label class="flex items-center gap-2 text-medium text-gray-700">
                                         <input
                                             type="checkbox"
                                             name="dietary"
@@ -94,7 +107,7 @@
                                         Vegetarian
                                     </label>
 
-                                    <label class="flex items-center gap-2 text-sm text-gray-700 mt-2">
+                                    <label class="flex items-center gap-2 text-medium text-gray-700 mt-2">
                                         <input
                                             type="checkbox"
                                             name="dietary"
@@ -141,12 +154,12 @@
                     </div>                        
 
                     </div>       
-                    <!-- This bit handles the submit and reset buttons -->
+                    @* <!-- This bit handles the submit and reset buttons -->
                     <div class="grid w-full grid-cols-2 justify-end pl-6 space-x-4 md:flex">
                                 <button type="submit"
                                 class="w-32 h-10 rounded-lg bg-orange-600 px-4 py-2 font-medium text-white outline-none hover:opacity-80 focus:ring">Search</button> <button type="submit" name="clear" value="true"
                                 class="w-32 h-10 rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">Reset</button>
-                    </div>
+                    </div> *@
             </form>
             </div>
 
