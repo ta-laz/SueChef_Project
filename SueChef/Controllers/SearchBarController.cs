@@ -123,10 +123,15 @@ public class SearchBarController : Controller
                     Category = r.Category ?? "Uncategorized",
                     DifficultyLevel = r.DifficultyLevel,
                     IsVegetarian = r.IsVegetarian,
-                    IsDairyFree = r.IsDairyFree
+                    IsDairyFree = r.IsDairyFree,
+                    PrepTime = r.PrepTime,
+                    CookTime = r.CookTime,
+                    AverageRating = r.Ratings.Any() ? r.Ratings.Average(rt => rt.Stars) : 0,
+                    RatingCount = r.Ratings.Count
                 })
                 .ToListAsync();
         }
+        
         // Logic for the reset button to clear the page 
         if (Request.Query.ContainsKey("clear"))
         {
@@ -134,11 +139,7 @@ public class SearchBarController : Controller
             {
                 AllIngredients = allIngredients,
                 AllCategories = allCategories,
-                AllChefs = allChefs,
-                Recipes = new List<RecipeCardViewModel>(), 
-                SelectedIngredients = new List<string>(),
-                DietarySelections = new List<string>(),
-                HasSearch = false
+                AllChefs = allChefs
             });
         }
 
