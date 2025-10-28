@@ -12,5 +12,5 @@ public class MealPlan
     public DateOnly? CreatedOn { get; set; }
     public DateOnly? UpdatedOn { get; set; }
     public ICollection<MealPlanRecipe> MealPlanRecipes { get; set; } = new List<MealPlanRecipe>();
-
+    public bool IsDeleted { get; set; } = false;  // NEW FLAG for soft-delete
 }
