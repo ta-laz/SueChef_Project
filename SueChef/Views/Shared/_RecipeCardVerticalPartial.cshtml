@@ -9,7 +9,7 @@
         <!-- Row one: picture -->
         <div class="w-full">
             <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" />
+                class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" title="@Model.Title"/>
         </div>
 
         <div class="flex-1 flex flex-col justify-between p-2 min-h-32">
@@ -122,7 +122,7 @@
     <div class="flex w-full">
 
         <!-- Dairy Free -->
-        @if (@Model.IsDairyFree)
+        @if (Model.IsDairyFree)
         {
             <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                 <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
@@ -131,7 +131,7 @@
         }
 
         <!-- Vegetarian -->
-        @if (@Model.IsVegetarian)
+        @if (Model.IsVegetarian)
         {
             <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                 <i data-lucide="vegan" class="w-6 h-6 text-gray-500"></i>
