@@ -22,10 +22,10 @@
                 <li class="flex items-center px-3 py-2 border-b-2 border-orange-700 transition">
                     <label class="flex items-center w-full justify-between cursor-pointer select-none text-gray-700 text-md sm:text-base transition">
                     <div class = "flex items-center">
-                        <input type="checkbox" name="SelectedIngredients" value="@ingredient.Key" class="hidden peer ingredient-checkbox" checked />
+                        <input type="checkbox" name="SelectedIngredients" value="@ingredient.Key" class="hidden peer ingredient-checkbox" />
                         <span class="relative w-5 h-5 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition flex-shrink-0  "></span>
                             
-                        <input class="ml-3 font-medium line-through peer-checked:no-underline peer-checked:text-gray-800 bg-orange-100" type="text" name="IngredientNames" readonly value="@ingredient.Key" />
+                        <input class="ml-3 font-medium peer-checked:line-through peer-checked:underline peer-checked:text-gray-500 bg-orange-100" type="text" name="IngredientNames" readonly value="@ingredient.Key" />
                     </div>
                         <div class="flex items-right space-x-1">
                             <strong>
@@ -47,7 +47,7 @@
     </section>
 }
 
-    <script>
+    @* <script>
       // For each checkbox, toggle its sibling quantity between original and 0
       document.querySelectorAll('.ingredient-checkbox').forEach(cb => {
         const li = cb.closest('li');
@@ -61,4 +61,4 @@
         // Optional: run once on load (keeps value correct if markup ever renders unchecked)
         sync();
       });
-    </script>
+    </script> *@
