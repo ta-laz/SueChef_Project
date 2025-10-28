@@ -43,5 +43,55 @@ public class CategoryPage : PageTest
     {
         await Page.GotoAsync("/Categories?category=easy");
         await Expect(Page.GetByTestId("Title-Easy Recipes")).ToBeVisibleAsync();
+
+        var recipeCards = Page.Locator(".recipe-card");
+
+        var recipeCount = await recipeCards.CountAsync();
+        for (int i = 0; i < recipeCount; i++)
+        {
+            var difficultyLevelText = await recipeCards.Nth(i).Locator("[data-testid='difficulty-level']").TextContentAsync();
+
+            Assert.That("Easy", Is.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Medium", Is.Not.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Hard", Is.Not.EqualTo(difficultyLevelText.Trim()));
+        }
+    }
+
+    [Test]
+    public async Task MediumCategoryParameter_CategoriesPage_ShowsOnlyMediumRecipes()
+    {
+        await Page.GotoAsync("/Categories?category=medium");
+        await Expect(Page.GetByTestId("Title-Medium Recipes")).ToBeVisibleAsync();
+
+        var recipeCards = Page.Locator(".recipe-card");
+
+        var recipeCount = await recipeCards.CountAsync();
+        for (int i = 0; i < recipeCount; i++)
+        {
+            var difficultyLevelText = await recipeCards.Nth(i).Locator("[data-testid='difficulty-level']").TextContentAsync();
+
+            Assert.That("Medium", Is.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Easy", Is.Not.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Hard", Is.Not.EqualTo(difficultyLevelText.Trim()));
+        }
+    }
+
+    [Test]
+    public async Task HardCategoryParameter_CategoriesPage_ShowsOnlyHardRecipes()
+    {
+        await Page.GotoAsync("/Categories?category=hard");
+        await Expect(Page.GetByTestId("Title-Hard Recipes")).ToBeVisibleAsync();
+
+        var recipeCards = Page.Locator(".recipe-card");
+
+        var recipeCount = await recipeCards.CountAsync();
+        for (int i = 0; i < recipeCount; i++)
+        {
+            var difficultyLevelText = await recipeCards.Nth(i).Locator("[data-testid='difficulty-level']").TextContentAsync();
+
+            Assert.That("Hard", Is.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Easy", Is.Not.EqualTo(difficultyLevelText.Trim()));
+            Assert.That("Medium", Is.Not.EqualTo(difficultyLevelText.Trim()));
+        }
     }
 }
