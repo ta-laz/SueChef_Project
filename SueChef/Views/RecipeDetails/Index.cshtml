@@ -63,7 +63,7 @@
         </header>
               
 
-  <div id="messageZone" class="h-9 flex items-center justify-center mt-5">
+  <div id="messageZone" class="h-9 flex items-center justify-end mt-5">
       @* Error Message for clicking toggle dropdown when not signed in *@
       <div id="loginError" class="hidden text-red-800 text-right">
           You must be signed in to save recipes to your meal plans.
@@ -84,7 +84,7 @@
                   <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
                   </svg>
-                    <span class="font-medium">@TempData["Success"]</span>
+                    <span class="font-medium truncate ">@TempData["Success"]</span>
                 </div>
           }
         

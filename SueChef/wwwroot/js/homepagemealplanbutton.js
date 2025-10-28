@@ -119,13 +119,18 @@ async function toggleFavourite(button) {
     }
 }
 
-// Helper to show a small inline message below the button
+// Helper to show a error messages
 function showFavouriteMessage(message) {
     const box = document.getElementById("floatingMessage");
     box.textContent = message;
     box.classList.remove("hidden");
 
+    // Fade after 3s
     setTimeout(() => {
-        box.classList.add("hidden");
+        box.style.opacity = '0';
+        setTimeout(() => {
+                box.classList.add("hidden");
+                box.style.opacity = '1'; // reset for next time so that when you click again it does the same thing
+            }, 500);
     }, 3000);
 }

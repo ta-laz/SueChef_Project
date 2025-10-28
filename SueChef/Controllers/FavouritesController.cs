@@ -107,7 +107,7 @@ public class FavouritesController : Controller
         if (favourite == null)
         {
             TempData["ErrorMessage"] = "Favourite not found.";
-            return RedirectToAction("Index"); // Or wherever your All Favourites view is
+            return RedirectToAction("Index"); 
         }
 
         favourite.IsDeleted = true;
