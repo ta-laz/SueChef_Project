@@ -48,20 +48,21 @@ public class FavouritesController : Controller
         return View(FavouritesPageViewModel);
     }
 
-    // [Route("/Favourites/{recipeId}")]
 
+    // Add recipe to a favourite FROM INDIVIDUAL RECIPE PAGE (no AJAX)
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavourite(int recipeId)
     {
         var currentUserId = HttpContext.Session.GetInt32("user_id");
 
+        // If the user is not signed in:
         if (currentUserId == null)
-    {
-        TempData["ErrorMessage"] = "You must be signed in to favourite recipes.";
-        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
-    }
-
+        {
+            TempData["ErrorMessage"] = "You must be signed in to favourite recipes.";
+            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+        }
+        // If the user is signed in:
         // Check if a favourite record already exists (including soft-deleted)
         var favourite = await _db.Favourites
             .FirstOrDefaultAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
@@ -137,6 +138,7 @@ public class FavouritesController : Controller
         return RedirectToAction("Index");
     }
 
+    // Method to add recipe to favourites FROM HOMEPAGE (AJAX)
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("Favourites/ToggleAjax")]
