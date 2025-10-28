@@ -44,7 +44,11 @@ public class SearchBarController : Controller
         bool hasSearch = !string.IsNullOrWhiteSpace(searchQuery)
              || !string.IsNullOrWhiteSpace(category)
              || !string.IsNullOrWhiteSpace(chef)
-             || (ingredients != null && ingredients.Any());
+             || (ingredients != null && ingredients.Any())
+             || (dietary != null && dietary.Any())
+             || !string.IsNullOrWhiteSpace(duration)
+             || difficulty.HasValue;
+
 
         // Set up the recipeCards outside the if statement cause it will break the view otherwise
         var recipeCards = new List<RecipeCardViewModel>();
@@ -130,7 +134,11 @@ public class SearchBarController : Controller
             {
                 AllIngredients = allIngredients,
                 AllCategories = allCategories,
-                AllChefs = allChefs
+                AllChefs = allChefs,
+                Recipes = new List<RecipeCardViewModel>(), 
+                SelectedIngredients = new List<string>(),
+                DietarySelections = new List<string>(),
+                HasSearch = false
             });
         }
 

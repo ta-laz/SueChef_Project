@@ -70,16 +70,77 @@
                                 @:<option value="@chef" @(Model.SearchChef == chef ? "selected" : "")>@chef</option>                  
                               }
                         </select>
-                    </div>        
+                    </div>    
+
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-stone-600">Dietary</span>
+                        <div class="mt-2 rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] shadow-sm text-gray-700">
+                            <label class="flex items-center gap-2 text-sm text-gray-700">
+                                <input
+                                    type="checkbox"
+                                    name="dietary"
+                                    value="vegetarian"
+                                    class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"
+                                    @(Model.DietarySelections.Contains("vegetarian") ? "checked" : "") />
+                                Vegetarian
+                            </label>
+
+                            <label class="flex items-center gap-2 text-sm text-gray-700 mt-2">
+                                <input
+                                    type="checkbox"
+                                    name="dietary"
+                                    value="dairyfree"
+                                    class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"
+                                    @(Model.DietarySelections.Contains("dairyfree") ? "checked" : "") />
+                            Diary Free</label>
+                        </div>
+                        </div>
+ 
+                        <div class="flex flex-col">
+                            <label for="difficulty" class="text-sm font-medium text-stone-600">Difficulty</label>
+                            <select id="difficulty" name="difficulty"
+                                class="block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50">
+                                <option value="">Any difficulty</option>
+
+                                @foreach (var option in new[] {
+                                    new { Value = 1, Label = "Easy" },
+                                    new { Value = 2, Label = "Medium" },
+                                    new { Value = 3, Label = "Hard" }
+                                })
+                                {
+                                    @:<option value="@option.Value" @(Model.Difficulty == option.Value ? "selected" : "")>@option.Label</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="duration" class="text-sm font-medium text-stone-600">Total Time</label>
+                            <select id="duration" name="duration"
+                                class="block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50">
+                                <option value="">Any time</option>
+
+                                @foreach (var option in new[] {
+                                    new { Value = "under20", Label = "< 20 min" },
+                                    new { Value = "20to40", Label = "20–40 min" },
+                                    new { Value = "over40", Label = "> 40 min" }
+                                })
+                                {
+                                    @:<option value="@option.Value" @(Model.DurationBucket == option.Value ? "selected" : "")>@option.Label</option>
+                                }
+                            </select>
+                        </div>
+
+                                                
+                        </div>
+
+
                  <!-- This bit handles the submit and reset buttons -->
                 <div class="mt-6 grid w-full grid-cols-2 justify-end space-x-4 md:flex">
                         <button type="submit"
                         class="rounded-lg bg-orange-600 px-4 py-2 font-medium text-white outline-none hover:opacity-80 focus:ring">Search</button> <button type="submit" name="clear" value="true"
                         class="rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">Reset</button>
                 </div>
-                </div>
-
             </form>
+            </div>
         </div>
     </div>
 
