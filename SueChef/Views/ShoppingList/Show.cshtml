@@ -1,4 +1,96 @@
 @model Dictionary<string, Dictionary<string, (decimal?, string)>>
+<body class='bg-orange-50'></body>
+<div class="justify-center p-3">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold text-orange-700 mb-2 flex justify-center items-center mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-orange-700 animate-bounce" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a4 4 0 00-4 4H4a1 1 0 00-1 1v9a2 2 0 002 2h10a2 2 0 002-2V7a1 1 0 00-1-1h-2a4 4 0 00-4-4zM8 6a2 2 0 114 0H8z"/>
+            </svg>Current Shopping List</h1>
+        <p class="text-gray-600 text-sm text-center">Review your ingredients before you head to the shop — check off what you already have, dont forget to save!</p>
+
+    </div>
+
+    <div class="w-full max-w-4xl mx-auto">
+        @if (Model != null && Model.Any())
+{
+    <section class="bg-orange-100 border-l-4 border-orange-700 p-5 rounded-lg shadow pt-10 w-full md:w-[75%] mx-auto">
+        <div class="flex justify-between items-center mb-4">
+            <section class="bg-orange-100 w-full max-w-3xl mx-auto text-center">
+            <h1 class="text-2xl font-semibold text-orange-700">Meal Plan Name Shopping List?</h1> 
+        </div>
+        <form asp-controller="ShoppingList" asp-action="Save">
+        @Html.AntiForgeryToken()
+        @foreach (var category in Model)
+        {
+            <div class="bg-white/80 backdrop-blur-sm border border-orange-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 mt-8">
+                <h2 class="text-xl font-semibold mb-3 text-orange-700 border-b pb-2 mb-3">
+                    @char.ToUpper(category.Key[0])@category.Key.Substring(1) 
+                </h2>
+                
+                
+                <ul class="space-y-2">
+                    @foreach (var ingredient in category.Value)
+                    {
+                        <input type="hidden" name="Categories" value="@category.Key"/>
+                <li class="flex items-center px-3 py-2 border-b-2 border-orange-700 transition">
+                    <label class="flex items-center w-full justify-between cursor-pointer select-none text-gray-700 text-md sm:text-base transition">
+                    <div class = "flex items-center">
+                        <input type="checkbox" name="SelectedIngredients" value="@ingredient.Key" class="hidden peer ingredient-checkbox" />
+                        <span class="relative w-5 h-5 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition flex-shrink-0  "></span>
+                            
+                        <input class="ml-3 font-medium peer-checked:line-through peer-checked:underline peer-checked:text-gray-500 bg-white" type="text" name="IngredientNames" readonly value="@ingredient.Key" />
+                    </div>
+                        <div class="flex items-right space-x-1">
+                            <strong>
+                                <input type="number" name="IngredientQuantities" data-original="@ingredient.Value.Item1.ToString()" value="@ingredient.Value.Item1.ToString()" class="ingredient-quantity no-spin items-right w-16 text-center bg-white focus:outline-none
+                                            focus:ring-2 focus:ring-orange-400 focus:border-orange-400 border-2 border-orange-700 rounded-md"/>
+                                    <input class=" w-6 -mr-6 font-medium bg-white" name="IngredientUnits" type="text" readonly value="@ingredient.Value.Item2"/>
+                                    
+                            </strong>
+                    </div>
+                    </label>
+                </li>
+                    }
+                </ul>
+            </div>
+                
+        }
+        <div class="fixed bottom-5 left-1/2 transform -translate-x-1/2">
+        <button type="submit" class="bg-orange-700 hover:bg-orange-600 text-white font-medium px-8 py-3 rounded-full shadow-md">Save Shopping List!</button>
+        </div>
+        </form>
+    </section>
+        <div style="height: 100px;"></div>
+    
+}
+        else
+        {
+            <div class="bg-orange-100 border-l-4 border-orange-700 p-5 rounded-lg shadow text-center max-w-2xl mx-auto">
+                <h2 class="text-xl font-semibold text-orange-700 mb-3">No ingredients found!</h2>
+                <p class="text-gray-600">Your shopping list is currently empty. Try adding some meals to your plan first.</p>
+            </div>
+        }     
+    </div>
+</div>
+
+
+    @* <script>
+      // For each checkbox, toggle its sibling quantity between original and 0
+      document.querySelectorAll('.ingredient-checkbox').forEach(cb => {
+        const li = cb.closest('li');
+        const qty = li.querySelector('.ingredient-quantity');
+        const original = qty.dataset.original;
+
+        // Ensure initial sync in case DOM/state ever changes before submit
+        const sync = () => { qty.value = cb.checked ? original : 0; };
+
+        cb.addEventListener('change', sync);
+        // Optional: run once on load (keeps value correct if markup ever renders unchecked)
+        sync();
+      });
+    </script> *@
+@* 
+    @model Dictionary<string, Dictionary<string, (decimal?, string)>>
 <!-- VIEW FOR SINGLE MEAL PLANS -->
 <body class='bg-orange-50'></body>
 <div class="justify-center p-3">
@@ -19,7 +111,6 @@
         {
             <div>
                 <h2 class="text-xl font-semibold mb-3 text-orange-700 mt-4">
-                    @* Capitalise firs tletter of the categories.  *@
                     @char.ToUpper(category.Key[0])@category.Key.Substring(1) 
                 </h2>
                 <ul class="space-y-2">
@@ -54,19 +145,4 @@
     </section>
 }     
     </div>
-</div>
-    @* <script>
-      // For each checkbox, toggle its sibling quantity between original and 0
-      document.querySelectorAll('.ingredient-checkbox').forEach(cb => {
-        const li = cb.closest('li');
-        const qty = li.querySelector('.ingredient-quantity');
-        const original = qty.dataset.original;
-
-        // Ensure initial sync in case DOM/state ever changes before submit
-        const sync = () => { qty.value = cb.checked ? original : 0; };
-
-        cb.addEventListener('change', sync);
-        // Optional: run once on load (keeps value correct if markup ever renders unchecked)
-        sync();
-      });
-    </script> *@
+</div> *@
