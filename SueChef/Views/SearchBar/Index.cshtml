@@ -1,9 +1,10 @@
 @model SueChef.ViewModels.SearchPageViewModel
 
+<div class="min-h-screen bg-orange-50">
 <div class="max-w-screen-lg mx-auto p-4">
     <div class="flex flex-col mb-8">
         <!-- This bit is the search bar -->
-        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+        <div class="rounded-xl border border-gray-200 bg-white p-6">
             <form method="get" action="/search" class="space-y-4">
                 <div class="relative">
                     <input type="text" name="searchQuery" value="@Model.SearchQuery"
@@ -98,5 +99,7 @@
     }
 
 </div>
+</div>
+
 
 <script src="~/js/searchpage.js"></script>
