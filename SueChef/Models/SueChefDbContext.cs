@@ -30,7 +30,9 @@ public class SueChefDbContext : DbContext
         }
 
         // Update MealPlan UpdatedOn if related MealPlanRecipe was added or deleted
-        foreach (var entry in ChangeTracker.Entries<MealPlanRecipe>())
+        var mealPlanRecipeEntries = ChangeTracker.Entries<MealPlanRecipe>().ToList();
+
+        foreach (var entry in mealPlanRecipeEntries)
         {
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified ||  entry.State == EntityState.Deleted)
             {
@@ -114,8 +116,6 @@ public class SueChefDbContext : DbContext
         modelBuilder.Entity<MealPlan>(b =>
         {
             b.Property(mp => mp.MealPlanTitle).HasMaxLength(200);
-            // b.Property(mp => mp.CreatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP");
-            // b.Property(mp => mp.UpdatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP");
             b.Property(mp => mp.CreatedOn)
                 .HasColumnType("timestamptz")  // PostgreSQL timestamp with timezone
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
