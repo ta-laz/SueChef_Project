@@ -1,7 +1,7 @@
 @model SueChef.ViewModels.RecipeCardViewModel
 
 <div
-    class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 border-2 border-gray-200 mb-2 flex-shrink-0 h-full rounded-lg md:rounded-[0%]">
+    class="flex flex-col hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 mb-2 flex-shrink-0 h-full rounded-lg md:rounded-[0%]">
 
     <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" class="flex flex-col ">
 
@@ -9,7 +9,7 @@
         <!-- Row one: picture -->
         <div class="w-full">
             <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" />
+                class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" title="@Model.Title"/>
         </div>
 
         <div class="flex-1 flex flex-col justify-between p-2 min-h-32">
@@ -76,7 +76,7 @@
     <!-- Add to Meal Plan Button -->
     <div class="">
         <button
-            class="meal-plan-btn flex items-center justify-center bg-orange-500 hover:opacity-90 text-white w-8 h-8 shadow-sm rounded-full transition"
+            class="meal-plan-btn flex items-center justify-center bg-orange-500 hover:opacity-90 text-white w-8 h-8 shadow-sm rounded-full transition" aria-label="Add to meal plan button"
             onclick="toggleMealPlan(this)">
             <!-- Plus Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 plus-icon" fill="none" viewBox="0 0 24 24"
@@ -122,7 +122,7 @@
     <div class="flex w-full">
 
         <!-- Dairy Free -->
-        @if (@Model.IsDairyFree)
+        @if (Model.IsDairyFree)
         {
             <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                 <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
@@ -131,7 +131,7 @@
         }
 
         <!-- Vegetarian -->
-        @if (@Model.IsVegetarian)
+        @if (Model.IsVegetarian)
         {
             <div class="flex items-center flex-1 min-w-[25%] max-w-[50%] p-1 gap-1">
                 <i data-lucide="vegan" class="w-6 h-6 text-gray-500"></i>

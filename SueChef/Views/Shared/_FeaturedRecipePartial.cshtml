@@ -1,9 +1,9 @@
 @model SueChef.ViewModels.FeaturedRecipeViewModel
 
-<section class="relative w-full max-w-6xl mx-auto mb-4 overflow-hidden shadow-md rounded-b-xl">
+<section class="relative w-full max-w-6xl mx-auto mb-4 overflow-hidden shadow-md">
 
         <!-- Background image -->
-        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id"
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" data-testid="Featured Recipe @Model.Id"
             class="block transition-all duration-300">
             <img src="@Model.RecipePicturePath" alt="Recipe Picture"
                 class="w-full h-[70vh] object-cover" />

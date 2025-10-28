@@ -38,7 +38,7 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
         // Verify that the correct title is shown
-        await Expect(Page.GetByTestId("recipe-title"))
+        await Expect(Page.GetByTestId("recipe-title Authentic Chicken Tikka Masala Curry"))
             .ToContainTextAsync("Authentic Chicken Tikka Masala Curry");
     }
 
@@ -118,7 +118,7 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GetByTestId("email").FillAsync("test@testmail.com");
         await Page.GetByTestId("password").FillAsync("Password123!");
         await Page.GetByTestId("confirmpassword").FillAsync("Password123!");
-        await Page.GetByTestId("submit-signup").ClickAsync();
+        await Page.GetByTestId("signup-submit").ClickAsync();
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
         await Page.GetByTestId("star-rating-1").ClickAsync();
