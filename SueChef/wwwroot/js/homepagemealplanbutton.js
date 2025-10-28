@@ -1,21 +1,21 @@
 
     // function toggleMealPlan(button) {
-    //     const plusIcon = button.querySelector('.plus-icon');
-    //     const tickIcon = button.querySelector('.tick-icon');
+    //     const heartOutline = button.querySelector('.plus-icon');
+    //     const heartfilled = button.querySelector('.tick-icon');
     //     const isActive = button.classList.contains('bg-rose-800');
 
     //     if (isActive) {
     //         // Back to plus
     //         button.classList.remove('bg-rose-800');
     //         button.classList.add('bg-orange-500');
-    //         tickIcon.classList.add('hidden');
-    //         plusIcon.classList.remove('hidden');
+    //         heartfilled.classList.add('hidden');
+    //         heartOutline.classList.remove('hidden');
     //     } else {
     //         // Change to tick
     //         button.classList.remove('bg-orange-500');
     //         button.classList.add('bg-rose-800');
-    //         plusIcon.classList.add('hidden');
-    //         tickIcon.classList.remove('hidden');
+    //         heartOutline.classList.add('hidden');
+    //         heartfilled.classList.remove('hidden');
     //     }
     // }
 
@@ -32,8 +32,8 @@ async function toggleFavourite(button) {
 
     var recipeId = button.getAttribute('data-recipe-id');
     var isFavourite = button.getAttribute('data-is-favourite') === 'true';
-    var plusIcon = button.querySelector('.plus-icon');
-    var tickIcon = button.querySelector('.tick-icon');
+    var heartOutline = button.querySelector('.heart-outline');
+    var heartfilled = button.querySelector('.heart-filled');
     var token = getAntiForgeryToken();
 
     // Optimistically update UI
@@ -42,11 +42,11 @@ async function toggleFavourite(button) {
     button.setAttribute('aria-pressed', String(isFavourite));
 
     if (isFavourite) {
-        plusIcon.classList.add('hidden');
-        tickIcon.classList.remove('hidden');
+        heartOutline.classList.add('hidden');
+        heartfilled.classList.remove('hidden');
     } else {
-        tickIcon.classList.add('hidden');
-        plusIcon.classList.remove('hidden');
+        heartfilled.classList.add('hidden');
+        heartOutline.classList.remove('hidden');
     }
 
     var formData = new URLSearchParams();
@@ -70,11 +70,11 @@ async function toggleFavourite(button) {
             button.setAttribute('aria-pressed', String(isFavourite));
 
             if (isFavourite) {
-                plusIcon.classList.add('hidden');
-                tickIcon.classList.remove('hidden');
+                heartOutline.classList.add('hidden');
+                heartfilled.classList.remove('hidden');
             } else {
-                tickIcon.classList.add('hidden');
-                plusIcon.classList.remove('hidden');
+                heartfilled.classList.add('hidden');
+                heartOutline.classList.remove('hidden');
             }
 
             // Show inline message
@@ -92,11 +92,11 @@ async function toggleFavourite(button) {
         button.setAttribute('aria-pressed', String(isFavourite));
 
         if (isFavourite) {
-            plusIcon.classList.add('hidden');
-            tickIcon.classList.remove('hidden');
+            heartOutline.classList.add('hidden');
+            heartfilled.classList.remove('hidden');
         } else {
-            tickIcon.classList.add('hidden');
-            plusIcon.classList.remove('hidden');
+            heartfilled.classList.add('hidden');
+            heartOutline.classList.remove('hidden');
         }
 
     } catch (err) {
@@ -108,11 +108,11 @@ async function toggleFavourite(button) {
         button.setAttribute('aria-pressed', String(isFavourite));
 
         if (isFavourite) {
-            plusIcon.classList.add('hidden');
-            tickIcon.classList.remove('hidden');
+            heartOutline.classList.add('hidden');
+            heartfilled.classList.remove('hidden');
         } else {
-            tickIcon.classList.add('hidden');
-            plusIcon.classList.remove('hidden');
+            heartfilled.classList.add('hidden');
+            heartOutline.classList.remove('hidden');
         }
 
         showFavouriteMessage(err.message || 'Failed to update favourites. Please try again.');
