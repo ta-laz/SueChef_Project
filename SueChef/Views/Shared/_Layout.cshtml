@@ -15,6 +15,11 @@
     <script src="~/js/backtotopbutton.js"></script>
     <script src="~/js/homepagemealplanbutton.js"></script>
 
+    @* Adding this in here so we can use the Logo name with font if we wanted to *@
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap" rel="stylesheet">
+
 </head>
 
 
@@ -67,11 +72,11 @@
             <nav class="flex flex-col mt-20 space-y-4 px-6">
                 <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Seasonal
                     Recipes</a>
-                <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Vegetarian
+                <a asp-controller="Categories" asp-action="Index" asp-route-category="vegetarian" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Vegetarian
                     Recipes</a>
                 <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Allergy Friendly
                     Recipes</a>
-                <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Quick Meals</a>
+                <a asp-controller="Categories" asp-action="Index" asp-route-category="quick" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Quick Meals</a>
                 <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Budget Meals</a>
                 <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Baked Goods</a>
                 <a href="#" class="hover:bg-rose-800 hover:!text-white !text-gray-700 px-4 py-2 rounded-md">Our Chefs</a>
@@ -168,3 +173,4 @@
 </body>
 
 </html>
+
