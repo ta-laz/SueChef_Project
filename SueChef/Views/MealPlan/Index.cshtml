@@ -46,17 +46,21 @@
 
         @* List of All Meal Plans: *@
         <section class="mb-8">
-            <div class="flex justify-center items-center w-full h-full mb-2 p-8 bg-white border border-gray-200">
-                <h2 class="inline text-4xl font-semibold text-gray-800 trackling-tight">Meal Plans</h2>
+            <div class="flex justify-center items-center w-full h-full mb-2 p-8 bg-white border-2 border-gray-200">
+                <h2 class=" text-4xl font-semibold text-gray-800">Meal Plans</h2>
+                <div>
+                <h2 class=" text-4xl font-semibold text-gray-800">@Model.MealPlanCount Plans</h2>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md overflow-hidden">
+
+            <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md gap-8 overflow-hidden">
                 @foreach (SueChef.ViewModels.MealPlanViewModel mealPlan in Model.MealPlans)
                 {
                     <partial name="_MealPlanPartial" model="mealPlan" />
                 }
+            </div>
         </section>
-        </div>
 
         @* Button to send POST request - Add Recipe to Meal Plan *@
         <button id="add-newplan"
