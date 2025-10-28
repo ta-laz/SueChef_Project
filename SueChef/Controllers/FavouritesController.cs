@@ -8,7 +8,7 @@ using SueChef.ActionFilters;
 
 namespace SueChef.Controllers;
 
-[ServiceFilter(typeof(AuthenticationFilter))]
+// [ServiceFilter(typeof(AuthenticationFilter))]
 public class FavouritesController : Controller
 {
     private readonly ILogger<FavouritesController> _logger;
@@ -49,11 +49,18 @@ public class FavouritesController : Controller
     }
 
     // [Route("/Favourites/{recipeId}")]
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavourite(int recipeId)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
+        if (currentUserId == null)
+    {
+        TempData["ErrorMessage"] = "You must be signed in to favourite recipes.";
+        return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
+    }
 
         // Check if a favourite record already exists (including soft-deleted)
         var favourite = await _db.Favourites
@@ -130,34 +137,46 @@ public class FavouritesController : Controller
         return RedirectToAction("Index");
     }
 
-    // NONE OF THIS IS WORKING FMLLLLL
-    // [Route("/Favourites/Delete/{id}")]
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> DeleteFavourite(int id)
-    // {
-    //     int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Route("Favourites/ToggleAjax")]
+    public async Task<IActionResult> ToggleFavouriteAjax([FromForm] int recipeId)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-    //     var favourite = await _db.Favourites
-    //         .Include(f => f.Recipe)
-    //         .FirstOrDefaultAsync(f => f.Id == id && f.UserId == currentUserId && !f.IsDeleted);
+        if (currentUserId == null)
+        {
+            return Unauthorized(new
+            {
+                success = false,
+                message = "You must be signed in to favourite recipes."
+            });
+        }
 
-    //     if (favourite == null)
-    //     {
-    //         TempData["ErrorMessage"] = "Favourite not found or already deleted.";
-    //         return RedirectToAction("Index");
-    //     }
+        var favourite = await _db.Favourites
+            .FirstOrDefaultAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId);
 
-    //     favourite.IsDeleted = true;
-    //     await _db.SaveChangesAsync();
+        if (favourite != null)
+        {
+            favourite.IsDeleted = !favourite.IsDeleted;
+            await _db.SaveChangesAsync();
 
-    //     TempData["DeletedFavouriteId"] = favourite.Id;
-    //     TempData["DeletedRecipeName"] = favourite.Recipe.Title;
-    //     TempData["SuccessMessage"] = $"Recipe '{favourite.Recipe.Title}' removed from favourites.";
+            return Ok(new
+            {
+                success = true,
+                isFavourite = !favourite.IsDeleted,
+            });
+        }
 
-    //     return RedirectToAction("Index");
-    // }
+        _db.Favourites.Add(new Favourite
+    {
+        UserId = currentUserId,
+        RecipeId = recipeId,
+        IsDeleted = false
+    });
+    await _db.SaveChangesAsync();
 
-
+    return Ok(new { success = true, isFavourite = true });
+    }
 
 }

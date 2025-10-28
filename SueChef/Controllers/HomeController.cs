@@ -19,7 +19,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
         var recipeCards = await _db.Recipes
         .OrderBy(r => Guid.NewGuid())
@@ -38,8 +38,11 @@ public class HomeController : Controller
 
             RatingCount = _db.Ratings.Count(rt => rt.RecipeId == r.Id && rt.Stars.HasValue),
             AverageRating = _db.Ratings
-            .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
-            .Average(rt => (double?)rt.Stars) ?? 0
+                .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
+                .Average(rt => (double?)rt.Stars) ?? 0,
+
+            // Sees if recipe is currently favourited or not by signed in user
+            IsFavourite = currentUserId != null && _db.Favourites.Any(f => f.UserId == currentUserId && f.RecipeId == r.Id && !f.IsDeleted)
         })
         .ToListAsync();
 

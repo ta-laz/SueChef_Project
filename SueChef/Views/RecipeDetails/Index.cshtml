@@ -69,6 +69,13 @@
           You must be signed in to save recipes to your meal plans.
       </div>
 
+      @* Error Message for clicking favourite dropdown when not signed in *@
+      <div id="loginError2" class="hidden text-red-800 text-right">
+          You must be signed in to favourite recipes.
+      </div>
+
+
+
         @* Success Message for Adding to Meal Plan *@
       <div class="flex justify-center">
         @if(TempData["Success"]!= null) 
