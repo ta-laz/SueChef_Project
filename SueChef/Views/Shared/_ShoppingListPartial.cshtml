@@ -17,11 +17,11 @@
                 <ul class="space-y-2">
                     @foreach (var ingredient in category.Value)
                     {
-                        var ingredientId = Guid.NewGuid().ToString(); //Individual id for each checkbox 
                 <li class="flex items-center px-3 py-2 border-b-2 border-orange-700 transition">
                     <label class="flex items-center cursor-pointer select-none text-gray-700 text-md sm:text-base transition">
-                        <input type="checkbox" name="SelectedIngredients" value="@ingredient.Key" class="hidden peer ingredient-checkbox" checked />
-                        <span class="w-5 h-5 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition flex-shrink-0"></span>
+                        <input type="checkbox" name="SelectedIngredients" value="" class="hidden peer ingredient-checkbox" checked />
+                        <span class="relative w-5 h-5 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition flex-shrink-0  "></span>
+                            
                         <span class="ml-3 font-medium line-through peer-checked:no-underline peer-checked:text-gray-800"><strong>@ingredient.Value.Item1@ingredient.Value.Item2</strong> — @ingredient.Key</span>
                     </label>
                 </li>
