@@ -20,7 +20,7 @@ public class SearchBarController : Controller
     }
 
     [HttpGet("/search")]
-    public async Task<IActionResult> Index(string? searchQuery, string? category, string? chef, List<string>? ingredients, string? dietary, int? difficulty, string? duration)
+    public async Task<IActionResult> Index(string? searchQuery, string? category, string? chef, List<string>? ingredients, List<string>? dietary, int? difficulty, string? duration)
     {
         // Populating the drop downs here from the database
         var allIngredients = await _db.Ingredients
@@ -81,13 +81,13 @@ public class SearchBarController : Controller
             if (!string.IsNullOrWhiteSpace(chef))
                 query = query.Where(r => r.Chef != null && r.Chef.Name == chef);
 
-            if (!string.IsNullOrWhiteSpace(dietary))
+            if (dietary != null && dietary.Any())
             {
-                if (dietary == "vegetarian")
+                if (dietary.Contains("vegetarian"))
                 {
                     query = query.Where(r => r.IsVegetarian == true);
                 }
-                else if (dietary == "diaryfree")
+                if (dietary.Contains("diaryfree"))
                 {
                     query = query.Where(r => r.IsDairyFree == true);
                 }
@@ -146,7 +146,7 @@ public class SearchBarController : Controller
             SearchCategory = category,
             SearchChef = chef,
             SelectedIngredients = ingredients,
-            Dietary = dietary,
+            DietarySelections = dietary,
             Difficulty = difficulty,
             DurationBucket = duration
         };

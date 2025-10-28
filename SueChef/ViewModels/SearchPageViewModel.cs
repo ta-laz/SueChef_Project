@@ -11,7 +11,7 @@ namespace SueChef.ViewModels
         public string? SearchCategory { get; set; }
         public string? SearchChef { get; set; }
         public List<string>? SelectedIngredients { get; set; }
-        public string? Dietary { get; set; }
+        public List<string>? DietarySelections { get; set; }
         public int? Difficulty { get; set; }
         public string? DurationBucket { get; set; }
     }
