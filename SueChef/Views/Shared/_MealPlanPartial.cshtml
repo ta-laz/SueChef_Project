@@ -82,7 +82,7 @@
                         Recipes: @Model.RecipeCount
                     </p>
                     <p class="text-gray-600 md:text-lg">
-                        Updated On: @Model.UpdatedOn
+                        Updated On: @(Model.UpdatedOn?.ToString("dd/MM/yyyy") ?? "N/A")
                     </p>
                 </div>
             </div>

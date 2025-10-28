@@ -58,7 +58,9 @@ public class MealPlanController : Controller
                 _db.MealPlans.Add(new MealPlan
                 {
                     UserId = currentUserId,
-                    MealPlanTitle = mealPlanViewModel.MealPlanTitle
+                    MealPlanTitle = mealPlanViewModel.MealPlanTitle,
+                    CreatedOn = DateTime.UtcNow,
+                    UpdatedOn = DateTime.UtcNow
                 });
 
                 await _db.SaveChangesAsync();
@@ -167,10 +169,8 @@ public class MealPlanController : Controller
             plan.MealPlanRecipes.Add(new MealPlanRecipe
             {
                 RecipeId = recipeId,
-                MealPlanId = plan.Id
+                MealPlanId = plan.Id,
             });
-
-            // plan.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
             addedCount++;
         }
 

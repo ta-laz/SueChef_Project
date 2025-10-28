@@ -25,7 +25,7 @@ public class SueChefDbContext : DbContext
         {
             if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
             {
-                entry.Entity.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+                entry.Entity.UpdatedOn = DateTime.UtcNow;
             }
         }
 
@@ -37,7 +37,7 @@ public class SueChefDbContext : DbContext
                 var mealPlan = await MealPlans.FindAsync(entry.Entity.MealPlanId);
                 if (mealPlan != null)
                 {
-                    mealPlan.UpdatedOn = DateOnly.FromDateTime(DateTime.Now);
+                    mealPlan.UpdatedOn = DateTime.UtcNow;
                     // Mark it as modified so EF updates it
                     Entry(mealPlan).State = EntityState.Modified;
                 }
@@ -114,12 +114,19 @@ public class SueChefDbContext : DbContext
         modelBuilder.Entity<MealPlan>(b =>
         {
             b.Property(mp => mp.MealPlanTitle).HasMaxLength(200);
-            b.Property(mp => mp.CreatedOn).HasDefaultValueSql("CURRENT_DATE");
-            b.Property(mp => mp.UpdatedOn).HasDefaultValueSql("CURRENT_DATE");
+            // b.Property(mp => mp.CreatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            // b.Property(mp => mp.UpdatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            b.Property(mp => mp.CreatedOn)
+                .HasColumnType("timestamptz")  // PostgreSQL timestamp with timezone
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            b.Property(mp => mp.UpdatedOn)
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
             b.HasOne(mp => mp.User)
-             .WithMany(u => u.MealPlans)             // rename property on User
-             .HasForeignKey(mp => mp.UserId)
-             .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(u => u.MealPlans)             // rename property on User
+                .HasForeignKey(mp => mp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // --- MealPlanRecipe (join)
