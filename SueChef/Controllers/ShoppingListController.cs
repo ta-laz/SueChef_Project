@@ -23,47 +23,6 @@ public class ShoppingListController : Controller
         _db = db;
     }
 
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public IActionResult Generate(int MealPlanId)
-    // {
-    //     var recipes = _db.MealPlanRecipes
-    //     .Where(mpr => mpr.MealPlanId == MealPlanId && !mpr.IsDeleted)
-    //     .Select(mpr => new
-    //     {
-    //         Ingredients = mpr.Recipe.RecipeIngredients.Select(ri => new
-    //         {
-    //             Name = ri.Ingredient.Name,
-    //             Quantity = ri.Quantity,
-    //             Unit = ri.Unit,
-    //             Category = ri.Ingredient.Category
-    //         })
-    //     })
-    //     .ToList();
-
-
-
-    //     Dictionary<string, (decimal, string, string)> ShoppingList = new Dictionary<string, (decimal, string, string)>();
-
-    //     foreach (var recipe in recipes)
-    //     {
-    //         foreach (var ingredient in recipe.Ingredients)
-    //         {
-    //             if (!ShoppingList.ContainsKey(ingredient.Name))
-    //             {
-    //                 ShoppingList[ingredient.Name] = (ingredient.Quantity, ingredient.Unit, ingredient.Category);
-    //             }
-    //             else
-    //             {
-    //                 decimal newQuant = ShoppingList[ingredient.Name].Item1 + ingredient.Quantity;
-    //                 ShoppingList[ingredient.Name] = (newQuant, ingredient.Unit, ingredient.Category);
-    //             }    
-    //         }
-    //     }
-    //     TempData["ShoppingList"] = JsonConvert.SerializeObject(ShoppingList);
-    //     return RedirectToAction("Show", "MealPlan", new { id = MealPlanId });
-    // }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Generate(int MealPlanId, List<int> RecipeIds, List<int> Servings)
@@ -143,46 +102,59 @@ public class ShoppingListController : Controller
         for (int i = 0; i < ingredientCount; i++)
         {
             if (IngredientQuantities[i] == 0m) continue;
-            
-            _db.ShoppingLists.Add(new ShoppingList
+            if (Categories[i] == "Additional")
+            {
+                _db.ShoppingLists.Add(new ShoppingList
                 {
                     UserId = currentUserId,
                     Category = Categories[i],
-                    IngredientName = IngredientNames[i],
-                    Quantity = IngredientQuantities[i],
+                    Additional = IngredientNames[i],
                     Unit = IngredientUnits[i],
+                    AdditionalQuantity = IngredientQuantities[i],
                 });
+            }
+            else{
+            _db.ShoppingLists.Add(new ShoppingList
+            {
+                UserId = currentUserId,
+                Category = Categories[i],
+                IngredientName = IngredientNames[i],
+                Quantity = IngredientQuantities[i],
+                Unit = IngredientUnits[i],
+            });}
             
            
             
         }
         await _db.SaveChangesAsync();
 
-        return RedirectToAction("Privacy","Home");
+        return RedirectToAction("Show");
     }
     
-    // public async Task<IActionResult> Show()
-    // {
-    //     var ingredientCount = Categories.Count();
-    //     int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+    public async Task<IActionResult> Show()
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-    //     var currentList = _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).ToList();
-    //     _db.ShoppingLists.RemoveRange(currentList);
-    //     await _db.SaveChangesAsync();
+        var currentList = await _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).ToListAsync();
 
-    //     for (int i = 0; i < ingredientCount; i++)
-    //     {
-    //         _db.ShoppingLists.Add(new ShoppingList
-    //         {
-    //             UserId = currentUserId,
-    //             Category = Categories[i],
-    //             IngredientName = IngredientNames[i],
-    //             Quantity = IngredientQuantities[i],
-    //             Unit = IngredientUnits[i],
-    //         });
-    //     }
-    //     await _db.SaveChangesAsync();
+        Dictionary<string, Dictionary<string, (decimal?, string)>> shoppingList = new Dictionary<string, Dictionary<string, (decimal?, string)>>();
 
-    //     return RedirectToAction("Privacy", "Home");
-    // }
+        foreach (var item in currentList)
+        {
+            if (!shoppingList.ContainsKey(item.Category))
+                shoppingList[item.Category] = new();
+            if (item.Category == "Additional")
+            {
+                shoppingList[item.Category][item.Additional] = (item.AdditionalQuantity, item.Unit);
+            }
+            else
+            {
+            shoppingList[item.Category][item.IngredientName] = (item.Quantity, item.Unit);
+            }
+
+        }
+
+        
+        return View(shoppingList);
+    }
 }

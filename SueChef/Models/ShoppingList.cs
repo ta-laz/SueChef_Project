@@ -15,7 +15,7 @@ public class ShoppingList
     public string? Unit { get; set; } = null;
 
     public string? Additional { get; set; } = null;
-    public string? AdditionalQuantity { get; set; } = null;
+    public decimal? AdditionalQuantity { get; set; } = null;
     public bool IsPurchased { get; set; } = false;  
 
 }

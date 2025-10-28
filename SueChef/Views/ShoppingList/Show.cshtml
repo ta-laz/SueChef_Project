@@ -1,4 +1,4 @@
-@model Dictionary<string, Dictionary<string, (decimal, string)>>
+@model Dictionary<string, Dictionary<string, (decimal?, string)>>
 @if (Model != null && Model.Any())
 {
     <section class="bg-orange-100 border-l-4 border-orange-700 p-5 rounded-lg shadow pt-10 w-full md:w-[75%]">
@@ -6,7 +6,8 @@
             <section class="bg-orange-100 w-full max-w-3xl mx-auto text-center">
             <h1 class="text-2xl font-semibold text-orange-700">Shopping List Draft</h1> 
         </div>
-        
+        <form asp-controller="ShoppingList" asp-action="Save">
+        @Html.AntiForgeryToken()
         @foreach (var category in Model)
         {
             <div>
@@ -28,7 +29,7 @@
                     </div>
                         <div class="flex items-right space-x-1">
                             <strong>
-                                <input type="number" name="IngredientQuantities" data-original="@ingredient.Value.Item1.ToString("0")" value="@ingredient.Value.Item1.ToString("0")" class="ingredient-quantity no-spin items-right w-16 text-center bg-orange-100 focus:outline-none
+                                <input type="number" name="IngredientQuantities" data-original="@ingredient.Value.Item1.ToString()" value="@ingredient.Value.Item1.ToString()" class="ingredient-quantity no-spin items-right w-16 text-center bg-orange-100 focus:outline-none
                                             focus:ring-2 focus:ring-orange-400 focus:border-orange-400 border-2 border-orange-700 rounded-md"/>
                                     <input class=" w-6 -mr-6 font-medium bg-orange-100" name="IngredientUnits" type="text" readonly value="@ingredient.Value.Item2"/>
                                     
@@ -40,21 +41,10 @@
                 </ul>
             </div>
         }
-        <h2 class="text-xl font-semibold mb-3 text-orange-700 mt-4">
-            Additional
-        </h2>
-        <ul>
-            <li>
-                <input type="hidden" name="Categories" value="Additional"/>
-                <input type="hidden" name="IngredientUnits" value="units"/>
-                <input class="ml-3 font-medium line-through peer-checked:no-underline peer-checked:text-gray-800 bg-orange-100" type="text" name="IngredientNames"/>
-                <input type="number" name="IngredientQuantities" value="1" class="ingredient-quantity no-spin items-right w-16 text-center bg-orange-100 focus:outline-none
-                                            focus:ring-2 focus:ring-orange-400 focus:border-orange-400 border-2 border-orange-700 rounded-md"/>
-            </li>
-        </ul>
         <button type="submit" class="mt-5 inline-block bg-orange-700 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-8 py-2 rounded-full transition">Save</button>
-        </section>
+        </form>
 
+    </section>
 }
 
     <script>
