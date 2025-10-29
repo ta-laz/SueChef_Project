@@ -101,7 +101,7 @@ public class ShoppingListController : Controller
 
         for (int i = 0; i < ingredientCount; i++)
         {
-            if (IngredientQuantities[i] == 0m) continue;
+            if (IngredientQuantities[i] == 0m || IngredientNames[i] == null) continue;
             if (Categories[i] == "Additional")
             {
                 _db.ShoppingLists.Add(new ShoppingList
