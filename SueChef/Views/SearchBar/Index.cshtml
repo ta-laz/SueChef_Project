@@ -39,7 +39,7 @@
 
                 <!-- This is to hide the filters on small screens -->
                 <div id="filtersContainer" class="mt-4 transition-all duration-300 ease-in-out">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
 
                         <!-- This bit is where we start with the dropdown filters -->
                             <div class="flex flex-col">
@@ -129,9 +129,7 @@
                                     </select>
                                 </div>
                                 
-                            <div class="flex flex-col">
-                                <span class="text-sm font-medium text-stone-600">Dietary</span>
-                                <div class="rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] shadow-sm text-gray-700 flex flex-row items-center gap-4 flex-wrap w-fit">
+                            <div class="flex sm:flex:row gap-8 md:pt-4 justify-center">
                                     <label class="flex items-center gap-2 text-medium text-gray-700">
                                         <input
                                             type="checkbox"
@@ -150,7 +148,6 @@
                                             class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"
                                             @(Model.DietarySelections.Contains("dairyfree") ? "checked" : "") />
                                     Dairy Free</label>
-                                </div>
                                 </div>
                     </div>                        
 
@@ -181,6 +178,28 @@
                         @if (!string.IsNullOrWhiteSpace(Model.SearchChef))
                         {
                             @: by chef "<span class='text-rose-700 font-medium'>@Model.SearchChef</span>"
+                        }
+                        @if (Model.Difficulty.HasValue)
+                        {
+                            var difficultyLabel = Model.Difficulty switch
+                            {
+                                1 => "Easy",
+                                2 => "Medium",
+                                3 => "Hard",
+                                _ => ""
+                            };
+                            @: with difficulty "<span class='text-rose-700 font-medium'>@difficultyLabel</span>"
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.DurationBucket))
+                        {
+                            var durationLabel = Model.DurationBucket switch
+                            {
+                                "under20" => "< 20 min",
+                                "20to40" => "20–40 min",
+                                "over40" => "> 40 min",
+                                _ => ""
+                            };
+                            @: taking "<span class='text-rose-700 font-medium'>@durationLabel</span>"
                         }
                     </p>
                     <p class="text-sm text-gray-500 mt-1">
