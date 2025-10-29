@@ -57,6 +57,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // HELPER FUNCTION to only show scroll bar when needed:
+    function updateScrollbarClass() {
+    if (dropdownMenu.scrollHeight > dropdownMenu.clientHeight) {
+        dropdownMenu.classList.add("scrollbar-visible");
+        } else {
+        dropdownMenu.classList.remove("scrollbar-visible");
+        }
+    }
+
+    // Run on page load
+    updateScrollbarClass();
+
+    // Also run when the dropdown is shown (so it can recalc if content changes)
+    dropdownButton.addEventListener("click", () => {
+        setTimeout(updateScrollbarClass, 50); // slight delay to ensure content is rendered
+    });
+
 
     // SERVINGS:
     servingInput.addEventListener('input', () => {

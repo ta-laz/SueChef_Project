@@ -253,13 +253,13 @@
   display: none;             /* Chrome, Safari, Opera */
 }
 
-/* Show scrollbar on hover */
-.scrollbar-hover:hover {
+/* Only used when scrollable */
+.scrollbar-visible:hover {
   -ms-overflow-style: auto;
   scrollbar-width: thin;
 }
 
-.scrollbar-hover:hover::-webkit-scrollbar {
+.scrollbar-visible:hover::-webkit-scrollbar {
   display: block;
   width: 4px;       /* Adjust thickness */
 }
