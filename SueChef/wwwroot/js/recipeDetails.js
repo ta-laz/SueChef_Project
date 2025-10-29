@@ -20,19 +20,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        const alertBox = document.getElementById(alertId);
-        alertBox.classList.remove("hidden");
-        alertBox.style.transition = 'opacity 1s ease';
-        alertBox.style.opacity = '1';
-
-        // Fade after 3s
+    const alertBox = document.getElementById(alertId);
+    alertBox.classList.remove("hidden");
+    alertBox.style.transition = 'opacity 1s ease';
+    alertBox.style.opacity = '1';
+    
+    // Fade after 3s
+    setTimeout(() => {
+        alertBox.style.opacity = '0';
         setTimeout(() => {
-            alertBox.style.opacity = '0';
-            setTimeout(() => {
-                alertBox.classList.add("hidden");
+            alertBox.classList.add("hidden");
                 alertBox.style.opacity = '1'; // reset for next time
             }, 1000);
         }, 3000);
+    }
+    
+    
+    // Helper function to hide all alerts if the + or dropdown buttons are clicked:
+    function hideAllAlerts() {
+    document.querySelectorAll('.alert-message, #loginError, #loginError2, #noMealPlansError')
+        .forEach(el => {
+            el.classList.add('hidden');
+            el.style.opacity = '1';
+        });
     }
 
     servingInput.addEventListener('input', () => {
@@ -103,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Toggle dropdown on button click
         dropdownButton.addEventListener("click", (e) => {
             e.stopPropagation();
+            hideAllAlerts();
 
             // If a user is not signed in:
             if (!isLoggedIn) {
@@ -115,8 +126,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 showAlert("noMealPlansError"); // Show the new alert
                 return; // Stop here — do not open dropdown
             }
-
+            
+            // Hide the New Meal Plan form if it's open:
+            if (form && !form.classList.contains("hidden")) {
+                form.classList.add("hidden");
+            }
             dropdownMenu.classList.toggle("hidden");
+            
         
             // Toggle the buttons based on dropdown visibility
             if (dropdownMenu.classList.contains("hidden")) {
@@ -203,12 +219,18 @@ if (createBtn && form && input && saveBtn) {
     // Listen for clicking the + button:
     createBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        hideAllAlerts();
 
         // If a user is not signed in:
         if (!isLoggedIn) {
             showAlert("loginError"); // Show dropdown login alert
             return; // Stop here, do NOT open dropdown
         }
+        
+        // Hide the Dropdown menu if it's open:
+        if (dropdownMenu && !dropdownMenu.classList.contains("hidden")) {
+            dropdownMenu.classList.add("hidden");
+            }
         // Toggle the visibility of the form:
         form.classList.toggle("hidden");
         input.focus();
@@ -237,52 +259,5 @@ if (createBtn && form && input && saveBtn) {
 
     }
 });
-// // Handle new meal plan creation
-// saveBtn.addEventListener("click", async (e) => {
-//     e.preventDefault();
-//     e.stopPropagation();
-
-//     const title = input.value.trim();
-//     if (!title) {
-//         errorMsg.textContent = "Please enter a name.";
-//         errorMsg.classList.remove("hidden");
-//         return;
-//     }
-
-//     errorMsg.classList.add("hidden");
-
-//     const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
-
-//     try {
-//         const response = await fetch("/MealPlan/CreateInline", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/x-www-form-urlencoded"
-//             },
-//             body: `mealPlanTitle=${encodeURIComponent(title)}&__RequestVerificationToken=${token}`
-//         });
-
-//         const data = await response.json();
-
-//         if (!data.success) {
-//             errorMsg.textContent = data.error || "Unexpected error";
-//             errorMsg.classList.remove("hidden");
-//             return;
-//         }
-
-
-//         // Reset input form
-//         input.value = "";
-//         form.classList.add("hidden");
-//         createBtn.classList.remove("hidden");
-//         saveBtn.classList.add("hidden");
-
-//     } catch (err) {
-//         console.error(err);
-//         errorMsg.textContent = "An unexpected error occurred.";
-//         errorMsg.classList.remove("hidden");
-//     }
-// });
-
 
 

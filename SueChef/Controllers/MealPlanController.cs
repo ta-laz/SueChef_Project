@@ -66,7 +66,9 @@ public class MealPlanController : Controller
                 });
 
                 await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                TempData["Success"] = "New Meal Plan created";
+                return Redirect(Request.Headers["Referer"].ToString()); // Changed this so that you stay on the current page, allows new meal plans to be created elsewhere
+
             }
         }
 
@@ -79,7 +81,7 @@ public class MealPlanController : Controller
             MealPlanViewModel = mealPlanViewModel
         };
         
-        TempData["Success"] = $"Meal plan '{mealPlanViewModel.MealPlanTitle}' created successfully!";
+        TempData["ErrorMessage"] = "You already have a meal plan with this title!";
         return Redirect(Request.Headers["Referer"].ToString()); // Changed this so that you stay on the current page, allows new meal plans to be created elsewhere
     }
 
