@@ -162,6 +162,6 @@ public class ShoppingListController : Controller
         }
         await _db.SaveChangesAsync();
 
-        return View("Show");
+    return RedirectToAction("Show");
     }
 }
