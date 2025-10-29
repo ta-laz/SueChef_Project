@@ -5,9 +5,11 @@ namespace SueChef.ViewModels
     public class DeleteAccountViewModel
     {
         [Required]
-        public int Id { get; set; }
+        public int Id { get; set; } // user id
 
         [Required, DataType(DataType.Password)]
-        public string ConfirmDeletePassword { get; set; } = "";
+        [Display(Name = "Enter Password")]
+
+        public string ConfirmDeletePassword { get; set; } = string.Empty;
     }
 }

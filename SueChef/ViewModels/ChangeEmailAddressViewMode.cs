@@ -8,6 +8,7 @@ namespace SueChef.ViewModels
         public int Id { get; set; }
 
         [Required, EmailAddress]
+        [Display(Name = "New Email")]
         public string NewEmail { get; set; } = "";
 
         [Required, DataType(DataType.Password)]

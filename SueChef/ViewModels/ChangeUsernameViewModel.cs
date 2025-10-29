@@ -9,6 +9,7 @@ namespace SueChef.ViewModels
 
         [Required, StringLength(30, MinimumLength = 3,
             ErrorMessage = "Username must be between 3 and 30 characters.")]
+        [Display(Name ="New Username")]    
         public string NewUserName { get; set; } = "";
 
         [Required, DataType(DataType.Password)]
