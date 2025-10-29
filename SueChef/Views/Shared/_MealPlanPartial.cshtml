@@ -6,7 +6,7 @@
 
     <!-- 3 Dots Menu -->
     <div class="absolute top-2 right-2">
-        <button type="button" class="text-gray-500 hover:text-gray-700 p-2 rounded-full transition"
+        <button type="button" class="text-gray-500 hover:text-gray-700 p-2 rounded-full transition" data-testid="three-dots-button-@Model.Id"
             onclick="toggleMenu(this)">
             <i data-lucide="more-horizontal" class="w-5 h-5"></i>
         </button>
@@ -16,7 +16,7 @@
 
             <!-- Edit Button -->
             <button type="button"
-                class="block items-center flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                class="block items-center flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-testid="edit-button-@Model.Id"
                 onclick="openEditForm(@Model.Id, '@Model.MealPlanTitle')">
                 <i data-lucide="pencil" class="w-6 h-6 text-gray-500 object-cover mr-2"></i>
                 <p>Edit</p>
@@ -129,7 +129,7 @@
             <h2 class="text-xl font-semibold mb-4 text-center">Edit Meal Plan</h2>
 
             <input type="text" name="newMealPlanTitle" id="edit-mealplan-input-@Model.Id"
-                data-testid="mealplan-name-input" class="border border-gray-300 rounded-md p-2 w-full text-center focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-400
+                data-testid="mealplan-name-input-@Model.Id" class="border border-gray-300 rounded-md p-2 w-full text-center focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-400
          focus:placeholder-white" placeholder="New Meal Plan Title" />
 
             <div class="flex justify-center gap-3 mt-4">
@@ -137,7 +137,7 @@
                     class="w-28 bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-300 transition">
                     Cancel
                 </button>
-                <button id="submit-newplan" data-testid="submit-newplan" type="submit"
+                <button id="submit-newplan" data-testid="edit-meal-plan-submit" type="submit"
                     class="w-28 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 active:bg-orange-700 transition">
                     Save
                 </button>

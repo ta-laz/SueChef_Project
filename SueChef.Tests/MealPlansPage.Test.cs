@@ -150,4 +150,46 @@ public class MealPlansPage : PageTest
         await Expect(Page.Locator("#meal-plan-title").First).ToHaveTextAsync("test-name-2");
     }
 
+    [Test]
+    public async Task ThreeDotsButton_MealPlansPage_IsVisible()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Expect(Page.GetByTestId("three-dots-button-10")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task EditButton_MealPlansPage_IsVisible()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("three-dots-button-10").ClickAsync();
+        await Expect(Page.GetByTestId("edit-button-10")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task EditMealPlan_MealPlansPage_ShowsEditedMealPlanTitle()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("three-dots-button-10").ClickAsync();
+        await Page.GetByTestId("edit-button-10").ClickAsync();
+        await Page.GetByTestId("mealplan-name-input-10").FillAsync("edited-test-name");
+        await Page.GetByTestId("edit-meal-plan-submit").ClickAsync();
+
+        await Expect(Page.GetByText("edited-test-name")).ToBeVisibleAsync();
+    }
+
 }
