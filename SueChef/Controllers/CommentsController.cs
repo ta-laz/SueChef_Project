@@ -23,17 +23,12 @@ public class CommentController : Controller
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
         //if (!currentUserId.HasValue) return RedirectToAction("New", "Sessions");
 
-        if (int? currentUserId == null)
+        if (!currentUserId.HasValue)
         {
             TempData["ErrorMessage"] = "you must be logged in to write comments!";
             return Redirect($"/recipe/{recipeId}");
         }
-        if (string.IsNullOrWhiteSpace(content))
-        {
-            TempData["ErrorMessage"] = "Comment cannot be empty.";
-            return Redirect($"/recipe/{recipeId}");
-        }
-
+        
         _db.Comments.Add(new Comment
         {
             UserId = currentUserId.Value,
