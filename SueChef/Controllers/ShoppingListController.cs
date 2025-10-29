@@ -121,9 +121,9 @@ public class ShoppingListController : Controller
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-        var currentList = await _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).Where(sL => !sL.IsPurchased).ToListAsync();
+        var currentList = await _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).ToListAsync();
 
-        Dictionary<string, Dictionary<string, (decimal?, string)>> shoppingList = new Dictionary<string, Dictionary<string, (decimal?, string)>>();
+        Dictionary<string, Dictionary<string, (decimal?, string, bool)>> shoppingList = new Dictionary<string, Dictionary<string, (decimal?, string, bool)>>();
 
         foreach (var item in currentList)
         {
@@ -131,33 +131,75 @@ public class ShoppingListController : Controller
                 shoppingList[item.Category] = new();
             if (item.Category == "Additional")
             {
-                shoppingList[item.Category][item.Additional] = (item.AdditionalQuantity, item.Unit);
+                shoppingList[item.Category][item.Additional] = (item.AdditionalQuantity, item.Unit, item.IsPurchased);
             }
             else
             {
-                shoppingList[item.Category][item.IngredientName] = (item.Quantity, item.Unit);
+                shoppingList[item.Category][item.IngredientName] = (item.Quantity, item.Unit, item.IsPurchased);
             }
 
         }
-        return View(shoppingList);
+        var sortedShoppingList = shoppingList.OrderBy(kvp => kvp.Key).Reverse().ToDictionary();
+        return View(sortedShoppingList);
     }
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(List<string> IngredientNames, List<decimal> IngredientQuantities)
+    public async Task<IActionResult> Update(List<string> IngredientNames, List<decimal> IngredientQuantities, List<string> PurchasedIngredientNames, List<decimal> PurchasedIngredientQuantities, List<string>Categories)
     {
         var ingredientCount = IngredientNames.Count();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        int purchasedIngredientCount = PurchasedIngredientNames.Count();
+        Console.WriteLine(Categories.Count());
 
         for (int i = 0; i < ingredientCount; i++)
         {
             if (IngredientQuantities[i] != 0m) continue;
-            var sL = await _db.ShoppingLists.
-                Where(sL => sL.UserId == currentUserId).
-                Where(sL => sL.IngredientName == IngredientNames[i]).FirstOrDefaultAsync();
-            if (sL != null)
+            if (Categories[i] != "Additional")
             {
-                sL.IsPurchased = true;
+
+                var sL = await _db.ShoppingLists.
+                    Where(sL => sL.UserId == currentUserId).
+                    Where(sL => sL.IngredientName == IngredientNames[i]).FirstOrDefaultAsync();
+                if (sL != null)
+                {
+                    sL.IsPurchased = true;
+                }
+            }
+            else
+            {
+                var sL = await _db.ShoppingLists.
+                    Where(sL => sL.UserId == currentUserId).
+                    Where(sL => sL.Additional == IngredientNames[i]).FirstOrDefaultAsync();
+                if (sL != null)
+                {
+                    sL.IsPurchased = true;
+                }
+            }
+        }
+        
+        for (int i = 0; i < purchasedIngredientCount; i++)
+        {
+            if (PurchasedIngredientQuantities[i] == 0m) continue;
+            if (Categories[i+IngredientNames.Count()] != "Additional")
+            {
+                var sL = await _db.ShoppingLists.
+                    Where(sL => sL.UserId == currentUserId).
+                    Where(sL => sL.IngredientName == PurchasedIngredientNames[i]).FirstOrDefaultAsync();
+                if (sL != null)
+                {
+                    sL.IsPurchased = false;
+                }
+            }
+            else
+            {
+                var sL = await _db.ShoppingLists.
+                    Where(sL => sL.UserId == currentUserId).
+                    Where(sL => sL.Additional == PurchasedIngredientNames[i]).FirstOrDefaultAsync();
+                if (sL != null)
+                {
+                    sL.IsPurchased = false;
+                }
             }
         }
         await _db.SaveChangesAsync();
