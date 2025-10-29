@@ -109,4 +109,15 @@ public class MealPlansPage : PageTest
         await Expect(Page.GetByTestId("number-of-meal-plans")).ToContainTextAsync("1 Plan");
     }
 
+    [Test]
+    public async Task CreateMealPlan_MealPlansPage_Has0RecipesInitially()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").ClickAsync();
+        await Expect(Page.GetByText("0 recipes")).ToBeVisibleAsync();
+        await Expect(Page.GetByText("No recipes yet")).ToBeVisibleAsync();
+
+    }
+
 }
