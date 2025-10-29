@@ -77,20 +77,6 @@ public class ShoppingListController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Save(List<string> Categories, List<string> IngredientNames, List<decimal> IngredientQuantities, List<string> IngredientUnits, List<string> SelectedIngredients)
     {
-        // Pair up recipe IDs and serving multipliers
-        // var quantAndUnit = IngredientQuantities.Zip(IngredientUnits, (quant, unit) => new { quant, unit }).ToList();
-
-        // var quantPerIng = IngredientNames.Zip(quantAndUnit, (ing, quantUnit) => new { ing, quantUnit })
-        //                                 .ToDictionary(x => x.ing, x => x.quantUnit);
-
-        // Dictionary<string, Dictionary<string, (decimal, string)>> shoppingList = new Dictionary<string, Dictionary<string, (decimal, string)>>();
-
-        // foreach (var category in Categories)
-        // {
-        //     if 
-        // }
-        // foreach (var item in quantPerIng)
-        //     Console.WriteLine(item);
 
         var ingredientCount = IngredientNames.Count();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
