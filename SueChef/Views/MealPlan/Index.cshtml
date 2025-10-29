@@ -7,7 +7,7 @@
     <!-- Main central container -->
     <section class="relative w-full max-w-4xl mx-auto mb-4 overflow-hidden p-2">
         <div
-            class=" items-center flex flex-col items-center justify-center w-full mb-6 mt-6 p-2 bg-white border-b-2 border-gray-200 rounded-md">
+            class=" items-center flex flex-col items-center justify-center w-full mb-6 mt-6 p-2 bg-orange-50  rounded-md">
             <h2 class="text-4xl tracking-tight text-gray-800">Meal Plans</h2>
             <p class="text-gray-600 text-lg">@Model.MealPlanCount Plans</p>
         </div>
@@ -51,10 +51,10 @@
             @if (Model.MealPlanCount == 0)
             {
                 <!-- No meal plans yet -->
-                <div id="create-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
-                    p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
+                <div id="no-meal-plans-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
+                            p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
                     <div id="no-meal-plans-yet" class="flex flex-col items-center">
-                        <i data-lucide="cooking-pot" class="w-20 h-20 mb-8 text-gray-500 object-cover"></i>
+                        <i data-lucide="cooking-pot" class="w-20 h-20 mb-8 text-gray-400 object-cover"></i>
                         <span class="text-gray-700 text-lg font-semibold mb-8 text-center">You haven't created any meal
                             plans yet...</span>
                         <span class="text-gray-500 text-md font-medium text-center">Save and sort your favourite recipes
@@ -62,13 +62,18 @@
                     </div>
                 </div>
             }
-
-            <!-- Existing meal plans -->
-            @foreach (var mealPlan in Model.MealPlans)
+            else
             {
-                <partial name="_MealPlanPartial" model="mealPlan" />
+                <!-- Existing meal plans -->
+                    
+                @foreach (var mealPlan in Model.MealPlans)
+                {
+                    <partial name="_MealPlanPartial" model="mealPlan" />
+                }
+
             }
         </div>
+
     </section>
 
     @* Error messages to display if post request unsuccessful *@

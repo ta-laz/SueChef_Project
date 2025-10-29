@@ -30,7 +30,8 @@ public class MealPlanController : Controller
 
         var mealPlansPageViewModel = new MealPlansPageViewModel
         {
-            MealPlans = allMealPlans
+            MealPlans = allMealPlans,
+            MealPlanCount = allMealPlans.Count
         };
 
         return View(mealPlansPageViewModel);
@@ -250,6 +251,20 @@ public class MealPlanController : Controller
         if (mealPlan == null)
             return NotFound();
         _db.MealPlans.Remove(mealPlan);
+        await _db.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
+
+    [Route("/MealPlans/EditMealPlan/{id}")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditMealPlan(int id, string newMealPlanTitle)
+    {
+        var mealPlan = _db.MealPlans.Find(id);
+        if (mealPlan == null)
+            return NotFound();
+
+        mealPlan.MealPlanTitle = newMealPlanTitle;
         await _db.SaveChangesAsync();
         return RedirectToAction("Index");
     }

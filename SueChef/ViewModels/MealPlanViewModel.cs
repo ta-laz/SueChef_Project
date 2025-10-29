@@ -11,6 +11,7 @@ public class MealPlanViewModel
 
     [Required(ErrorMessage = "Title is required"), StringLength(200, ErrorMessage = "Don't be ridiculous, choose a shorter title")]
     public string? MealPlanTitle { get; set; }
+    
     public int? RecipeCount { get; set; }
     public DateOnly? UpdatedOn { get; set; }
     public List<string>? RecipePicturePaths { get; set; } = new();
