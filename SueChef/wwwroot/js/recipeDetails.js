@@ -168,4 +168,151 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const createBtn = document.getElementById("showNewPlanForm");
+    const form = document.getElementById("newMealPlanForm");
+    const input = document.getElementById("newMealPlanTitle");
+    const errorMsg = document.getElementById("newMealPlanError");
+    const dropdown = document.getElementById("dropdownMenu");
+    
+    if (createBtn && form && input) {
+    // --- Show the input form ---
+    createBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        createBtn.classList.add("hidden");
+        form.classList.remove("hidden");
+        input.focus();
+    });
+    
+    // --- Hide form when clicking outside dropdown ---
+    document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target) && e.target !== dropdownButton) {
+            form.classList.add("hidden");
+            createBtn.classList.remove("hidden");
+            errorMsg.classList.add("hidden");
+            input.value = "";
+        }
+    });
+    
+    // --- Submit handler for creating new meal plan ---
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = input.value.trim();
+        errorMsg.classList.add("hidden");
+    
+        if (!title) {
+            errorMsg.textContent = "Please enter a name.";
+            errorMsg.classList.remove("hidden");
+            return;
+        }
+    
+    
+        const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+    
+        try {
+            const response = await fetch("/MealPlans/CreateInline", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `mealPlanTitle=${encodeURIComponent(title)}&__RequestVerificationToken=${token}`
+    });
+
+    // If server returned a non-2xx status, read body for diagnostics and throw
+    if (!response.ok) {
+        const text = await response.text();
+        console.error("CreateInline returned non-OK status:", response.status, text);
+        // show server message if it's short, otherwise generic
+        errorMsg.textContent = text && text.length < 200 ? text : "Server error creating meal plan.";
+        errorMsg.classList.remove("hidden");
+        return;
+    }
+
+    // Try parse JSON (guard in case server returned HTML or empty)
+    let data;
+    try {
+        data = await response.json();
+    } catch (parseErr) {
+        const text = await response.text(); // raw response to inspect
+        console.error("Failed to parse JSON from CreateInline response. Raw response:", text);
+        errorMsg.textContent = "Unexpected response from server.";
+        errorMsg.classList.remove("hidden");
+        return;
+    }
+
+    // Validate shape of response
+    if (!data || data.success !== true || !Array.isArray(data.mealPlans)) {
+        console.error("CreateInline returned unexpected JSON:", data);
+        // If the endpoint returns a single item (older version), support that too:
+        if (data && data.success === true && data.id && data.title) {
+            // fallback: insert single returned plan (backwards compatible)
+            const createNewItem = document.getElementById("createNewMealPlan");
+            const newItem = document.createElement("li");
+            newItem.className = "flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0";
+            newItem.innerHTML = `
+                <label class="flex items-center gap-2 cursor-pointer w-full">
+                    <input type="checkbox" name="mealPlanIds" value="${data.id}" class="hidden peer" checked />
+                    <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                    <span class="text-gray-700 text-sm truncate max-w-[80%]">${data.title}</span>
+                </label>
+            `;
+            dropdown.insertBefore(newItem, createNewItem.nextSibling);
+
+            input.value = "";
+            form.classList.add("hidden");
+            createBtn.classList.remove("hidden");
+            return;
+        }
+
+        errorMsg.textContent = "Server returned an unexpected response.";
+        errorMsg.classList.remove("hidden");
+        return;
+    }
+
+    // --- Success: rebuild dropdown from returned mealPlans ---
+    const createNewItem = document.getElementById("createNewMealPlan");
+    // Remove all current plan <li>s except the Create New element
+    dropdown.querySelectorAll('li').forEach(li => {
+        if (li !== createNewItem) li.remove();
+    });
+
+    // Insert returned plans after CreateNew element
+    data.mealPlans.forEach(plan => {
+        const newItem = document.createElement("li");
+        newItem.className = "flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0";
+        newItem.innerHTML = `
+            <label class="flex items-center gap-2 cursor-pointer w-full">
+                <input type="checkbox" name="mealPlanIds" value="${plan.id}" class="hidden peer" />
+                <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                <span class="text-gray-700 text-sm truncate max-w-[80%]">${plan.title}</span>
+            </label>
+        `;
+        dropdown.insertBefore(newItem, createNewItem.nextSibling);
+    });
+
+                // Reset + hide the form again
+                input.value = "";
+                form.classList.add("hidden");
+                createBtn.classList.remove("hidden");
+    
+            
+        } catch (err) {
+            console.error(err);
+            errorMsg.textContent = "An unexpected error occurred.";
+            errorMsg.classList.remove("hidden");
+        }
+    
+    });
+
+}
+    
+    // --- Allow Enter key to submit ---
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            form.dispatchEvent(new Event("submit"));
+        }
+    });
 });
+
+
+

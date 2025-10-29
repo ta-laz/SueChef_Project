@@ -44,7 +44,7 @@ public class MealPlanController : Controller
     public async Task<IActionResult> Create(MealPlanViewModel mealPlanViewModel)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-        
+
         // Check new Meal Plan is valid:
         if (ModelState.IsValid)
         {
@@ -56,7 +56,7 @@ public class MealPlanController : Controller
                 ModelState.AddModelError("", "You already have a meal plean with this title, please choose a new one.");
             }
             else // If the name is not a duplicate, add the new meal plan:
-            {   
+            {
                 _db.MealPlans.Add(new MealPlan
                 {
                     UserId = currentUserId,
@@ -81,6 +81,50 @@ public class MealPlanController : Controller
 
         return View("Index", viewModel);
     }
+
+    [Route("/MealPlans/CreateInline")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateInline([FromForm] string mealPlanTitle)
+    {
+        int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        // if (currentUserId == null)
+        // {
+        //     return Json(new { success = false, error = "You must be logged in to create a meal plan." });
+        // }
+
+        if (string.IsNullOrWhiteSpace(mealPlanTitle))
+        {
+            return Json(new { success = false, error = "Meal plan name cannot be empty." });
+        }
+
+        var exists = await _db.MealPlans
+            .AnyAsync(mp => mp.MealPlanTitle == mealPlanTitle && mp.UserId == currentUserId && !mp.IsDeleted);
+
+        if (exists)
+        {
+            return Json(new { success = false, error = "You already have a meal plan with this name." });
+        }
+
+        var newPlan = new MealPlan
+        {
+            UserId = currentUserId.Value,
+            MealPlanTitle = mealPlanTitle.Trim(),
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
+        };
+
+        _db.MealPlans.Add(newPlan);
+        await _db.SaveChangesAsync();
+
+        return Json(new
+        {
+            success = true,
+            id = newPlan.Id,
+            title = newPlan.MealPlanTitle
+        });
+    }
+
 
     [Route("/MealPlans/{id}")]
     [HttpGet]

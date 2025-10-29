@@ -32,11 +32,21 @@
                   @Html.AntiForgeryToken()
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" /> 
                   <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full overflow-scroll hide-scrollbar max-h-60 p-2">
-                      <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                              <label class="flex items-center gap-2 cursor-pointer w-full">
-                                  <span class="text-gray-700 text-sm font-semibold truncate max-w-[80%]">Create New Meal Plan</span>
-                              </label>
-                          </li>
+                      
+                      <!-- Create New Meal Plan Button --> 
+                      <li id="createNewMealPlan" class="flex flex-col gap-2 px-3 py-2 border-b border-orange-200 last:border-b-0">
+                        <button type="button" id="showNewPlanForm" class="text-sm font-semibold text-orange-700 hover:underline text-left">
+                            + Create New Meal Plan
+                        </button>
+                        <div id="newMealPlanForm" class="hidden">
+                          <form  class="hidden flex items-center gap-2" method="post">
+                              @Html.AntiForgeryToken()
+                              <input type="text" id="newMealPlanTitle" name="mealPlanTitle" placeholder="Enter meal plan name"
+                                  class="flex-1 border border-orange-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                          </form>
+                        </div>
+                        <p id="newMealPlanError" class="text-xs text-red-600 hidden"></p>
+                    </li>
                       @foreach (var plan in Model.UserMealPlans)
                       {
                           <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
