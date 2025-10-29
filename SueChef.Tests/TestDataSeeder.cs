@@ -141,7 +141,7 @@ namespace SueChef.Test
 
         // Meal Plans (0–2 per user)
         var mealPlans = new List<MealPlan>();
-        var today = new DateOnly(2025, 10, 26);
+        var today = new DateTime(2025, 10, 26, 0, 0, 1, DateTimeKind.Utc);
         for (int i = 0; i < users.Count; i++)
         {
           var u = users[i];
@@ -154,8 +154,8 @@ namespace SueChef.Test
             {
               UserId = u.Id,
               MealPlanTitle = $"{u.UserName} Plan {j + 1}",
-              CreatedOn = created,
-              UpdatedOn = created.AddDays(1)
+              CreatedOn = created.ToUniversalTime(),
+              UpdatedOn = created.AddDays(1).ToUniversalTime()
             });
           }
         }

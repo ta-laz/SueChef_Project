@@ -9,8 +9,8 @@ public class MealPlan
     public int? UserId { get; set; }
     public User User { get; set; } = null!;
     public string? MealPlanTitle { get; set; }
-    public DateTime? CreatedOn { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedOn { get; set; } = DateTime.UtcNow;
+    public DateTime? CreatedOn { get; set; } 
+    public DateTime? UpdatedOn { get; set; }
     public ICollection<MealPlanRecipe> MealPlanRecipes { get; set; } = new List<MealPlanRecipe>();
     public bool IsDeleted { get; set; } = false;  // NEW FLAG for soft-delete
 }
