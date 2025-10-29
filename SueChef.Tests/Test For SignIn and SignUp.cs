@@ -65,6 +65,50 @@ public class SignInOutTests : PageTest
 
 
     [Test]
+    public async Task SignIn_ShouldShowError_WhenUsernameMissing()
+    {
+    // Go to the sign-in page
+        await Page.GotoAsync($"{BaseUrl}/signin");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Fill only the password field
+        await Page.FillAsync("input[name='Password']", "pass");
+
+    // Click the sign-in button
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" }).ClickAsync();
+
+    // Wait for validation to appear
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Assert that the correct validation message is shown
+        await Expect(Page.Locator("body")).ToContainTextAsync("Username is required");
+    }
+
+
+    [Test]
+    public async Task SignIn_ShouldShowError_WhenPasswordMissing()
+    {
+    // Go to the sign-in page
+        await Page.GotoAsync($"{BaseUrl}/signin");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Fill only the username field
+        await Page.FillAsync("input[name='UserName']", "user1");
+
+    // Click the sign-in button
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" }).ClickAsync();
+
+    // Wait for validation to appear
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Assert that the correct validation message is shown
+        await Expect(Page.Locator("body")).ToContainTextAsync("Password is required");
+    }
+
+
+
+
+    [Test]
     public async Task SignInPage_ShowsError_WhenInvalidCredentials()
     {
         await Page.GotoAsync($"{BaseUrl}/signin");
@@ -80,6 +124,34 @@ public class SignInOutTests : PageTest
 
     // Check that the error message appears on screen
         await Expect(Page.Locator("body")).ToContainTextAsync("Incorrect username or password.");
+    }
+
+
+
+    [Test]
+    public async Task SignUp_ShouldShowError_WhenEmailFormatIsInvalid()
+    {
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Fill all fields, but use an invalid email format
+        await Page.FillAsync("input[name='UserName']", "invalidEmailUser");
+        await Page.FillAsync("input[name='Email']", "notanemail"); // invalid
+        await Page.FillAsync("input[name='Password']", "StrongPass1!");
+        await Page.FillAsync("input[name='ConfirmPassword']", "StrongPass1!");
+        await Page.FillAsync("input[name='DOB']", "1990-05-05");
+
+    // Submit the form
+        await Page.ClickAsync("button[type='submit']");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Capture body text to check for the validation message
+        var bodyText = await Page.InnerTextAsync("body");
+
+        Assert.That(
+            bodyText.Contains("Enter a valid email address"),
+            $"Expected server-side validation message 'Enter a valid email address', but got:\n\n{bodyText}"
+        );
     }
 
 
@@ -125,6 +197,25 @@ public class SignInOutTests : PageTest
         await Expect(signInBtn).ToBeVisibleAsync();
         await Expect(signInBtn).ToHaveTextAsync("Sign In");
     }
+
+
+    [Test]
+    public async Task SignInPage_ShouldDisplaySueChefLogo_AndNavigateHome()
+    {
+        await Page.GotoAsync($"{BaseUrl}/signin");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        var logoHeading = Page.Locator("h1", new() { HasTextString = "SueChef" });
+        await Expect(logoHeading).ToBeVisibleAsync();
+
+    // Verify it links back home
+        var logoLink = Page.Locator("a[href='/'] h1");
+        await Expect(logoLink).ToBeVisibleAsync();
+
+    // Click it to verify navigation
+        await logoLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/");
+    }
+
 
 
 
@@ -277,6 +368,93 @@ public class SignInOutTests : PageTest
 
         await Expect(Page).ToHaveURLAsync($"{BaseUrl}/users");
         await Expect(Page.Locator("body")).ToContainTextAsync("You must be at least 12 years old");
+    }
+
+
+
+
+    [Test]
+    public async Task SignUp_ShouldShowError_WhenPasswordTooShortOrWeak()
+    {
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Fill form with a weak password (too short, no uppercase/special char)
+        await Page.FillAsync("input[name='UserName']", "weakpassworduser");
+        await Page.FillAsync("input[name='Email']", "weakpass@example.com");
+        await Page.FillAsync("input[name='Password']", "pass"); // invalid
+        await Page.FillAsync("input[name='ConfirmPassword']", "pass");
+        await Page.FillAsync("input[name='DOB']", "1995-03-15");
+
+    // Try to submit the form
+        await Page.ClickAsync("button[type='submit']");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Capture body text to inspect server validation messages
+        var bodyText = await Page.InnerTextAsync("body");
+
+        Assert.That(
+            bodyText.Contains("Password must be 8 characters or more and include an uppercase letter and a special character"),
+            $"Expected validation message about weak password, but got:\n\n{bodyText}"
+        );
+    }
+
+
+    [Test]
+    public async Task SignUpPage_ShouldDisplaySueChefLogo_AndNavigateHome()
+    {
+    // Go to the sign-up page
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    //  Locate the "SueChef" logo text inside the <h1>
+        var logoHeading = Page.Locator("h1", new() { HasTextString = "SueChef" });
+        await Expect(logoHeading).ToBeVisibleAsync();
+
+    // Ensure the logo links back to the homepage
+        var logoLink = Page.Locator("a[href='/'] h1");
+        await Expect(logoLink).ToBeVisibleAsync();
+
+    // Click to confirm navigation
+        await logoLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/");
+    }
+
+
+    [Test]
+    public async Task HomePage_AccountIcon_ShouldOpenMenuWithSignInAndRegisterLinks()
+    {
+    // Navigate to the homepage
+        await Page.GotoAsync($"{BaseUrl}/");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Ensure the account icon (chef hat) is visible
+        var accountIcon = Page.Locator("#accountButton img[alt='Account icon']");
+        await Expect(accountIcon).ToBeVisibleAsync();
+
+    // Click the icon to open the account menu
+        await Page.ClickAsync("#accountButton");
+
+    // Check that the side account menu appears
+        var accountMenu = Page.Locator("#sideMenuAccount");
+        await Expect(accountMenu).ToBeVisibleAsync();
+
+    // Verify both "Sign In" and "Register" links are visible
+        var signInLink = Page.Locator("a[href='/signin'], a[asp-action='New'][asp-controller='Sessions']");
+        var signUpLink = Page.Locator("a[href='/signup'], a[asp-action='New'][asp-controller='Users']");
+
+        await Expect(signInLink).ToBeVisibleAsync();
+        await Expect(signUpLink).ToBeVisibleAsync();
+
+    // ✅ Optional navigation checks (can comment out if routes differ)
+        await signInLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/signin");
+
+    // Return to home to test Register link
+        await Page.GotoAsync($"{BaseUrl}/");
+        await Page.ClickAsync("#accountButton");
+        await signUpLink.ClickAsync();
+        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/signup");
     }
 
 }
