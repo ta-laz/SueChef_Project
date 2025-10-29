@@ -97,6 +97,12 @@ public class MealPlanController : Controller
                 RecipePicturePath = mpr.Recipe.RecipePicturePath,
                 Category = mpr.Recipe.Category,
                 MealPlanRecipeId = mpr.Id,
+                PrepTime = mpr.Recipe.PrepTime,
+                CookTime = mpr.Recipe.CookTime,
+                RatingCount = _db.Ratings.Count(rt => rt.RecipeId == mpr.RecipeId && rt.Stars.HasValue),
+                AverageRating = _db.Ratings
+                    .Where(rt => rt.RecipeId == mpr.RecipeId && rt.Stars.HasValue)
+                    .Average(rt => (double?)rt.Stars) ?? 0,
                 Ingredients = mpr.Recipe.RecipeIngredients.Select(ri => new IndividualRecipeIngredientViewModel
                 {
                     Name = ri.Ingredient.Name,
