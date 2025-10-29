@@ -78,53 +78,10 @@ public class MealPlanController : Controller
             MealPlans = allMealPlans,
             MealPlanViewModel = mealPlanViewModel
         };
-
-        return View("Index", viewModel);
+        
+        TempData["Success"] = $"Meal plan '{mealPlanViewModel.MealPlanTitle}' created successfully!";
+        return Redirect(Request.Headers["Referer"].ToString()); // Changed this so that you stay on the current page, allows new meal plans to be created elsewhere
     }
-
-    [Route("/MealPlans/CreateInline")]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateInline([FromForm] string mealPlanTitle)
-    {
-        int? currentUserId = HttpContext.Session.GetInt32("user_id");
-        // if (currentUserId == null)
-        // {
-        //     return Json(new { success = false, error = "You must be logged in to create a meal plan." });
-        // }
-
-        if (string.IsNullOrWhiteSpace(mealPlanTitle))
-        {
-            return Json(new { success = false, error = "Meal plan name cannot be empty." });
-        }
-
-        var exists = await _db.MealPlans
-            .AnyAsync(mp => mp.MealPlanTitle == mealPlanTitle && mp.UserId == currentUserId && !mp.IsDeleted);
-
-        if (exists)
-        {
-            return Json(new { success = false, error = "You already have a meal plan with this name." });
-        }
-
-        var newPlan = new MealPlan
-        {
-            UserId = currentUserId.Value,
-            MealPlanTitle = mealPlanTitle.Trim(),
-            CreatedOn = DateTime.UtcNow,
-            UpdatedOn = DateTime.UtcNow
-        };
-
-        _db.MealPlans.Add(newPlan);
-        await _db.SaveChangesAsync();
-
-        return Json(new
-        {
-            success = true,
-            id = newPlan.Id,
-            title = newPlan.MealPlanTitle
-        });
-    }
-
 
     [Route("/MealPlans/{id}")]
     [HttpGet]
