@@ -9,13 +9,13 @@
             <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
-              <div class="inline-flex rounded-lg shadow">
+              @* <div class="inline-flex rounded-lg shadow"> *@
 
 
               <!-- FAVOURITE / DROPDOWN BUTTON -->
+               <div class="relative inline-flex rounded-lg shadow">
 
                <!-- Favourite Button SVG is a heart-->
-               <div class="relative">
                 <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
                   <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
@@ -30,9 +30,13 @@
                 <!-- Hidden Save to Meal Plans button -->
                 <form asp-controller="MealPlan" asp-action="AddRecipe" method="post">
                   @Html.AntiForgeryToken()
-                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
-
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" /> 
                   <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full overflow-scroll hide-scrollbar max-h-60 p-2">
+                      <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                              <label class="flex items-center gap-2 cursor-pointer w-full">
+                                  <span class="text-gray-700 text-sm font-semibold truncate max-w-[80%]">Create New Meal Plan</span>
+                              </label>
+                          </li>
                       @foreach (var plan in Model.UserMealPlans)
                       {
                           <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
@@ -51,7 +55,7 @@
                     Save to Meal Plans
                   </button>
                 </form>
-              </div>
+              @* </div> *@
             
               <!-- Dropdown Toggle -->
               <div class="relative">
