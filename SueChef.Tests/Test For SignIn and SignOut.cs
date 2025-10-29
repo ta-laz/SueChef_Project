@@ -81,24 +81,24 @@ public class SignInOutTests : PageTest
 
 
     [Test]
-    public async Task SignInPage_AllowsLogin_WithValidCredentials()
+    public async Task SignInPage_ShowsError_WhenInvalidLoginAttempt()
     {
         await Page.GotoAsync($"{BaseUrl}/signin");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-    // Fill in valid credentials from your seeded test user
-        await Page.FillAsync("[data-testid='username']", "testuser");
-        await Page.FillAsync("[data-testid='password']", "Password123!");
-
+    // Use any credentials
+        await Page.FillAsync("[data-testid='username']", "wronguser");
+        await Page.FillAsync("[data-testid='password']", "wrongpassword");
         await Page.ClickAsync("[data-testid='signin-submit']");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-    // ✅ Expect to be redirected to homepage
-        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/");
+    //  Expect to still be on /signin
+        await Expect(Page).ToHaveURLAsync($"{BaseUrl}/signin");
 
-    // ✅ Optionally confirm nav or welcome text appears
-        await Expect(Page.Locator("body")).ToContainTextAsync("Welcome back, testuser");
+    // And the error message should appear
+        await Expect(Page.Locator("body")).ToContainTextAsync("Incorrect username or password.");
     }
+
 
 
 
