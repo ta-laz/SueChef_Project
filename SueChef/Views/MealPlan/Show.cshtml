@@ -39,59 +39,70 @@
 
         <section class="text-center mb-8">
             <!-- Meal Plan Title -->
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-tight">@Model.MealPlan.MealPlanTitle - Recipes</h2>
+            <h2 class="text-3xl font-semibold text-gray-800 mb-4 tracking-tight">@Model.MealPlan.MealPlanTitle</h2>
 
             <!-- Action Buttons -->
-            <div class="flex flex-row justify-center items-center gap-1 mb-6">
-                <form asp-controller="ShoppingList" asp-action="Generate" method="post" class="flex-1">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="MealPlanId" value="@Model.MealPlan.Id" />
-                    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-1 mb-6 px-3">
-                        <button type="submit"class="w-[75%] h-9  sm:h-9 sm:w-64 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
-                            Generate Shopping List
-                        </button>
-                            <div class="group w-[75%] h-9 sm:w-64 flex flex-row sm:flex-row items-center justify-center gap-2 sm:h-9 sm:gap-1 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
-                                Adjust all servings 
-                                <div class="flex items-center justify-end rounded-lg  bg-orange-600">
-                                <button type="button"
-                                        class="px-1 py-1 text-white ml-1"
-                                        onclick="adjustServingsOverall(-1)">−</button>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 px-3">
 
-                                <input type="number"
-                                    data-testid="serving-overall"
-                                    id="serving-overall"
-                                    name="Servings"
-                                    min="1" max="12" value="4"
-                                    class="no-spin w-8 text-center bg-orange-600 text-white group-hover:bg-orange-500
-                                            focus:ring-2 focus:ring-orange-400 border-0" />
+                <!-- Generate Shopping List Button -->
+                <button type="submit" class="relative group w-[80%] sm:w-64 h-11 bg-orange-600 text-md text-white font-semibold tracking-wide rounded-lg shadow-lg hover:shadow-lg transition-all duration-300 ease-out">
+                    <span class="flex ml-3 items-center justify-start gap-2">
+                        Generate Shopping List
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="2" stroke="currentColor" class="sm:ml-2 ml-12 w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 2h6a1 1 0 011 1v2a1 1 0 01-1 1H9a1 1 0 01-1-1V3a1 1 0 011-1z" />
+                    </svg>
 
-                                <button type="button"
-                                        class="px-1 py-1 text-white hover:bg-orange-500" 
-                                        onclick="adjustServingsOverall(1)">+</button>
-                            </div>
-                            </div>
+                    </span>
+                </button>
+
+                <!-- Adjust All Servings -->
+                <div class="flex flex-row sm:flex-row items-center justify-start gap-2 
+                w-[80%] sm:w-64 bg-orange-600 rounded-lg shadow-lg 
+                hover:shadow-md transition-all duration-300 h-11">
+
+                    <div class="bg-orange-600 mr-14 sm:mr-0 text-white font-semibold text-md px-3 text-left sm:text-left">
+                        Adjust Servings
                     </div>
 
-                    <!-- Recipe Cards  -->
-                    <section class="max-w-6xl mx-auto px-5">
-                        @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
-                        {
-                            <partial name="_MealPlanRecipeCardPartial" model="recipe" />
-                        }
-                    </section>
-                </form>
-            </div>
-        </section>
+                    <div class="flex items-center justify-end bg-orange-600 rounded-md p-1">
+                        <button type="button"
+                            class="px-2 py-1 text-white font-bold text-md transition"
+                            onclick="adjustServingsOverall(-1)">−</button>
 
-        <!-- Shopping List Partial Work In Progress! -->
-        <a id="shopping-list-anchor"></a>
-        
-        <form asp-controller="ShoppingList" asp-action="Save" class="flex justify-center w-full max-w-4xl mx-auto">
-        @Html.AntiForgeryToken()
-            <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
-        </form>
-        
+                        <input type="number" id="serving-overall" name="Servings" min="1" max="12" value="4" class="no-spin w-10 text-center text-white bg-transparent border-none 
+                       focus:ring-0 text-md font-semibold" />
+
+                        <button type="button"
+                            class="px-2 py-1 text-white font-bold text-md transition"
+                            onclick="adjustServingsOverall(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Recipe Cards  -->
+            <section class="max-w-6xl mx-auto px-5">
+                @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
+                {
+                    <partial name="_MealPlanRecipeCardPartial" model="recipe" />
+                }
+            </section>
     </div>
+    </section>
+
+    <!-- Shopping List Partial Work In Progress! -->
+    <a id="shopping-list-anchor"></a>
+
+    <form asp-controller="ShoppingList" asp-action="Save" class="flex justify-center w-full max-w-4xl mx-auto">
+        @Html.AntiForgeryToken()
+        <partial name="_ShoppingListPartial" model="Model.ShoppingList" />
+    </form>
+
+</div>
 </div>
 
 <script>
@@ -120,30 +131,30 @@
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('scroll') === 'shopping') {
-      const el = document.getElementById('shopping-list-anchor');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  });
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('scroll') === 'shopping') {
+            const el = document.getElementById('shopping-list-anchor');
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    });
 </script>
 
 <script>
-function adjustServingsOverall(delta) {
-    // Get the overall input element
-    const overallInput = document.getElementById('serving-overall');
-    const currentOverall = parseInt(overallInput.value) || 1;
-    const newOverall = Math.min(Math.max(currentOverall + delta, overallInput.min), overallInput.max);
-    
-    overallInput.value = newOverall;
+    function adjustServingsOverall(delta) {
+        // Get the overall input element
+        const overallInput = document.getElementById('serving-overall');
+        const currentOverall = parseInt(overallInput.value) || 1;
+        const newOverall = Math.min(Math.max(currentOverall + delta, overallInput.min), overallInput.max);
 
-    // Now update all individual serving inputs to match the new overall value
-    const cardInputs = document.querySelectorAll('input[id^="serving-"]'); 
-    cardInputs.forEach(input => {
-        input.value = newOverall;
-    });
-}
+        overallInput.value = newOverall;
+
+        // Now update all individual serving inputs to match the new overall value
+        const cardInputs = document.querySelectorAll('input[id^="serving-"]');
+        cardInputs.forEach(input => {
+            input.value = newOverall;
+        });
+    }
 </script>

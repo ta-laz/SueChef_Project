@@ -17,7 +17,7 @@
                 <div class="flex flex-col md:w-[65%] flex-grow h-full">
 
                     <!-- Recipe Title -->
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start md:items-center gap-3">
                         <h3
                             class="text-left text-lg text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition flex-1 mr-3 leading-tight line-clamp-2">
                             @Model.Title
@@ -59,7 +59,7 @@
     </div>
 
     <!-- Stars -->
-    <div class="hidden md:flex items-center gap-1 mb-1 mt-1 text-yellow-400">
+    <div class="hidden sm:flex items-center gap-1 mb-1 mt-1 text-yellow-400">
         @{
             double avg = Model.AverageRating ?? 0;
             int fullStars = (int)Math.Floor(avg);
@@ -110,14 +110,14 @@
     </div>
 
     <!-- Description -->
-    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words tracking-tight text-sm mt-1 hidden md:flex text-left pb-5">
+    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words tracking-tight text-sm mt-1 hidden sm:flex text-left pb-5">
         @Model.Description
     </p>
 
     <div class="flex-grow"></div>
 
     <!-- Tags bar -->
-    <div class="hidden md:flex rounded-md justify-around items-center text-center gap-4 mt-1 md:mt-2">
+    <div class="hidden sm:flex rounded-md justify-around items-center text-center gap-4 mt-1 md:mt-2">
         <!-- Category -->
         <div class="flex flex-col items-center w-1/4">
             <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
