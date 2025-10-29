@@ -22,7 +22,7 @@
         @Html.AntiForgeryToken()
         @foreach (var category in Model)
         {
-            <div class="bg-white/80 backdrop-blur-sm border border-orange-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 mt-8">
+            <div class="bg-white backdrop-blur-sm border border-orange-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 mt-8">
                 <h2 class="text-xl font-semibold mb-3 text-orange-700 border-b pb-2 mb-3">
                     @char.ToUpper(category.Key[0])@category.Key.Substring(1) 
                 </h2>
