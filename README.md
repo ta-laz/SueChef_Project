@@ -286,6 +286,34 @@ SueChef’s frontend is built with **Razor Views** and **Tailwind CSS**, using m
 - `_ValidationScriptsPartial.cshtml` – Client-side validation  
 - `Error.cshtml` – Application error page  
 
+
+### 5.4 ViewModels
+
+SueChef uses a wide range of ViewModels to handle strongly-typed data between controllers and Razor views.  
+Each ViewModel serves a focused purpose — enabling clean data binding and reducing direct dependency on database models.
+
+| ViewModel | Purpose |
+|------------|----------|
+| **CategoryCardViewModel** | Represents individual category cards with name and image for carousel displays. |
+| **CategoryCarouselViewModel** | Contains a collection of categories for carousel rendering on the homepage. |
+| **CategoryPageViewModel** | Wraps data for the category index page, including recipes filtered by type. |
+| **CommentingViewModel** | Handles comment creation, submission, and binding to individual recipes. |
+| **ErrorViewModel** | Provides exception messages and request IDs for the error page. |
+| **FeaturedRecipeViewModel** | Supplies featured recipe data for homepage highlight sections. |
+| **HomePageViewModel** | Bundles featured recipes, categories, and carousels for the home view. |
+| **IndividualRecipeViewModel** | Provides summary data (title, prep time, image) for listing cards. |
+| **IndividualRecipeIngredientViewModel** | Represents each ingredient within a recipe, including measurement data. |
+| **IndividualRecipePageViewModel** | Aggregates recipe details, ingredients, comments, and ratings for recipe detail pages. |
+| **MealPlanRecipeViewModel** | Represents individual recipes inside a meal plan view. |
+| **MealPlanViewModel** | Contains key data for displaying or editing a single meal plan. |
+| **MealPlansPageViewModel** | Provides all meal plans belonging to a user for the index view. |
+| **RecipeCardViewModel** | Used to render recipes as cards in horizontal or vertical layouts. |
+| **RecipeCarouselViewModel** | Supplies recipes to category and featured carousels. |
+| **SignInViewModel** | Manages user login input fields and validation. |
+| **SignUpViewModel** | Manages new user registration data and validation. |
+| **SingleMealPlanPageViewModel** | Combines a selected meal plan with its associated recipes. |
+
+
 ---
 
 ## 🧠 JavaScript
