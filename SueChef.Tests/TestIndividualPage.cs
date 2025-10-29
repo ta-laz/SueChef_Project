@@ -59,8 +59,6 @@ public class PlaywrightRecipeTests : PageTest
     {
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
-
-        // Make sure the ingredient "Chicken Breast" appears and 600g 
         await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("600g Chicken Breast");
     }
 
@@ -109,6 +107,9 @@ public class PlaywrightRecipeTests : PageTest
         await Expect(Page.GetByTestId("sign-in-text")).ToBeVisibleAsync();
 
     }
+
+
+
     [Test]
     public async Task IndividualPage_LoggedInUserCanRateRecipe()
     {
@@ -125,6 +126,9 @@ public class PlaywrightRecipeTests : PageTest
         await Page.GetByTestId("rating-submit-button").ClickAsync();
         await Expect(Page.GetByTestId("thanks-for-rating")).ToBeVisibleAsync();
     }
+
+
+
     [Test]
     public async Task IndividualPage_MethodFormatsFromDBCorrectly()
     {
@@ -137,24 +141,11 @@ public class PlaywrightRecipeTests : PageTest
     {
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
-        // Make sure the ingredient "Chicken Breast" appears and 600g 
         await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("600g Chicken Breast");
         await Page.GetByTestId("serving-input").FillAsync("1");
         await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast")).ToContainTextAsync("150g Chicken Breast");
 
     }
-
-    [Test]
-    public async Task IndividualPage_ShowsCommentFormAndButton()
-    {
-        var recipeId = 2;
-        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
-
-        await Expect(Page.GetByText("Comment on this Recipe")).ToBeVisibleAsync();
-        await Expect(Page.Locator("textarea[name='content']")).ToBeVisibleAsync();
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Comment" })).ToBeVisibleAsync();
-    }
-
 
 
     [Test]
@@ -172,38 +163,159 @@ public class PlaywrightRecipeTests : PageTest
     }
 
 
-
     [Test]
-    public async Task IndividualPage_UserCanSubmitComment()
+    public async Task IndividualPage_AnonymousUserIsRedirected_WhenSubmittingComment()
     {
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-        await Page.FillAsync("textarea[name='content']", "Loved this recipe, the flavors were incredible!");
-        await Page.ClickAsync("button[type='submit']");
+        await Page.FillAsync("textarea[name='content']", "Trying to comment without login");
+    
+    // Attempt to submit
+        await Task.WhenAll(
+            Page.ClickAsync("button[type='submit']"),
+            Page.WaitForURLAsync($"{BaseUrl}/signin")
+        );
 
-        // Wait briefly for message
+    // Expect sign-in prompt
+        await Expect(Page.GetByTestId("sign-in-text")).ToBeVisibleAsync();
+    }
+
+
+
+    [Test]
+    public async Task IndividualPage_CommentCountIncreasesAfterNewComment()
+    {
+    // Sign up and log in first
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.GetByTestId("username").FillAsync("CountTester");
+        await Page.GetByTestId("dob").FillAsync("1990-01-01");
+        await Page.GetByTestId("email").FillAsync("count@testmail.com");
+        await Page.GetByTestId("password").FillAsync("Password123!");
+        await Page.GetByTestId("confirmpassword").FillAsync("Password123!");
+        await Page.GetByTestId("signup-submit").ClickAsync();
+
+    // Go to recipe page
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+    // Get initial comment count safely 
+        var headerText = await Page.InnerTextAsync("h3:has-text('Comments')");
+        Console.WriteLine($"🔍 Initial header text: '{headerText}'");
+
+        var match = System.Text.RegularExpressions.Regex.Match(headerText, @"\d+");
+        int initialCount = 0;
+        if (match.Success)
+        initialCount = int.Parse(match.Value);
+        Console.WriteLine($"Initial count parsed: {initialCount}");
+
+    // Fill and submit new comment (scoped form) 
+        var commentForm = Page.Locator("form", new() { Has = Page.Locator("textarea[name='content']") });
+        await commentForm.Locator("textarea[name='content']").FillAsync("Another test comment!");
+        await commentForm.GetByRole(AriaRole.Button, new() { Name = "Submit" }).ClickAsync();
+
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // Expect either a success message or that the comment appears again
-        await Expect(Page.Locator("body")).ToContainTextAsync("Loved this recipe");
+    // Get new comment count safely 
+        var newHeaderText = await Page.InnerTextAsync("h3:has-text('Comments')");
+        Console.WriteLine($"New header text: '{newHeaderText}'");
+
+        var newMatch = System.Text.RegularExpressions.Regex.Match(newHeaderText, @"\d+");
+        int newCount = 0;
+        if (newMatch.Success)
+            newCount = int.Parse(newMatch.Value);
+        Console.WriteLine($" New count parsed: {newCount}");
+
+    // Verify comment count increased 
+        Assert.That(newCount, Is.EqualTo(initialCount + 1), 
+            $"Expected comment count to increase by 1. Before: {initialCount}, After: {newCount}");
     }
-    
+
+
 
 
     [Test]
-    public async Task IndividualPage_ShowsValidationError_WhenCommentIsEmpty()
+    public async Task IndividualPage_CommentBoxClearsAfterSubmit()
+    {
+    // Sign up and log in
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.GetByTestId("username").FillAsync("ClearTester");
+        await Page.GetByTestId("dob").FillAsync("1990-05-05");
+        await Page.GetByTestId("email").FillAsync("clear@testmail.com");
+        await Page.GetByTestId("password").FillAsync("Password123!");
+        await Page.GetByTestId("confirmpassword").FillAsync("Password123!");
+        await Page.GetByTestId("signup-submit").ClickAsync();
+
+    // Go to recipe page
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Locate the specific comment form that contains the textarea
+        var commentForm = Page.Locator("form", new() { Has = Page.Locator("textarea[name='content']") });
+        var textarea = commentForm.Locator("textarea[name='content']");
+
+    // Fill and submit comment within the scoped form
+        await textarea.FillAsync("Testing if comment box clears after submission!");
+        await commentForm.GetByRole(AriaRole.Button, new() { Name = "Submit" }).ClickAsync();
+
+    // Wait for reload / form reset
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Re-locate the textarea after reload
+        textarea = Page.Locator("form textarea[name='content']");
+        var valueAfterSubmit = await textarea.InputValueAsync();
+
+        Assert.That(valueAfterSubmit, Is.EqualTo(""), 
+            "Expected the comment textarea to be cleared after submitting a comment.");
+    }
+
+
+
+    [Test]
+    public async Task IndividualPage_DisplaysChefNameDifficultyAndTimes()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        var body = Page.Locator("body");
+
+        await Expect(body).ToContainTextAsync("By");
+        await Expect(body).ToContainTextAsync("Difficulty:");
+        await Expect(body).ToContainTextAsync("Prep Time:");
+        await Expect(body).ToContainTextAsync("Cook Time:");
+    }
+
+
+    [Test]
+    public async Task IndividualPage_IngredientQuantitiesScaleWithServings()
     {
         var recipeId = 2;
         await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
 
-        await Page.WaitForSelectorAsync("button[type='submit']");
-        await Page.ClickAsync("button[type='submit']");
+        var initialText = await Page.InnerTextAsync("[data-testid='recipe-ingredients-Chicken Breast']");
+        Assert.That(initialText, Does.Contain("600g"), "Expected 4 servings to show 600g");
 
-    // Browser’s HTML5 required validation should prevent submission
-        var isValid = await Page.EvaluateAsync<bool>("document.querySelector('textarea[name=\"content\"]').checkValidity()");
-        Assert.That(isValid, Is.False,"Textarea should be required and invalid when empty.");
-}
+        await Page.GetByTestId("serving-input").FillAsync("2");
+        await Expect(Page.GetByTestId("recipe-ingredients-Chicken Breast"))
+            .ToContainTextAsync("300g Chicken Breast");
+    }
+
+
+
+
+    [Test]
+    public async Task IndividualPage_StarSelectionHighlightsCorrectly()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+
+        var star3 = Page.GetByTestId("star-rating-3");
+        await star3.ClickAsync();
+
+    // Check that it's visually marked as selected (yellow)
+        var classAttr = await star3.GetAttributeAsync("class");
+        Assert.That(classAttr, Does.Contain("text-yellow-400"), "Expected star 3 to be highlighted after click.");
+    }
 
 }
 

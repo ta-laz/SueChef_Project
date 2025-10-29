@@ -394,10 +394,11 @@ public class SignInOutTests : PageTest
         var bodyText = await Page.InnerTextAsync("body");
 
         Assert.That(
-            bodyText.Contains("Password must be 8 characters or more and include an uppercase letter and a special character"),
+            bodyText.Contains("Password must be between 8 and 50 characters and include an uppercase letter and a special character."),
             $"Expected validation message about weak password, but got:\n\n{bodyText}"
         );
     }
+
 
 
     [Test]
