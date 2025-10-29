@@ -283,7 +283,8 @@ SueChef’s frontend is built with **Razor Views** and **Tailwind CSS**, using m
 - `_CategoryCarouselPartial.cshtml` – Category navigation UI  
 - `_MealPlanPartial.cshtml` / `_MealPlanRecipeCardPartial.cshtml` – Meal plan displays  
 - `_FeaturedRecipePartial.cshtml` – Homepage feature banner  
-- `_ValidationScriptsPartial.cshtml` – Client-side validation  
+- `_ValidationScriptsPartial.cshtml` – Client-side validation 
+- `_RecipeCarouselPartial.cshtml` – Contains the carousel and the buttons to move it left or right   
 - `Error.cshtml` – Application error page  
 
 
