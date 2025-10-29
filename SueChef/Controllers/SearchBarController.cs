@@ -96,6 +96,11 @@ public class SearchBarController : Controller
                     query = query.Where(r => r.IsDairyFree == true);
                 }
             }
+            
+            if (difficulty.HasValue)
+            {
+                query = query.Where(r => r.DifficultyLevel == difficulty.Value);
+            }
 
             if (!string.IsNullOrEmpty(duration))
             {
