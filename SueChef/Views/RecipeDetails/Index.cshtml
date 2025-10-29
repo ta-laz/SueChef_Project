@@ -1,6 +1,7 @@
 @model SueChef.ViewModels.IndividualRecipePageViewModel
   <body class="bg-orange-50 text-gray-700">
     <main class="max-w-3xl mx-auto p-6 ">
+      
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
@@ -9,6 +10,9 @@
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
               <div class="inline-flex rounded-lg shadow">
+
+
+              <!-- FAVOURITE / DROPDOWN BUTTON -->
 
                <!-- Favourite Button SVG is a heart-->
                <div class="relative">
@@ -49,7 +53,6 @@
                 </form>
               </div>
             
-
               <!-- Dropdown Toggle -->
               <div class="relative">
                 <button  id="dropdownButton" data-logged-in="@Model.IsLoggedIn.ToString().ToLower()" class="text-white px-3 py-2 bg-orange-700 hover:bg-orange-600 transition h-full flex items-center justify-center rounded-r-lg">
@@ -63,6 +66,8 @@
         </header>
               
 
+  <!-- MESSAGES: -->
+
   <div id="messageZone" class="h-9 flex items-center justify-end mt-3">
       @* Error Message for clicking toggle dropdown when not signed in *@
       <div id="loginError" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
@@ -74,9 +79,12 @@
           You must be signed in to favourite recipes.
       </div>
 
+      @* Error Message for when user has no meal plans: *@
+      <div id="noMealPlansError" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          You do not have any meal plans yet. Please create one first!
+      </div>
 
-
-        @* Success Message for Adding to Meal Plan *@
+      @* Success Message for Adding to Meal Plan *@
       <div class="flex justify-center mt-3">
         @if(TempData["Success"]!= null) 
           {
@@ -97,6 +105,8 @@
       </div>
   </div>
       
+    <!-- RECIPE DETAILS SECTION: -->
+
     <div class="space-y-8">
       <!-- Recipe Description for boss sarah-->
         <section class="leading-relaxed text-gray-700">
@@ -126,8 +136,7 @@
               
         </section>
 
-            <!-- Toggle buttons for ingredients and nutrition -->
-
+      <!-- Toggle buttons for ingredients and nutrition -->
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
         <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
           <button data-testid="recipe-tab-toggle" id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
@@ -148,35 +157,36 @@
               <p data-testid="fats" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Fats</strong> <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
-              <!-- Logic to split the method and change it into step: 1, etc. -->
-
-      @{
-        var method = Model.IndividualRecipe.Method;
-        var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
-        var counter = 1;
-      }
-      <section data-testid="method-steps">
-        <h2 class="text-xl font-semibold mb-2">Method</h2>
-        <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
-        @foreach(var step in steps)
-        { 
-          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
-          counter++;
+      
+        <!-- Logic to split the method and change it into step: 1, etc. -->
+        @{
+          var method = Model.IndividualRecipe.Method;
+          var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
+          var counter = 1;
         }
-        </ul>
-      </section>
-</div>
-            <!-- Rate this recipe section  -->
+        <section data-testid="method-steps">
+          <h2 class="text-xl font-semibold mb-2">Method</h2>
+          <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
+          @foreach(var step in steps)
+          { 
+            <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
+            counter++;
+          }
+          </ul>
+        </section>
+      </div>
 
-            @if (TempData["SuccessMessage"] != null)
-            {
-              <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
-                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
-                  </svg>
-                    <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
-                </div>
-            }
+      <!-- RATE THIS RECIPE SECTION  -->
+
+      @if (TempData["SuccessMessage"] != null)
+      {
+        <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+            </svg>
+              <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
+          </div>
+      }
       
       <div class="text-center p-4 border-t">
               <h2 data-testid="Rate-the-recipe"class="text-xl font-semibold mb-2">Rate this recipe</h2>

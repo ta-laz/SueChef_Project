@@ -107,6 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return; // Stop here, do NOT open dropdown
             }
 
+            // If user has no meal plans:
+            if (dropdownMenu.children.length === 0) {
+                showAlert("noMealPlansError"); // Show the new alert
+                return; // Stop here — do not open dropdown
+            }
+
             dropdownMenu.classList.toggle("hidden");
         
             // Toggle the buttons based on dropdown visibility

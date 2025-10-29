@@ -51,7 +51,7 @@ public class MealPlanController : Controller
 
             if (exists)
             {
-                ModelState.AddModelError("", "This Meal Plan Title has been used before.");
+                ModelState.AddModelError("", "This Meal Plan Title has been used before, please choose a new one.");
             }
             else
             {
@@ -134,30 +134,25 @@ public class MealPlanController : Controller
     public async Task<IActionResult> AddRecipe(int recipeId, List<int> mealPlanIds)
     {
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
-
+        // Check if user is signed in:
         if (currentUserId == null)
         {
             TempData["ErrorMessage"] = "You must be logged in to add recipes to a meal plan.";
             return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
         }
 
+        // Check user has selected meal plans from dropdown:
         if (mealPlanIds == null || mealPlanIds.Count == 0)
         {
             TempData["ErrorMessage"] = "Please select at least one meal plan.";
             return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
         }
-
         var mealPlans = await _db.MealPlans
             .Include(mp => mp.MealPlanRecipes)
             .Where(mp => mealPlanIds.Contains(mp.Id) && mp.UserId == currentUserId)
             .ToListAsync();
 
-        if (!mealPlans.Any())
-        {
-            TempData["ErrorMessage"] = "No valid meal plans found.";
-            return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
-        }
-
+        // Loop through each meal plan selected:
         int addedCount = 0;
         foreach (var plan in mealPlans)
         {
@@ -165,7 +160,7 @@ public class MealPlanController : Controller
             bool exists = plan.MealPlanRecipes.Any(mpr => mpr.RecipeId == recipeId && !mpr.IsDeleted);
             if (exists)
                 continue;
-
+            // Otherwise, add recipe to meal plan
             plan.MealPlanRecipes.Add(new MealPlanRecipe
             {
                 RecipeId = recipeId,
@@ -173,23 +168,23 @@ public class MealPlanController : Controller
             });
             addedCount++;
         }
-
+        // If you have added recipes to meal plans:
         if (addedCount > 0)
         {
             await _db.SaveChangesAsync();
-
+            // Message for adding to just one meal plan:
             if (addedCount == 1)
             {
                 string addedTitle = mealPlans.First().MealPlanTitle ?? "Meal Plan";
                 TempData["Success"] = $"Recipe added to {addedTitle}.";
             }
             else
-            {
+            { // Message for adding to multiple meal plans:
                 TempData["Success"] = $"Recipe added to {addedCount} meal plans.";
             }
         }
         else
-        {
+        {  
             TempData["ErrorMessage"] = "This recipe is already in all selected meal plans.";
         }
 
@@ -241,6 +236,7 @@ public class MealPlanController : Controller
         return RedirectToAction("Show", new { id = recipe.MealPlanId });
     }
 
+
     [Route("/MealPlans/DeleteMealPlan/{id}")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -259,6 +255,7 @@ public class MealPlanController : Controller
 
         return RedirectToAction("Index");
     }
+
 
     [Route("/MealPlans/UndoDeleteMealPlan/{id}")]
     [HttpGet]
