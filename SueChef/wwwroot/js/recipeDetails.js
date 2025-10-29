@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // HELP FUNCTION to show alerts and ensure only one is visible at a time
     function showAlert(alertId) {
         // Hide all other alerts first
-        const alerts = document.querySelectorAll("#loginError, #loginError2, #loginError3, #noMealPlansSelectedError");
+        const alerts = document.querySelectorAll("#loginError, #loginError2, #loginError3, #noMealPlansError, #noMealPlansSelectedError");
         alerts.forEach(a => {
             if (a.id !== alertId) {
                 a.classList.add("hidden");
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // If user has no meal plans:
-            if (dropdownMenu.children.length === 0) {
+            if (mealPlansList.children.length === 0) {
                 showAlert("noMealPlansError"); // Show the new alert
                 return; // Stop here — do not open dropdown
             }
