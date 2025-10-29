@@ -91,12 +91,12 @@ public class SearchBarController : Controller
                 {
                     query = query.Where(r => r.IsVegetarian == true);
                 }
-                if (dietary.Contains("diaryfree"))
+                if (dietary.Contains("dairyfree"))
                 {
                     query = query.Where(r => r.IsDairyFree == true);
                 }
             }
-            
+
             if (difficulty.HasValue)
             {
                 query = query.Where(r => r.DifficultyLevel == difficulty.Value);
