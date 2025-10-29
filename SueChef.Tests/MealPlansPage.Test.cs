@@ -117,7 +117,19 @@ public class MealPlansPage : PageTest
         await Page.GetByTestId("submit-newplan").ClickAsync();
         await Expect(Page.GetByText("0 recipes")).ToBeVisibleAsync();
         await Expect(Page.GetByText("No recipes yet")).ToBeVisibleAsync();
+    }
 
+    [Test]
+    public async Task CreateMealPlan_MealPlansPage_ShowsTodaysDate()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+
+        await Expect(Page.GetByTestId("updated-text-10")).ToBeVisibleAsync();
+        string today = DateTime.Now.ToString("dd/MM/yyyy");
+        await Expect(Page.GetByTestId("updated-text-10")).ToHaveTextAsync($"Updated {today}");
     }
 
 }
