@@ -132,4 +132,22 @@ public class MealPlansPage : PageTest
         await Expect(Page.GetByTestId("updated-text-10")).ToHaveTextAsync($"Updated {today}");
     }
 
+    [Test]
+    public async Task CreateTwoMealPlans_MealPlansPage_NewestMealPlanIsFirst()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name-2");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name-2")).ToBeVisibleAsync();
+
+        await Expect(Page.Locator("#meal-plan-title").First).ToHaveTextAsync("test-name-2");
+    }
+
 }
