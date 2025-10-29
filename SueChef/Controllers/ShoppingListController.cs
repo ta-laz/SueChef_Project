@@ -116,7 +116,7 @@ public class ShoppingListController : Controller
 
         return RedirectToAction("Show");
     }
-    
+
     public async Task<IActionResult> Show()
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
@@ -135,12 +135,33 @@ public class ShoppingListController : Controller
             }
             else
             {
-            shoppingList[item.Category][item.IngredientName] = (item.Quantity, item.Unit);
+                shoppingList[item.Category][item.IngredientName] = (item.Quantity, item.Unit);
             }
 
         }
-
-        
         return View(shoppingList);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Update(List<string> IngredientNames, List<decimal> IngredientQuantities)
+    {
+        var ingredientCount = IngredientNames.Count();
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
+        for (int i = 0; i < ingredientCount; i++)
+        {
+            if (IngredientQuantities[i] != 0m) continue;
+            var sL = await _db.ShoppingLists.
+                Where(sL => sL.UserId == currentUserId).
+                Where(sL => sL.IngredientName == IngredientNames[i]).FirstOrDefaultAsync();
+            if (sL != null)
+            {
+                sL.IsPurchased = true;
+            }
+        }
+        await _db.SaveChangesAsync();
+
+        return View("Show");
     }
 }
