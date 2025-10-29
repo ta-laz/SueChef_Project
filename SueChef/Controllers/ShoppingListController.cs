@@ -121,7 +121,7 @@ public class ShoppingListController : Controller
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-        var currentList = await _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).ToListAsync();
+        var currentList = await _db.ShoppingLists.Where(sL => sL.UserId == currentUserId).Where(sL => !sL.IsPurchased).ToListAsync();
 
         Dictionary<string, Dictionary<string, (decimal?, string)>> shoppingList = new Dictionary<string, Dictionary<string, (decimal?, string)>>();
 

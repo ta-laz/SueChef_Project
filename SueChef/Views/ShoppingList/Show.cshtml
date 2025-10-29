@@ -42,13 +42,12 @@
                                 peer-checked:after:content-['✓'] peer-checked:after:text-white peer-checked:after:text-sm">
                             </span>
                             
-                        <input class="ml-3 font-medium peer-checked:line-through peer-checked:underline peer-checked:text-gray-500 bg-white" type="text" name="IngredientNames" readonly value="@ingredient.Key" />
+                        <input class="focus:outline-none focus:ring-0 focus:border-inherit ml-3 font-medium peer-checked:line-through peer-checked:underline peer-checked:text-gray-500 bg-white" type="text" name="IngredientNames" readonly value="@ingredient.Key" />
                     </div>
                         <div class="flex items-right space-x-1">
                             <strong>
-                                <input type="number" name="IngredientQuantities" data-original="@ingredient.Value.Item1.ToString()" value="@ingredient.Value.Item1.ToString()" class="ingredient-quantity no-spin items-right w-16 text-center bg-white focus:outline-none
-                                            focus:ring-2 focus:ring-orange-400 focus:border-orange-400 border-2 border-orange-700 rounded-md"/>
-                                    <input class=" w-6 -mr-6 font-medium bg-white" name="IngredientUnits" type="text" readonly value="@ingredient.Value.Item2"/>
+                                <input type="number" readonly name="IngredientQuantities" data-original="@ingredient.Value.Item1.ToString()" value="@ingredient.Value.Item1.ToString()" class="focus:outline-none focus:ring-0 focus:border-inherit text-right ingredient-quantity no-spin items-right w-16 text-center bg-white rounded-md"/>
+                                    <input class="focus:outline-none focus:ring-0 focus:border-inherit w-6 -mr-6 font-medium bg-white" name="IngredientUnits" type="text" readonly value="@ingredient.Value.Item2"/>
                                     
                             </strong>
                     </div>
