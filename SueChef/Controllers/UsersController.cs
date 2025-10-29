@@ -112,4 +112,167 @@ public class UsersController : Controller
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
 
+
+    // These are the parts related to the Account Settings Page
+    [ServiceFilter(typeof(AuthenticationFilter))]
+    [HttpPost("/users/update-username")]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateUsername(ChangeUsernameViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["DeleteError"] = "Please fill in all required fields.";
+            return Redirect($"/users/{model.Id}/settings");
+        }
+
+        // Check current session user
+        int? sessionUserId = HttpContext.Session.GetInt32("user_id");
+        if (sessionUserId == null || sessionUserId != model.Id)
+            return Redirect($"/users/{sessionUserId}/settings");
+
+        var user = _db.Users.Find(model.Id);
+        if (user == null) return NotFound();
+
+        // Verify password
+        var verify = _hasher.VerifyHashedPassword(user, user.PasswordHash!, model.Password);
+        if (verify == PasswordVerificationResult.Failed)
+        {
+            TempData["DeleteError"] = "Incorrect password.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // Check that username isn't already in use
+        bool nameTaken = _db.Users.Any(u => u.UserName == model.NewUserName && u.Id != user.Id);
+        if (nameTaken)
+        {
+            TempData["DeleteError"] = "That username is already taken.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // Update and save
+        user.UserName = model.NewUserName;
+        _db.SaveChanges();
+
+        TempData["SuccessMessage"] = "Username updated successfully.";
+        return Redirect($"/users/{user.Id}/settings");
+    }
+    [ServiceFilter(typeof(AuthenticationFilter))]
+    [HttpPost("/users/update-email")]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateEmail(ChangeEmailViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["DeleteError"] = "Please enter a valid email and password.";
+            return Redirect($"/users/{model.Id}/settings");
+        }
+
+        // is person logged in the right person (dont think we need this really)
+        int? sessionUserId = HttpContext.Session.GetInt32("user_id");
+        if (sessionUserId == null || sessionUserId != model.Id)
+            return Redirect($"/users/{sessionUserId}/settings");
+
+        var user = _db.Users.Find(model.Id);
+        if (user == null) return NotFound();
+
+        // check passwork
+        var verify = _hasher.VerifyHashedPassword(user, user.PasswordHash!, model.Password);
+        if (verify == PasswordVerificationResult.Failed)
+        {
+            TempData["DeleteError"] = "Incorrect password.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // check that the email isn't being used
+        bool emailTaken = _db.Users.Any(u => u.Email == model.NewEmail && u.Id != user.Id);
+        if (emailTaken)
+        {
+            TempData["DeleteError"] = "That email is already registered.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // save changes
+        user.Email = model.NewEmail;
+        _db.SaveChanges();
+
+        TempData["SuccessMessage"] = "Email updated successfully.";
+        return Redirect($"/users/{user.Id}/settings");
+    }
+
+    [ServiceFilter(typeof(AuthenticationFilter))]
+    [HttpPost("/users/update-password")]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdatePassword(ChangePasswordViewModel model)
+    {
+        // Step 1: check model validation
+        if (!ModelState.IsValid)
+        {
+            TempData["DeleteError"] = "Please fix the errors in the password form.";
+            return Redirect($"/users/{model.Id}/settings");
+        }
+
+        // Step 2: confirm they’re logged in as the right user
+        int? sessionUserId = HttpContext.Session.GetInt32("user_id");
+        if (sessionUserId == null || sessionUserId != model.Id)
+            return Redirect($"/users/{sessionUserId}/settings");
+
+        var user = _db.Users.Find(model.Id);
+        if (user == null) return NotFound();
+
+        // Step 3: verify the current password
+        var verify = _hasher.VerifyHashedPassword(user, user.PasswordHash!, model.CurrentPassword);
+        if (verify == PasswordVerificationResult.Failed)
+        {
+            TempData["DeleteError"] = "Current password is incorrect.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // Step 4: hash and set the new password
+        user.PasswordHash = _hasher.HashPassword(user, model.NewPassword);
+        _db.SaveChanges();
+
+        // Step 5: success message + redirect
+        TempData["SuccessMessage"] = "Password updated successfully.";
+        return Redirect($"/users/{user.Id}/settings");
+    }
+    [ServiceFilter(typeof(AuthenticationFilter))]
+    [HttpPost("/users/delete-account")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteAccount(DeleteAccountViewModel model)
+    {
+        // Step 1: validate basic input
+        if (!ModelState.IsValid)
+        {
+            TempData["DeleteError"] = "Please enter your password to confirm deletion.";
+            return Redirect($"/users/{model.Id}/settings");
+        }
+
+        // Step 2: make sure the session user matches
+        int? sessionUserId = HttpContext.Session.GetInt32("user_id");
+        if (sessionUserId == null || sessionUserId != model.Id)
+            return Redirect($"/users/{sessionUserId}/settings");
+
+        var user = _db.Users.Find(model.Id);
+        if (user == null) return NotFound();
+
+        // Step 3: verify password before deletion
+        var verify = _hasher.VerifyHashedPassword(user, user.PasswordHash!, model.ConfirmDeletePassword);
+        if (verify == PasswordVerificationResult.Failed)
+        {
+            TempData["DeleteError"] = "Incorrect password. Account not deleted.";
+            return Redirect($"/users/{user.Id}/settings");
+        }
+
+        // Step 4: delete the user
+        _db.Users.Remove(user);
+        _db.SaveChanges();
+
+        // Step 5: clear session and redirect
+        HttpContext.Session.Clear();
+
+        TempData["SuccessMessage"] = "Your account has been deleted successfully.";
+        return Redirect("/");
+    }
+
+
 }
