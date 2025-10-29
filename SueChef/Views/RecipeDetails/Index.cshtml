@@ -32,7 +32,7 @@
                   @Html.AntiForgeryToken()
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
 
-                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full p-2">
+                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-9 bg-white rounded-lg shadow-lg w-full overflow-scroll hide-scrollbar max-h-60 p-2">
                       @foreach (var plan in Model.UserMealPlans)
                       {
                           <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
@@ -208,4 +208,15 @@
       </div>
     </main>
   </body>
+
+  <!-- Hide scrollbar utility -->
+<style>
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 

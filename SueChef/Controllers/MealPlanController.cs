@@ -179,8 +179,8 @@ public class MealPlanController : Controller
             {
                 string addedTitle = mealPlans.First().MealPlanTitle ?? "Meal Plan";
                 int addedMealPlanId = mealPlans.First().Id;
-                string link = $"<a href='/MealPlans/{addedMealPlanId}' class='underline text-orange-700 hover:text-orange-500 font-semibold'>{addedTitle}</a>";
-                TempData["Success"] = $"Recipe added to {link}.";
+                string link = $"<a href='/MealPlans/{addedMealPlanId}' class='underline text-green-600 hover:text-orange-500 font-semibold'>{addedTitle}</a>";
+                TempData["Success"] = $"Recipe added to {link}";
             }
             else
             { // Message for adding to multiple meal plans:

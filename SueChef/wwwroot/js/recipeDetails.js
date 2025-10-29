@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
             el.style.opacity = '0';
             setTimeout(() => el.remove(), 1000);
         });
-    }, 4000);
+    }, 6000);
 
     const dropdownButton = document.getElementById("dropdownButton");  //Dropdown for add to meal plan on recipe page 
     const dropdownMenu = document.getElementById("dropdownMenu");
