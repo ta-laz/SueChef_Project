@@ -21,8 +21,13 @@ public class CommentController : Controller
     public async Task<IActionResult> comments(int recipeId, string content)
     {
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
-        if (!currentUserId.HasValue) return RedirectToAction("New", "Sessions");
+        //if (!currentUserId.HasValue) return RedirectToAction("New", "Sessions");
 
+        if (int? currentUserId == null)
+        {
+            TempData["ErrorMessage"] = "you must be logged in to write comments!";
+            return Redirect($"/recipe/{recipeId}");
+        }
         if (string.IsNullOrWhiteSpace(content))
         {
             TempData["ErrorMessage"] = "Comment cannot be empty.";
