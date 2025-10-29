@@ -8,11 +8,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const servingInput = document.getElementById('serving');
     const baseServings = 4;
     const ingredientEls = Array.from(document.querySelectorAll('.ingredient')); //Creates an array of ingredient elements 
+    const createBtn = document.getElementById("showNewPlanForm");
+    const form = document.getElementById("newMealPlanForm");
+    const input = document.getElementById("newMealPlanTitle");
+    const errorMsg = document.getElementById("newMealPlanError");
+    const saveBtn = document.getElementById("saveNewMealPlan");
+    const dropdownButton = document.getElementById("dropdownButton");  //Dropdown for add to meal plan on recipe page 
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const favouriteButton = document.getElementById("favourite_button"); //Favourite button
+    const saveMealplanButton = document.getElementById("save_mealplan_button"); //Hidden Save to Meal Plans button
+    const saveMealPlanForm = document.getElementById("saveMealPlanForm");
+    const isLoggedIn = dropdownButton.dataset.loggedIn === "true";
+    const mealPlansList = document.getElementById("mealPlansList");
 
-    // Helper function to show alerts and ensure only one is visible at a time
+    // HELP FUNCTION to show alerts and ensure only one is visible at a time
     function showAlert(alertId) {
         // Hide all other alerts first
-        const alerts = document.querySelectorAll("#loginError, #loginError2");
+        const alerts = document.querySelectorAll("#loginError, #loginError2, #loginError3, #noMealPlansSelectedError");
         alerts.forEach(a => {
             if (a.id !== alertId) {
                 a.classList.add("hidden");
@@ -20,31 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-    const alertBox = document.getElementById(alertId);
-    alertBox.classList.remove("hidden");
-    alertBox.style.transition = 'opacity 1s ease';
-    alertBox.style.opacity = '1';
-    
-    // Fade after 3s
-    setTimeout(() => {
-        alertBox.style.opacity = '0';
+        const alertBox = document.getElementById(alertId);
+        alertBox.classList.remove("hidden");
+        alertBox.style.transition = 'opacity 1s ease';
+        alertBox.style.opacity = '1';
+        
+        // Fade after 3s
         setTimeout(() => {
-            alertBox.classList.add("hidden");
-                alertBox.style.opacity = '1'; // reset for next time
-            }, 1000);
-        }, 3000);
-    }
+            alertBox.style.opacity = '0';
+            setTimeout(() => {
+                alertBox.classList.add("hidden");
+                    alertBox.style.opacity = '1'; // reset for next time
+                }, 1000);
+            }, 3000);
+        }
     
     
-    // Helper function to hide all alerts if the + or dropdown buttons are clicked:
+    // HELPER FUNCTION to hide all alerts if the + or dropdown buttons are clicked:
     function hideAllAlerts() {
-    document.querySelectorAll('.alert-message, #loginError, #loginError2, #noMealPlansError')
+    document.querySelectorAll('.alert-message, #loginError, #loginError2, #loginError2, #noMealPlansError, #noMealPlansSelectedError')
         .forEach(el => {
             el.classList.add('hidden');
             el.style.opacity = '1';
         });
     }
 
+
+    // SERVINGS:
     servingInput.addEventListener('input', () => {
         let rawValue = servingInput.value.trim(); //Saving the serving input to variable 
         
@@ -82,6 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
         nutritionBtn.classList.add('bg-orange-100', 'text-orange-700');
     });
 
+    
+    // NUTRITION:
     nutritionBtn.addEventListener('click', () => {
         ingredientsTab.style.display = 'none';
         nutritionTab.style.display = 'block';
@@ -100,15 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, 6000);
 
-    const dropdownButton = document.getElementById("dropdownButton");  //Dropdown for add to meal plan on recipe page 
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const favouriteButton = document.getElementById("favourite_button"); //Favourite button
-    const saveMealplanButton = document.getElementById("save_mealplan_button"); //Hidden Save to Meal Plans button
-    const saveMealPlanForm = document.getElementById("saveMealPlanForm");
-    const isLoggedIn = dropdownButton.dataset.loggedIn === "true";
-    const mealPlansList = document.getElementById("mealPlansList");
 
 
+    // DROPDOWN BUTTON:
     if (dropdownButton && dropdownMenu) {
         // Toggle dropdown on button click
         dropdownButton.addEventListener("click", (e) => {
@@ -134,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
             dropdownMenu.classList.toggle("hidden");
             
         
-            // Toggle the buttons based on dropdown visibility
+            // Toggle the fav/save buttons based on dropdown visibility
             if (dropdownMenu.classList.contains("hidden")) {
                 // Dropdown closed -> show Favourite button
                 favouriteButton.classList.remove("hidden");
@@ -168,25 +178,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         
-        // Get the parent form for favourite button
-        const favouriteForm = favouriteButton.closest("form"); 
 
-        // Logic for sending form with favourite button:
-        favouriteButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+    // FAVOURITE BUTTON:
+    // Get the parent form for favourite button
+    const favouriteForm = favouriteButton.closest("form"); 
 
-            // If a user is not signed in:
-            if (!isLoggedIn) {
-                showAlert("loginError2"); // Show favourite login alert
-                return; // Stop here, do NOT submit
-            }
+    // Logic for sending form with favourite button:
+    favouriteButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-            // User is logged in → submit the form
-            favouriteForm.submit();
-        });
-    }
+        // If a user is not signed in:
+        if (!isLoggedIn) {
+            showAlert("loginError2"); // Show favourite login alert
+            return; // Stop here, do NOT submit
+        }
 
+        // User is logged in → submit the form
+        favouriteForm.submit();
+    });
+}
+
+
+    // SAVE NEW MEAL PLAN BUTTON: 
     saveMealplanButton.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -199,7 +213,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Ensure at least one checkbox is selected
         const selectedPlans = saveMealPlanForm.querySelectorAll("input[name='mealPlanIds']:checked");
         if (selectedPlans.length === 0) {
-            showAlert("noMealPlansError");
+            showAlert("noMealPlansSelectedError");
+            dropdownMenu.classList.add("hidden");
             return;
         }
 
@@ -207,13 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
         saveMealPlanForm.submit();
     });
 
-const createBtn = document.getElementById("showNewPlanForm");
-const form = document.getElementById("newMealPlanForm");
-const input = document.getElementById("newMealPlanTitle");
-const errorMsg = document.getElementById("newMealPlanError");
-const saveBtn = document.getElementById("saveNewMealPlan");
 
 
+// CREATE NEW MEAL PLAN BUTTON (+):
 if (createBtn && form && input && saveBtn) {
     
     // Listen for clicking the + button:
@@ -223,13 +234,17 @@ if (createBtn && form && input && saveBtn) {
 
         // If a user is not signed in:
         if (!isLoggedIn) {
-            showAlert("loginError"); // Show dropdown login alert
+            showAlert("loginError3"); // Show + login alert
             return; // Stop here, do NOT open dropdown
         }
         
         // Hide the Dropdown menu if it's open:
         if (dropdownMenu && !dropdownMenu.classList.contains("hidden")) {
             dropdownMenu.classList.add("hidden");
+            }
+        if (saveMealplanButton && !saveMealplanButton.classList.contains("hidden")) {
+            saveMealplanButton.classList.add("hidden");
+            favouriteButton.classList.remove("hidden");
             }
         // Toggle the visibility of the form:
         form.classList.toggle("hidden");
@@ -238,12 +253,11 @@ if (createBtn && form && input && saveBtn) {
 
     // Hide form when clicking outside dropdown
     document.addEventListener("click", (e) => {
-        if (!dropdown.contains(e.target) && e.target !== dropdownButton) {
+        if (!form.contains(e.target) && e.target !== dropdownButton) {
             form.classList.add("hidden");
             createBtn.classList.remove("hidden");
             errorMsg.classList.add("hidden");
             input.value = "";
-            saveBtn.classList.add("hidden");
         }
     });
 
