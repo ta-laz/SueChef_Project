@@ -2,8 +2,8 @@
 <!-- VIEW FOR SINGLE MEAL PLANS -->
 @model SingleMealPlanPageViewModel
 
-<body class='bg-orange-50'></body>
-<div class="justify-center p-3">
+<body class='bg-orange-50 min-h-screen flex flex-col'></body>
+<div class="flex-1 justify-center p-3">
     <!-- Main central container -->
     <div class="w-full max-w-4xl mx-auto">
         <!-- Container for Success Messages: -->
@@ -46,19 +46,34 @@
                 <form asp-controller="ShoppingList" asp-action="Generate" method="post" class="flex-1">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="MealPlanId" value="@Model.MealPlan.Id" />
-                    <div class="flex flex-row justify-center items-center gap-1 mb-6">
-                        <button type="submit"class="w-full sm:w-48 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-1 mb-6 px-3">
+                        <button type="submit"class="w-[75%] h-9  sm:h-9 sm:w-64 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
                             Generate Shopping List
                         </button>
-                        <a asp-controller="Home" asp-action="Index" class="w-full sm:w-48">
-                            <button type="button" class="w-full sm:w-48 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
-                                Add Recipes
-                            </button>
-                        </a>
+                            <div class="group w-[75%] h-9 sm:w-64 flex flex-row sm:flex-row items-center justify-center gap-2 sm:h-9 sm:gap-1 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 transition">
+                                Adjust all servings 
+                                <div class="flex items-center justify-end rounded-lg  bg-orange-600">
+                                <button type="button"
+                                        class="px-1 py-1 text-white ml-1"
+                                        onclick="adjustServingsOverall(-1)">−</button>
+
+                                <input type="number"
+                                    data-testid="serving-overall"
+                                    id="serving-overall"
+                                    name="Servings"
+                                    min="1" max="12" value="4"
+                                    class="no-spin w-8 text-center bg-orange-600 text-white group-hover:bg-orange-500
+                                            focus:ring-2 focus:ring-orange-400 border-0" />
+
+                                <button type="button"
+                                        class="px-1 py-1 text-white hover:bg-orange-500" 
+                                        onclick="adjustServingsOverall(1)">+</button>
+                            </div>
+                            </div>
                     </div>
 
                     <!-- Recipe Cards  -->
-                    <section class="mb-8 flex flex-col items-center gap-4 w-full">
+                    <section class="max-w-6xl mx-auto px-5">
                         @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
                         {
                             <partial name="_MealPlanRecipeCardPartial" model="recipe" />
@@ -114,4 +129,21 @@
       }
     }
   });
+</script>
+
+<script>
+function adjustServingsOverall(delta) {
+    // Get the overall input element
+    const overallInput = document.getElementById('serving-overall');
+    const currentOverall = parseInt(overallInput.value) || 1;
+    const newOverall = Math.min(Math.max(currentOverall + delta, overallInput.min), overallInput.max);
+    
+    overallInput.value = newOverall;
+
+    // Now update all individual serving inputs to match the new overall value
+    const cardInputs = document.querySelectorAll('input[id^="serving-"]'); 
+    cardInputs.forEach(input => {
+        input.value = newOverall;
+    });
+}
 </script>
