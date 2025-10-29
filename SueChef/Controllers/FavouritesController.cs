@@ -81,7 +81,6 @@ public class FavouritesController : Controller
                 IsDeleted = false
             });
             await _db.SaveChangesAsync();
-            TempData["Success"] = "Recipe added to favourites.";
         }
         return RedirectToAction("Index", "RecipeDetails", new { id = recipeId });
     }
