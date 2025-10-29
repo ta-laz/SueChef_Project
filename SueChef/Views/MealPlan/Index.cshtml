@@ -32,7 +32,7 @@
                     @Html.AntiForgeryToken()
 
                     <input type="text" name="MealPlanTitle" id="newplan-name-input" data-testid="newplan-name-input"
-                        class="border border-gray-300 rounded-md p-2 w-full text-center" placeholder="New Meal Plan" />
+                        class="border border-gray-300 rounded-md p-2 w-full text-center active:border-gray-600" placeholder="New Meal Plan" />
 
                     <div class="flex justify-center gap-2 mt-3">
                         <button type="button" id="cancel-newplan"
@@ -47,6 +47,18 @@
                 </form>
             </div>
 
+            @if (Model.MealPlanCount == 0)
+            {
+                <!-- No meal plans yet -->
+                <div id="create-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
+                p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
+                    <div id="no-meal-plans-yet" class="flex flex-col items-center">
+                        <i data-lucide="cooking-pot" class="w-20 h-20 mb-8 text-gray-500 object-cover"></i>
+                        <span class="text-gray-700 text-lg font-semibold mb-8 text-center">You haven't created any meal plans yet...</span>
+                        <span class="text-gray-500 text-md font-medium text-center">Save and sort your favourite recipes into meal plans then use our handy shopping list generator!</span>
+                    </div>
+                </div>
+            }
 
             <!-- Existing meal plans -->
             @foreach (var mealPlan in Model.MealPlans)
