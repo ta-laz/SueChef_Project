@@ -120,7 +120,7 @@ public class UsersController : Controller
     {
         int? sessionUserId = HttpContext.Session.GetInt32("user_id");
         if (sessionUserId == null || sessionUserId != id)
-            return Redirect("/");
+            return Redirect($"/users/{sessionUserId}/settings");
 
         var user = _db.Users.Find(id);
         if (user == null) return NotFound();
@@ -138,10 +138,9 @@ public class UsersController : Controller
         return View("AccountSettings", vm);
     }
 
-    [ServiceFilter(typeof(AuthenticationFilter))]
     [HttpPost("/users/update-username")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateUsername(ChangeUsernameViewModel model)
+    public IActionResult UpdateUsername([Bind(Prefix = "ChangeUsername")] ChangeUsernameViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -180,10 +179,9 @@ public class UsersController : Controller
         TempData["SuccessMessage"] = "Username updated successfully.";
         return Redirect($"/users/{user.Id}/settings");
     }
-    [ServiceFilter(typeof(AuthenticationFilter))]
     [HttpPost("/users/update-email")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateEmail(ChangeEmailViewModel model)
+    public IActionResult UpdateEmail([Bind(Prefix = "ChangeEmail")] ChangeEmailViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -223,10 +221,9 @@ public class UsersController : Controller
         return Redirect($"/users/{user.Id}/settings");
     }
 
-    [ServiceFilter(typeof(AuthenticationFilter))]
     [HttpPost("/users/update-password")]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdatePassword(ChangePasswordViewModel model)
+    public IActionResult UpdatePassword([Bind(Prefix = "ChangePassword")] ChangePasswordViewModel model)
     {
         // check model validation
         if (!ModelState.IsValid)
@@ -259,10 +256,10 @@ public class UsersController : Controller
         TempData["SuccessMessage"] = "Password updated successfully.";
         return Redirect($"/users/{user.Id}/settings");
     }
-    [ServiceFilter(typeof(AuthenticationFilter))]
+
     [HttpPost("/users/delete-account")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteAccount(DeleteAccountViewModel model)
+    public IActionResult DeleteAccount([Bind(Prefix = "DeleteAccount")] DeleteAccountViewModel model)
     {
         // validate basic input
         if (!ModelState.IsValid)
@@ -300,3 +297,4 @@ public class UsersController : Controller
 
 
 }
+

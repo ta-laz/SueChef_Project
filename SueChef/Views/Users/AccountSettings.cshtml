@@ -3,7 +3,7 @@
     ViewData["Title"] = "Account Settings";
 }
 
-<div class="min-h-screen bg-orange-50">
+<div class="min-h-screen">
     <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-8 space-y-8">
 
         <!-- Header -->
@@ -43,25 +43,37 @@
                 <div>
                     <label asp-for="ChangeUsername.NewUserName" class="block text-gray-700 font-medium"></label>
                     <input asp-for="ChangeUsername.NewUserName"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
                     <span asp-validation-for="ChangeUsername.NewUserName" class="text-red-600 text-sm"></span>
                 </div>
 
-                <div>
+                <div class="relative">
                     <label asp-for="ChangeUsername.Password" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="ChangeUsername.Password" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <input asp-for="ChangeUsername.Password" type="password" id="usernamePassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('usernamePassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="ChangeUsername.Password" class="text-red-600 text-sm"></span>
                 </div>
 
-                <button type="submit"
-                        class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
-                    Update Username
-                </button>
+                <div class="flex justify-center">
+                    <button type="submit"
+                            class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
+                        Update Username
+                    </button>
+                </div>
             </form>
         </section>
 
-        <!-- 2️⃣ Change Email -->
+        <!--Change Email -->
         <section id="change-email">
             <h2 class="text-xl font-semibold text-rose-700 mb-2">Change Email</h2>
             <form method="post" asp-action="UpdateEmail" asp-controller="Users" class="space-y-4">
@@ -71,60 +83,107 @@
                 <div>
                     <label asp-for="ChangeEmail.NewEmail" class="block text-gray-700 font-medium"></label>
                     <input asp-for="ChangeEmail.NewEmail" type="email"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
                     <span asp-validation-for="ChangeEmail.NewEmail" class="text-red-600 text-sm"></span>
                 </div>
 
-                <div>
+                <div class="relative">
                     <label asp-for="ChangeEmail.Password" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="ChangeEmail.Password" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <input asp-for="ChangeEmail.Password" type="password" id="emailPassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('emailPassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="ChangeEmail.Password" class="text-red-600 text-sm"></span>
                 </div>
 
-                <button type="submit"
-                        class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
-                    Update Email
-                </button>
+                <div class="flex justify-center">
+                    <button type="submit"
+                            class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
+                        Update Email
+                    </button>
+                </div>
             </form>
         </section>
 
-        <!-- 3️⃣ Change Password -->
+        <!--Change Password -->
         <section id="change-password">
             <h2 class="text-xl font-semibold text-rose-700 mb-2">Change Password</h2>
             <form method="post" asp-action="UpdatePassword" asp-controller="Users" class="space-y-4">
                 @Html.AntiForgeryToken()
-                <input asp-for="ChangePassword.Id" type="hidden" value="@Model.Id" />
+                <input type="hidden" name="ChangePassword.Id" value="@Model.Id" />
 
-                <div>
+                <!-- Current Password -->
+                <div class="relative">
                     <label asp-for="ChangePassword.CurrentPassword" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="ChangePassword.CurrentPassword" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <input asp-for="ChangePassword.CurrentPassword" type="password" id="currentPassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('currentPassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="ChangePassword.CurrentPassword" class="text-red-600 text-sm"></span>
                 </div>
 
-                <div>
+                <!-- New Password -->
+                <div class="relative">
                     <label asp-for="ChangePassword.NewPassword" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="ChangePassword.NewPassword" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <input asp-for="ChangePassword.NewPassword" type="password" id="newPassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('newPassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="ChangePassword.NewPassword" class="text-red-600 text-sm"></span>
                 </div>
 
-                <div>
+                <!-- Confirm New Password -->
+                <div class="relative">
                     <label asp-for="ChangePassword.ConfirmNewPassword" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="ChangePassword.ConfirmNewPassword" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <input asp-for="ChangePassword.ConfirmNewPassword" type="password" id="confirmPassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-rose-200 focus:border-rose-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('confirmPassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="ChangePassword.ConfirmNewPassword" class="text-red-600 text-sm"></span>
                 </div>
 
-                <button type="submit"
-                        class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
-                    Change Password
-                </button>
+                <div class="flex justify-center">
+                    <button type="submit"
+                            class="px-4 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-800">
+                        Change Password
+                    </button>
+                </div>
             </form>
         </section>
 
-        <!-- 4️⃣ Delete Account -->
+        <!--Delete Account -->
         <section id="delete-account" class="border-t pt-6">
             <h2 class="text-xl font-semibold text-red-700 mb-2">Delete Account</h2>
             <p class="text-gray-600 text-sm mb-4">
@@ -134,23 +193,38 @@
                 @Html.AntiForgeryToken()
                 <input asp-for="DeleteAccount.Id" type="hidden" value="@Model.Id" />
 
-                <div>
+                <div class="relative">
                     <label asp-for="DeleteAccount.ConfirmDeletePassword" class="block text-gray-700 font-medium"></label>
-                    <input asp-for="DeleteAccount.ConfirmDeletePassword" type="password"
-                           class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-red-200 focus:border-red-600" />
+                    <input asp-for="DeleteAccount.ConfirmDeletePassword" type="password" id="deletePassword"
+                        class="w-full mt-1 rounded-md border-gray-200 bg-gray-50 p-2 focus:ring-red-200 focus:border-red-600" />
+                    <button type="button"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                            onclick="togglePassword('deletePassword')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
                     <span asp-validation-for="DeleteAccount.ConfirmDeletePassword" class="text-red-600 text-sm"></span>
                 </div>
 
-                <button type="submit"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    Delete My Account
-                </button>
+                <div class="flex justify-center">
+                    <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-800">
+                        Delete My Account
+                    </button>
+                </div>
             </form>
         </section>
-
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+
+<script>
+    function togglePassword(id) {
+        const input = document.getElementById(id);
+        input.type = input.type === "password" ? "text" : "password";
+    }
+</script>
