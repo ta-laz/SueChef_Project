@@ -232,59 +232,59 @@ namespace SueChef.Test
         db.Favourites.AddRange(favourites);
         await db.SaveChangesAsync();
 
-// ---------- Comments ----------
-        // int totalUsers = await db.Users.CountAsync();
-        // int totalRecipes = await db.Recipes.CountAsync();
+//---------- Comments ----------
+        int totalUsers = await db.Users.CountAsync();
+        int totalRecipes1 = await db.Recipes.CountAsync();
 
-        // if (totalUsers == 0 || totalRecipes == 0)
-        //   throw new InvalidOperationException("Seed users and recipes before comments.");
+        if (totalUsers == 0 || totalRecipes1 == 0)
+          throw new InvalidOperationException("Seed users and recipes before comments.");
 
-        // var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
-        // var comments = new List<Comment>();
-        // var phrases = new[]
-        // {
-    //     "Loved this recipe — turned out amazing!",
-    //     "Made it last night and my family devoured it.",
-    //     "Super easy to follow and packed with flavour.",
-    //     "Will definitely make this again soon.",
-    //     "A bit spicy for me, but still really good.",
-    //     "Added some extra herbs — perfection.",
-    //     "Took longer than expected but worth it.",
-    //     "Brilliant weeknight dinner, thanks!",
-    //     "Used leftovers and it still worked great.",
-    //     "Simple, hearty and delicious."
-    // };
+        var users1 = await db.Users.OrderBy(u => u.Id).ToListAsync();
+        var comments = new List<Comment>();
+        var phrases = new[]
+        {
+        "Loved this recipe — turned out amazing!",
+        "Made it last night and my family devoured it.",
+        "Super easy to follow and packed with flavour.",
+        "Will definitely make this again soon.",
+        "A bit spicy for me, but still really good.",
+        "Added some extra herbs — perfection.",
+        "Took longer than expected but worth it.",
+        "Brilliant weeknight dinner, thanks!",
+        "Used leftovers and it still worked great.",
+        "Simple, hearty and delicious."
+    };
 
-        // var rand1 = new Random(99);
-        // var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
+        var rand1 = new Random(99);
+        var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
 
-        // foreach (var u in users)
-        // {
-        //   // Each user leaves 3 comments on different recipes
-        //   var picked = new HashSet<int>();
-        //   for (int j = 0; j < 3; j++)
-        //   {
-        //     int rid;
-        //     do
-        //     {
-        //       rid = rand1.Next(1, totalRecipes + 1);
-        //     } while (!picked.Add(rid));
+        foreach (var u in users1)
+        {
+          // Each user leaves 3 comments on different recipes
+          var picked = new HashSet<int>();
+          for (int j = 0; j < 3; j++)
+          {
+            int rid;
+            do
+            {
+              rid = rand1.Next(1, totalRecipes + 1);
+            } while (!picked.Add(rid));
 
-        //     string content = phrases[(u.Id + j + rand.Next(phrases.Length)) % phrases.Length];
-        //     var created = baseTime.AddDays(u.Id * 3 + j).AddMinutes(rand.Next(0, 300));
+            string content = phrases[(u.Id + j + rand.Next(phrases.Length)) % phrases.Length];
+            var created = baseTime.AddDays(u.Id * 3 + j).AddMinutes(rand.Next(0, 300));
 
-        //     comments.Add(new Comment
-        //     {
-        //       UserId = u.Id,
-        //       RecipeId = rid,
-        //       Content = content,
-        //       CreatedOn = created
-        //     });
-        //   }
-        // }
+            comments.Add(new Comment
+            {
+              UserId = u.Id,
+              RecipeId = rid,
+              Content = content,
+              CreatedOn = created
+            });
+          }
+        }
 
-        // db.Comments.AddRange(comments);
-        // await db.SaveChangesAsync();
+        db.Comments.AddRange(comments);
+        await db.SaveChangesAsync();
 
         await tx.CommitAsync();
         Console.WriteLine("✅ Database seeded.");

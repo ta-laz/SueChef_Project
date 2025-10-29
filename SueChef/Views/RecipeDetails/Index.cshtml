@@ -1,4 +1,6 @@
 @model SueChef.ViewModels.IndividualRecipePageViewModel
+@using System.Diagnostics.Eventing.Reader
+@using System.Timers
   <body class="bg-orange-50 text-gray-700">
     <main class="max-w-3xl mx-auto p-6 ">
       
@@ -236,10 +238,80 @@
                   
                   <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
+      
+      <!--add a comment -->
+      <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="bg-red-100 border-l-4  text-red-800 px-4 py-2 rounded-lg mb-3">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
 
-        
-      </div>
-    </main>
+            
+            <h2 class="text-lg font-semibold mb-2 py-2">Add a comment</h2>
+            <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
+            @Html.AntiForgeryToken()
+                <textarea name="content" required maxlength = "300"
+                    class="w-full resize-none border p-1 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2, focus:ring-opacity-25 transition-shadow duration-200" oninput="autoResize(this)"
+                    name="Content" placeholder="Comment here!"></textarea>
+                <div class="flex-direction justify-between items-center mt-0">
+                    <button data-testid="comment-submit" type="submit"
+                        class=" bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-xl hover:bg-yellow-500">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    <!--stretches the add a comment box to suit how much content is in the box-->
+    <script>
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+</script>
+    <!--displays the number of comments -->
+    <div class="text-left p-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Comments (@Model.CommentsList.Count())
+        </h3>
+    </div>
+<!--displays all comments -->
+<div class="mx-auto max-w max-h-100 bg-orange-100 border-l-4 border-orange-700 rounded-xl mb-4">
+
+
+    @if (Model.CommentsList.Any())
+    {
+        <div class=" px-4 py-2">
+            @foreach (var i in Model.CommentsList)
+            {
+              <div class="min-w-0 flex-1">
+              <div class="p-3 tracking-wide mb-1 border-b-2 border-orange-700">
+                <p class="font-bold text-left leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+                  @i.userName
+                </p>
+                <p class="text-left text-sm leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+                  @i.Content
+                </p>
+                <time class="text-right mt-1 block text-xs text-gray-500 dark:text-gray-400">
+                  @i.CreatedOn.ToString("ddd d MMM yyyy, HH:mm")
+                </time>
+              </div>
+            </div>
+      
+            }
+        </div>
+    }
+    else
+    {
+        <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+            No comments yet — be the first to comment!
+        </div>
+    }
+</div>
+  
+
+
   </body>
 
   <!-- Hide scrollbar utility -->

@@ -18,7 +18,7 @@ public class RecipeDetailsController : Controller
         _db = db;
     }
 
-    [Route("/Recipe/{id}")]
+    [Route("/Recipe/{id}", Name = "RecipeDetails")]
     [HttpGet]
     public async Task<IActionResult> Index(int id)
     {
@@ -27,6 +27,8 @@ public class RecipeDetailsController : Controller
                                 .Include(r => r.RecipeIngredients)
                                     .ThenInclude(ri => ri.Ingredient)
                                 .FirstOrDefaultAsync(r => r.Id == id);
+        
+        if (recipe == null) return NotFound();
 
         var ratings = await _db.Ratings.Where(r => r.RecipeId == id).ToListAsync(); //Pulling the ratings from the db
         double? avgRatings = ratings.Any() ? ratings.Average(r => r.Stars) : 0; //Calculates the average for when we need it later if no ratings default to 0 
@@ -89,6 +91,28 @@ public class RecipeDetailsController : Controller
             AverageRating = avgRatings,
             UserRating = userRating //Passing all the ratings and user rating in the controller so we know if they have or haven't rated. 
         };
+            var comments = await _db.Comments //pulls all comments from db and makes them into a commenting view model
+            .Where(c => c.RecipeId == id && !string.IsNullOrWhiteSpace(c.Content))
+            .OrderByDescending(c => c.CreatedOn)
+            .Select(c => new CommentingViewModel
+            {
+                Id = c.Id,
+                RecipeId = c.RecipeId,
+                userName = c.User.UserName,
+                Content = c.Content,
+                CreatedOn = c.CreatedOn
+            })
+            .ToListAsync();
+
+            // var usernames = await _db.Users //going to pull the username and the the id priamry key 
+            // .Where(u => u.Id == id)
+            // .Select(u => new UserViewModel 
+            // {
+            //     Id = u.Id,
+            //     UserName = u.UserName
+            // })
+            // .ToListAsync();
+
 
         // Logic to collect all ACTIVE Meal Plans belonging to signed in user
         var mealPlans = await _db.MealPlans
@@ -105,6 +129,7 @@ public class RecipeDetailsController : Controller
         var AllViewModels = new IndividualRecipePageViewModel
         {
             IndividualRecipe = viewModel,
+            CommentsList = comments,
             IsFavourited = isFavourited,
             UserMealPlans = mealPlans,
             IsLoggedIn = isLoggedIn
@@ -112,7 +137,6 @@ public class RecipeDetailsController : Controller
         return View(AllViewModels);
 
     }
-
 
     [HttpPost]
     public async Task<IActionResult> Rate(int recipeId, int rating)
@@ -153,5 +177,6 @@ public class RecipeDetailsController : Controller
         await _db.SaveChangesAsync();
         return RedirectToAction("Index", new { id = recipeId }); //Re load the page 
     }
+
 
 }

@@ -26,7 +26,7 @@
 
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col">
     @if (ViewData["HideNavAndFooter"] == null)
     {
         <header class="sticky top-0 border-gray-200 bg-rose-800 px-6 py-3 flex items-center justify-between relative z-50">
@@ -157,11 +157,9 @@
     else
     {
         <!-- Normal pages -->
-        <div class="container mx-auto">
-            <main id="MainContent" role="main" class="pb-3">
+            <main id="MainContent" role="main" class="flex-grow container mx-auto pb-3">
                 @RenderBody()
             </main>
-        </div>
 
         <!-- Time for the footer now -->
 
@@ -187,7 +185,7 @@
                                 <span class="text-5xl font-semibold" style="font-family: 'Macondo Swash Caps', cursive;">
                                     SueChef
                                 </span>
-                                <span class="text-base font-medium -mt-2 ml-10 md:ml-14 lg:ml-14 italic text-orange-600"
+                                <span class="text-base font-medium -mt-2 ml-10 md:ml-14 lg:ml-14 italic text-orange-400"
                                     style="font-family: 'Macondo Swash Caps', cursive;">
                                     Bon Appétit
                                 </span>
@@ -232,11 +230,12 @@
     @await RenderSectionAsync("Scripts", required: false)
     <script src="/js/navbar.js" asp-append-version="true"></script>
     <script src="/js/recipeDetails.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/lucide"></script>
     <!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    lucide.createIcons();
-</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
