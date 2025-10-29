@@ -200,9 +200,9 @@
                   
                   <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
-
+      
       <!--add a comment -->
-      <div class="flex-col min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
+      <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
                 @if (TempData["ErrorMessage"] != null)
                 {
                     <div class="bg-red-100 border-l-4  text-red-800 px-4 py-2 rounded-lg mb-3">
@@ -215,7 +215,7 @@
             <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
             @Html.AntiForgeryToken()
                 <textarea name="content" required maxlength = "300"
-                    class="w-full resize-none border p-1 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2, focus:ring-opacity-25 transition-shadow duration-200"
+                    class="w-full resize-none border p-1 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2, focus:ring-opacity-25 transition-shadow duration-200" oninput="autoResize(this)"
                     name="Content" placeholder="Comment here!"></textarea>
                 <div class="flex-direction justify-between items-center mt-0">
                     <button data-testid="comment-submit" type="submit"
@@ -225,7 +225,13 @@
                 </div>
             </form>
         </div>
-    
+    <!--stretches the add a comment box to suit how much content is in the box-->
+    <script>
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+</script>
     <!--displays the number of comments -->
     <div class="text-left p-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
