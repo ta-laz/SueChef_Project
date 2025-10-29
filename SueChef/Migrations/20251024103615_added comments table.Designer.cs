@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SueChef.Models;
@@ -11,9 +12,11 @@ using SueChef.Models;
 namespace SueChef.Migrations
 {
     [DbContext(typeof(SueChefDbContext))]
-    partial class SueChefDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251024103615_added comments table")]
+    partial class addedcommentstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,8 +63,6 @@ namespace SueChef.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Comments");
                 });
 
@@ -96,65 +97,6 @@ namespace SueChef.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("SueChef.Models.MealPlan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("CURRENT_DATE");
-
-                    b.Property<string>("MealPlanTitle")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateOnly?>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("CURRENT_DATE");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MealPlans");
-                });
-
-            modelBuilder.Entity("SueChef.Models.MealPlanRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("MealPlanId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("MealPlanId", "RecipeId")
-                        .IsUnique();
-
-                    b.ToTable("MealPlanRecipes");
                 });
 
             modelBuilder.Entity("SueChef.Models.Rating", b =>
@@ -295,44 +237,6 @@ namespace SueChef.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SueChef.Models.Comment", b =>
-                {
-                    b.HasOne("SueChef.Models.User", "User")
-                        .WithMany("Comment")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SueChef.Models.MealPlan", b =>
-                {
-                    b.HasOne("SueChef.Models.User", "User")
-                        .WithMany("MealPlans")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SueChef.Models.MealPlanRecipe", b =>
-                {
-                    b.HasOne("SueChef.Models.MealPlan", "MealPlan")
-                        .WithMany("MealPlanRecipes")
-                        .HasForeignKey("MealPlanId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SueChef.Models.Recipe", "Recipe")
-                        .WithMany("MealPlanRecipes")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("MealPlan");
-
-                    b.Navigation("Recipe");
-                });
-
             modelBuilder.Entity("SueChef.Models.Rating", b =>
                 {
                     b.HasOne("SueChef.Models.Recipe", "Recipe")
@@ -345,7 +249,7 @@ namespace SueChef.Migrations
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
                     b.HasOne("SueChef.Models.Chef", "Chef")
-                        .WithMany("Recipes")
+                        .WithMany("Recipe")
                         .HasForeignKey("ChefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -374,7 +278,7 @@ namespace SueChef.Migrations
 
             modelBuilder.Entity("SueChef.Models.Chef", b =>
                 {
-                    b.Navigation("Recipes");
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("SueChef.Models.Ingredient", b =>
@@ -382,25 +286,11 @@ namespace SueChef.Migrations
                     b.Navigation("RecipeIngredients");
                 });
 
-            modelBuilder.Entity("SueChef.Models.MealPlan", b =>
-                {
-                    b.Navigation("MealPlanRecipes");
-                });
-
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
-                    b.Navigation("MealPlanRecipes");
-
                     b.Navigation("Ratings");
 
                     b.Navigation("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("SueChef.Models.User", b =>
-                {
-                    b.Navigation("Comment");
-
-                    b.Navigation("MealPlans");
                 });
 #pragma warning restore 612, 618
         }

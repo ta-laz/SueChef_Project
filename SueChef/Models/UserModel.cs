@@ -15,5 +15,5 @@ public class User
     public DateOnly? DOB { get; set; }
 
     public ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
-
+    public ICollection<Comment> Comment { get; set; } = new List<Comment>();
 }

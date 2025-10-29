@@ -1,5 +1,9 @@
 ﻿@model SueChef.ViewModels.CategoryPageViewModel
 
+@{
+    ViewData["Title"] = "Categories Page";
+}
+
 <body class="bg-orange-50 min-h-screen flex flex-col">
     <main class="flex-1">
         <section id="recipes-container" class="max-w-6xl mx-auto px-5 ">
@@ -7,6 +11,7 @@
             <header class="max-w-6xl bg-orange-50 backdrop-blur sticky top-16 z-10">
                 <div class="max-w-6xl mx-auto py-3">
                     <h1 class="text-2xl font-semibold text-gray-800" data-testid="Title-@Model.Title">@Model.Title</h1>
+
                 </div>
             </header>
 
@@ -14,7 +19,7 @@
 
             @foreach (var recipe in Model.Recipes)
             {
-                <div class="pb-6">
+                <div class="pb-6 recipe-card">
                     <partial name="_RecipeCardHorizontalPartial" model="recipe" />
                 </div>
             }
