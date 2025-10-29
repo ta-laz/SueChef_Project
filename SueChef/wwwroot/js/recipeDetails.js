@@ -117,11 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
         
             // Toggle the buttons based on dropdown visibility
             if (dropdownMenu.classList.contains("hidden")) {
-                // Dropdown closed → show Favourite button
+                // Dropdown closed -> show Favourite button
                 favouriteButton.classList.remove("hidden");
                 saveMealplanButton.classList.add("hidden");
             } else {
-                // Dropdown open → show Save button
+                // Dropdown open -> show Save button
                 favouriteButton.classList.add("hidden");
                 saveMealplanButton.classList.remove("hidden");
             }
@@ -148,9 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveMealplanButton.classList.add("hidden");
             }
         });
+        
+        // Get the parent form for favourite button
+        const favouriteForm = favouriteButton.closest("form"); 
 
-        const favouriteForm = favouriteButton.closest("form"); // Get the parent form for favourite button
-
+        // Logic for sending form with favourite button:
         favouriteButton.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();

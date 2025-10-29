@@ -43,18 +43,19 @@ public class MealPlanController : Controller
     public async Task<IActionResult> Create(MealPlanViewModel mealPlanViewModel)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-
+        
+        // Check new Meal Plan is valid:
         if (ModelState.IsValid)
         {
             var exists = await _db.MealPlans
-                .AnyAsync(mp => mp.MealPlanTitle == mealPlanViewModel.MealPlanTitle && mp.UserId == currentUserId);
+                .AnyAsync(mp => mp.MealPlanTitle == mealPlanViewModel.MealPlanTitle && mp.UserId == currentUserId && mp.IsDeleted == false);
 
             if (exists)
             {
-                ModelState.AddModelError("", "This Meal Plan Title has been used before, please choose a new one.");
+                ModelState.AddModelError("", "You already have a meal plean with this title, please choose a new one.");
             }
-            else
-            {
+            else // If the name is not a duplicate, add the new meal plan:
+            {   
                 _db.MealPlans.Add(new MealPlan
                 {
                     UserId = currentUserId,
