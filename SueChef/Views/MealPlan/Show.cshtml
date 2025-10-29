@@ -83,7 +83,21 @@
                 </div>
             </div>
 
+            @if (Model.RecipesList == null || !Model.RecipesList.Any())
+{
+    <div class="flex flex-col items-center justify-center bg-white border border-orange-300 text-orange-800 rounded-xl p-6 shadow-sm mt-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor" class="w-10 h-10 text-orange-600 mb-3">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
 
+        <h3 class="text-xl text-orange-600 font-semibold mb-2">Your meal plan is empty!</h3>
+        <p class="text-sm text-orange-600 mb-4">Add some recipes before generating your shopping list.</p>
+    </div>
+}
+else
+{
             <!-- Recipe Cards  -->
             <section class="max-w-6xl mx-auto px-5">
                 @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
@@ -91,6 +105,7 @@
                     <partial name="_MealPlanRecipeCardPartial" model="recipe" />
                 }
             </section>
+}
     </div>
     </section>
 
@@ -104,7 +119,6 @@
 
 </div>
 </div>
-
 <script>
     //Short script to make the alert messages fade away after a few seconds
     setTimeout(() => {
