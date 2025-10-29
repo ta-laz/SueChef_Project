@@ -2,23 +2,27 @@
 
 @model SueChef.ViewModels.MealPlansPageViewModel
 
+@{
+    ViewData["Title"] = "Meal Plans Page";
+}
+
 <body class="bg-orange-50">
 
     <!-- Main central container -->
     <section class="relative w-full max-w-4xl mx-auto mb-4 overflow-hidden p-2">
         <div
             class=" items-center flex flex-col items-center justify-center w-full mb-6 mt-6 p-2 bg-orange-50  rounded-md">
-            <h2 class="text-4xl tracking-tight text-gray-800">Meal Plans</h2>
-            <p class="text-gray-600 text-lg">@Model.MealPlanCount Plans</p>
+            <h2 class="text-4xl tracking-tight text-gray-800" data-testid="meal-plans-page-title">Meal Plans</h2>
+            <p class="text-gray-600 text-lg" data-testid="number-of-meal-plans">@Model.MealPlanCount Plans</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-x-6 gap-y-6 auto-rows-96">
             <!-- Create new meal plan card -->
-            <div id="create-card" class="border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center 
+            <div id="create-card" data-testid="create-meal-plan-card" class="border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center 
             p-8 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
 
                 <!-- Default "Add" View -->
-                <div id="add-view" class="flex flex-col items-center ">
+                <div id="add-view" data-testid="create-meal-plan-button" class="flex flex-col items-center ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400 mb-2" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -36,7 +40,7 @@
          focus:placeholder-white" placeholder="New Meal Plan" />
 
                     <div class="flex justify-center gap-3 mt-4">
-                        <button type="button" id="cancel-newplan"
+                        <button type="button" id="cancel-newplan" data-testid="cancel-newplan"
                             class="w-28 bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-300 transition">
                             Cancel
                         </button>
@@ -51,9 +55,9 @@
             @if (Model.MealPlanCount == 0)
             {
                 <!-- No meal plans yet -->
-                <div id="no-meal-plans-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
+                <div id="no-meal-plans-card" data-testid="no-meal-plans-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
                             p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
-                    <div id="no-meal-plans-yet" class="flex flex-col items-center">
+                    <div id="no-meal-plans-yet" data-testid="no-meal-plans-text" class="flex flex-col items-center">
                         <i data-lucide="cooking-pot" class="w-20 h-20 mb-8 text-gray-400 object-cover"></i>
                         <span class="text-gray-700 text-lg font-semibold mb-8 text-center">You haven't created any meal
                             plans yet...</span>
