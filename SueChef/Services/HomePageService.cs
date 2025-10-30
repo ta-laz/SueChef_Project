@@ -151,20 +151,39 @@ public class HomePageService : IHomePageService
                                  .Take(10).ToList()
         };
 
-        // Categories
+        var usedRecipeIds = new HashSet<int>();
+        var categoryList = new List<CategoryCardViewModel>();
+
+        void AddCategory(string title, string slug, Func<RecipeCardViewModel, bool> predicate)
+        {
+            var categoryRecipes = recipeCards
+                .Where(predicate)
+                .Where(r => r.Id.HasValue && !usedRecipeIds.Contains(r.Id.Value))
+                .Take(10) // optional limit per category
+                .ToList();
+
+            if (categoryRecipes.Any())
+            {
+                // Mark these recipes as used
+                foreach (var recipe in categoryRecipes)
+                    usedRecipeIds.Add(recipe.Id.Value);
+
+                categoryList.Add(BuildCategory(categoryRecipes, title, slug, _ => true));
+            }
+        }
+
+        AddCategory("Easy Recipes", "easy", r => r.DifficultyLevel == 1);
+        AddCategory("Medium Recipes", "medium", r => r.DifficultyLevel == 2);
+        AddCategory("Hard Recipes", "hard", r => r.DifficultyLevel == 3);
+        AddCategory("Quick Recipes", "quick", r => r.PrepTime + r.CookTime < 60);
+        AddCategory("Top 10 Recipes", "highlyrated", r => r.AverageRating > 4);
+        AddCategory("Most Popular Recipes", "mostpopular", r => r.RatingCount > 5);
+        AddCategory("Dairy-Free Recipes", "dairyfree", r => r.IsDairyFree);
+        AddCategory("Vegetarian Recipes", "vegetarian", r => r.IsVegetarian);
+
         var categoryCarousel = new CategoryCarouselViewModel
         {
-            Categories = new List<CategoryCardViewModel>
-            {
-                BuildCategory(recipeCards, "Easy Recipes", "easy", r => r.DifficultyLevel == 1),
-                BuildCategory(recipeCards, "Medium Recipes", "medium", r => r.DifficultyLevel == 2),
-                BuildCategory(recipeCards, "Hard Recipes", "hard", r => r.DifficultyLevel == 3),
-                BuildCategory(recipeCards, "Quick Recipes", "quick", r => r.PrepTime + r.CookTime < 60),
-                BuildCategory(recipeCards, "Top 10 Recipes", "highlyrated", r => r.AverageRating > 4),
-                BuildCategory(recipeCards, "Most Popular Recipes", "mostpopular", r => r.RatingCount > 5),
-                BuildCategory(recipeCards, "Dairy-Free Recipes", "dairyfree", r => r.IsDairyFree),
-                BuildCategory(recipeCards, "Vegetarian Recipes", "vegetarian", r => r.IsVegetarian)
-            }.Where(c => c != null).ToList()
+            Categories = categoryList
         };
 
         return new HomePageViewModel
