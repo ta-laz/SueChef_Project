@@ -5,12 +5,11 @@
     ViewData["HideNavAndFooter"] = true;
 }
 
-<main class="w-full max-w-sm rounded-lg px-8 py-2 flex flex-col items-center justify-center">
+<main class="w-full max-w-sm rounded-lg px-4 py-2 flex flex-col items-center justify-center">
 
     <!-- Logo -->
     <a href="/" class="flex flex-col items-center text-center">
-        <h1 class="text-white text-6xl hover:text-orange-400"
-            style="font-family: 'Macondo Swash Caps', cursive;">
+        <h1 class="text-white text-6xl hover:text-orange-400" style="font-family: 'Macondo Swash Caps', cursive;">
             SueChef
         </h1>
         <span class="text-lg font-medium mb-4 -mt-2 ml-10 md:ml-14 lg:ml-14 italic text-orange-400"
@@ -28,52 +27,60 @@
 
     <!-- Sign-up form container -->
 
-    <div class="w-full px-12">
+    <div class="w-full px-2">
         <form id="signup-form" asp-action="Create" asp-controller="Users" method="post" class="flex flex-col space-y-4"
             novalidate>
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly" class="text-gray-100 mb-2">
+            <div asp-validation-summary="ModelOnly"
+                class="w-full border border-gray-400 py-2 font-semibold text-red-600 outline-none rounded-md mb-1 bg-white">
             </div>
 
 
             
-            <!-- First name block with validation -->
 
-            <div>
+            <!-- Display Model Errors -->
+            <div asp-validation-summary="All"
+                class="w-full border border-gray-400 py-2 md:px-2 text-sm md:text-md font-semibold text-red-600 text-center outline-none rounded-md mb-1 bg-white backdrop-blur-md tracking-tight"
+                >
+            </div>
+
+            <!-- Username block with validation -->
+
+            <div class="px-12">
                 <label for="username" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="UserName" id="username" data-testid="username"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2"
                     placeholder="Username*" />
-                <span asp-validation-for="UserName" class="text-gray-100 text-sm font-bold" id="username-error"></span>
+                @* <span asp-validation-for="UserName" class="text-gray-100 text-sm font-bold" id="username-error"></span> *@
             </div>
 
             <!-- DOB with validation (more may need adding for auto filling?) -->
 
-            <div>
+            <div class="px-12">
                 <label for="dob" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="DOB" id="dob" type="date" data-testid="dob"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2" />
-                <span asp-validation-for="DOB" class="text-gray-100 text-sm font-bold" id="dob-error"></span>
+                <input asp-for="DOB" id="dob" type="date" data-testid="dob" min="1900-01-01" max="@DateTime.Today.ToString("yyy-MM-dd")"
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2" />
+                @* <span asp-validation-for="DOB" class="text-gray-100 text-sm font-bold" id="dob-error"></span> *@
             </div>
             <!-- email block with validation -->
 
-            <div>
+            <div class="px-12">
                 <label for="email" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="Email" data-testid="email" id="email"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2"
                     placeholder="Email" />
-                <span asp-validation-for="Email" class="text-gray-100 text-sm font-bold" id="email-error"></span>
+                @* <span asp-validation-for="Email" class="text-gray-100 text-sm font-bold" id="email-error"></span> *@
             </div>
             <!-- password block with validation -->
 
-            <div class="relative">
+            <div class="relative px-12">
                 <label for="password" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="Password" data-testid="password" id="password" type="password"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2"
                     placeholder="Password*" />
-                <span asp-validation-for="Password" class="text-gray-100 text-sm font-bold" id="password-error"></span>
-                <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-800"
+                @* <span asp-validation-for="Password" class="text-gray-100 text-sm font-bold" id="password-error"></span> *@
+                <button type="button" class="absolute inset-y-0 right-14 flex items-center text-gray-800"
                     onclick="togglePassword('password')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -84,12 +91,12 @@
                 </button>
             </div>
 
-            <div class="relative">
+            <div class="relative px-12">
                 <label for="confirmpassword" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="ConfirmPassword" data-testid="confirmpassword" id="confirmpassword" type="password"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-rose-800 outline-none rounded-md px-3 py-2"
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2"
                     placeholder="Confirm Password" />
-                <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-800"
+                <button type="button" class="absolute inset-y-0 right-14 flex items-center text-gray-800"
                     onclick="togglePassword('confirmpassword')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -98,8 +105,8 @@
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                 </button>
-                <span asp-validation-for="ConfirmPassword" class="text-gray-100 text-sm font-bold"
-                    id="confirmpassword-error"></span>
+                @* <span asp-validation-for="ConfirmPassword" class="text-gray-100 text-sm font-bold"
+                    id="confirmpassword-error"></span> *@
             </div>
 
             <!-- Sign-up submit form -->

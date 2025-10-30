@@ -1,320 +1,42 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SueChef.Services;
 using SueChef.Models;
 using SueChef.ViewModels;
-
-namespace SueChef.Controllers;
+using System.Diagnostics;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly SueChefDbContext _db;
+    private readonly IHomePageService _homeService;
 
-    public HomeController(ILogger<HomeController> logger, SueChefDbContext db)
+    public HomeController(ILogger<HomeController> logger, IHomePageService homeService)
     {
         _logger = logger;
-        _db = db;
+        _homeService = homeService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var currentUserId = HttpContext.Session.GetInt32("user_id");
-        // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
-        var recipeCards = await _db.Recipes
-        .OrderBy(r => Guid.NewGuid())
-        .Select(r => new RecipeCardViewModel
-        {
-            Id = r.Id,
-            Title = r.Title,
-            Description = r.Description,
-            RecipePicturePath = r.RecipePicturePath,
-            Category = r.Category,
-            DifficultyLevel = r.DifficultyLevel,
-            IsVegetarian = r.IsVegetarian,
-            IsDairyFree = r.IsDairyFree,
-            PrepTime = r.PrepTime,
-            CookTime = r.CookTime,
-
-            RatingCount = _db.Ratings.Count(rt => rt.RecipeId == r.Id && rt.Stars.HasValue),
-            AverageRating = _db.Ratings
-                .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
-                .Average(rt => (double?)rt.Stars) ?? 0,
-
-            // Sees if recipe is currently favourited or not by signed in user
-            IsFavourite = currentUserId != null && _db.Favourites.Any(f => f.UserId == currentUserId && f.RecipeId == r.Id && !f.IsDeleted)
-        })
-        .ToListAsync();
-
-        // Only retrieve the data you want from the Recipes table and convert them into 1 FeaturedRecipeViewModel Object:
-        var topFeaturedRecipe = await _db.Recipes
-            .Where(r => r.Id == 41)
-            .Select(r => new FeaturedRecipeViewModel
-            {
-                Id = r.Id,
-                Title = r.Title,
-                Description = r.Description,
-                RecipePicturePath = r.RecipePicturePath,
-                Category = r.Category
-            })
-            .FirstOrDefaultAsync();
-
-        var middleFeaturedRecipe = await _db.Recipes
-            .Where(r => r.Id == 47)
-            .Select(r => new FeaturedRecipeViewModel
-            {
-                Id = r.Id,
-                Title = r.Title,
-                Description = r.Description,
-                RecipePicturePath = r.RecipePicturePath,
-                Category = r.Category
-            })
-            .FirstOrDefaultAsync();
-
-        var bottomFeaturedRecipe = await _db.Recipes
-        .Where(r => r.Id == 2)
-        .Select(r => new FeaturedRecipeViewModel
-        {
-            Id = r.Id,
-            Title = r.Title,
-            Description = r.Description,
-            RecipePicturePath = r.RecipePicturePath,
-            Category = r.Category
-        })
-        .FirstOrDefaultAsync();
-
-        var allRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "All Recipes",
-            CarouselId = "allRecipesCarousel",
-            Recipes = recipeCards.ToList()
-        };
-
-        var vegetarianRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "Vegetarian Recipes",
-            CarouselId = "vegCarousel",
-            Recipes = recipeCards.Where(r => r.IsVegetarian).Skip(5).ToList()
-        };
-
-        var dairyFreeRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "Dairy-Free Recipes",
-            CarouselId = "dairyFreeCarousel",
-            Recipes = recipeCards.Where(r => r.IsDairyFree).ToList()
-        };
-
-        var easyRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "For beginners",
-            CarouselId = "easyCarousel",
-            Recipes = recipeCards.Where(r => r.DifficultyLevel == 1).ToList()
-        };
-
-        var mediumRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "For those wanting a little challenge",
-            CarouselId = "mediumCarousel",
-            Recipes = recipeCards.Where(r => r.DifficultyLevel == 2).ToList()
-        };
-
-        var hardRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "For the real SueChefs!",
-            CarouselId = "hardCarousel",
-            Recipes = recipeCards.Where(r => r.DifficultyLevel == 3).ToList()
-        };
-
-        var quickRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "Quick Meals",
-            CarouselId = "quickCarousel",
-            Recipes = recipeCards.Where(r => r.PrepTime + r.CookTime < 60).ToList()
-        };
-
-        var highlyRatedRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "Highly Rated Recipes",
-            CarouselId = "highlyRatedCarousel",
-            Recipes = recipeCards
-            .OrderByDescending(r => r.AverageRating)
-            .Where(r => r.AverageRating > 4).ToList()
-        };
-
-        var mostPopularRecipesCarousel = new RecipeCarouselViewModel
-        {
-            Title = "Most Popular Recipes",
-            CarouselId = "mostPopularCarousel",
-            Recipes = recipeCards
-            .OrderByDescending(r => r.RatingCount)
-            .Take(10)
-            .ToList()
-        };
-
-        // these make new CategoryCardViewModels that are made based on selection criteria from the recipes
-        // the category string is used to tell the <a> tag in the partial HTML what to send to the categoriescontroller so that it renders the correct filter on the page
-        // each one is added to a list inside a CategoryCarouselViewModel
-
-        var easyCategory = await _db.Recipes
-        .Where(r => r.DifficultyLevel == 1 && r.Id != 3)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Easy Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "easy"
-        })
-        .FirstOrDefaultAsync();
-
-        var mediumCategory = await _db.Recipes
-        .Where(r => r.DifficultyLevel == 2)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Medium Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "medium"
-        })
-        .FirstOrDefaultAsync();
-
-        var hardCategory = await _db.Recipes
-        .Where(r => r.DifficultyLevel == 3)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Hard Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "hard"
-        })
-        .FirstOrDefaultAsync();
-
-        var quickCategory = await _db.Recipes
-        .Where(r => r.PrepTime + r.CookTime < 60 && r.Id != 1)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Quick Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "quick"
-        })
-        .FirstOrDefaultAsync();
-
-        var highestRatedRecipe = recipeCards
-        .OrderByDescending(r => r.AverageRating)
-        .FirstOrDefault();
-
-        int? highestRatedRecipeId = highestRatedRecipe.Id;
-
-        var highlyRatedCategory = await _db.Recipes
-        .Where(r => r.Id == highestRatedRecipeId)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Top 10 Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "highlyrated"
-        })
-        .FirstOrDefaultAsync();
-
-        var mostPopularRecipe = recipeCards
-        .OrderByDescending(r => r.RatingCount)
-        .FirstOrDefault();
-
-        int? mostPopularRecipeId = mostPopularRecipe.Id;
-
-        var mostPopularCategory = await _db.Recipes
-        .Where(r => r.Id == mostPopularRecipeId)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Most Popular Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "mostpopular"
-        })
-        .FirstOrDefaultAsync();
-
-        var dairyFreeCategory = await _db.Recipes
-        .Where(r => r.IsDairyFree == true && r.Id != 1 && r.Id != 3 && r.Id != 6)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Dairy-Free Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "dairyfree"
-        })
-        .FirstOrDefaultAsync();
-
-        var vegetarianCategory = await _db.Recipes
-        .Where(r => r.IsVegetarian == true && r.Id != 1 && r.Id != 3 && r.Id != 6)
-        .Select(r => new CategoryCardViewModel
-        {
-            Id = r.Id,
-            Text = "Vegetarian Recipes",
-            RecipePicturePath = r.RecipePicturePath,
-            Category = "vegetarian"
-        })
-        .FirstOrDefaultAsync();
-
-        var categoryCarouselViewModel = new CategoryCarouselViewModel
-        {
-            Categories = new List<CategoryCardViewModel> { easyCategory, mediumCategory, hardCategory, quickCategory, highlyRatedCategory, mostPopularCategory, dairyFreeCategory, vegetarianCategory }
-        };
-
-        // Combine the view models made above into a new HomePageViewModel object, this will get passed to the View:
-        var AllViewModels = new HomePageViewModel
-        {
-            RecipeCards = recipeCards,
-            TopFeaturedRecipe = topFeaturedRecipe,
-            MiddleFeaturedRecipe = middleFeaturedRecipe,
-            BottomFeaturedRecipe = bottomFeaturedRecipe,
-            AllRecipesCarousel = allRecipesCarousel,
-            VegetarianRecipesCarousel = vegetarianRecipesCarousel,
-            DairyFreeRecipesCarousel = dairyFreeRecipesCarousel,
-            EasyRecipesCarousel = easyRecipesCarousel,
-            MediumRecipesCarousel = mediumRecipesCarousel,
-            HardRecipesCarousel = hardRecipesCarousel,
-            QuickRecipesCarousel = quickRecipesCarousel,
-            HighlyRatedRecipesCarousel = highlyRatedRecipesCarousel,
-            MostPopularRecipesCarousel = mostPopularRecipesCarousel,
-            CategoryCarouselViewModel = categoryCarouselViewModel
-        };
-
-        // Pass the list of view models into the View for this controller action
-        return View(AllViewModels);
+        var userId = HttpContext.Session.GetInt32("user_id");
+        var vm = await _homeService.GetHomePageViewModelAsync(userId);
+        return View(vm);
     }
 
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => View();
+    public IActionResult About() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error(int? statusCode = null)
     {
-        // Set a descriptive title based on status code
         ViewData["Title"] = statusCode switch
         {
             404 => "Page Not Found",
             500 => "Server Error",
             _ => "Error"
         };
-
-        // Optionally, show friendly messages or log based on status
-        if (statusCode == 404)
-        {
-            ViewData["ErrorMessage"] = "The page you are looking for doesn't exist or has been moved.";
-        }
-        else if (statusCode == 500)
-        {
-            ViewData["ErrorMessage"] = "Something went wrong on our end. Please try again later.";
-        }
-
-        // Return the standard Error view model
         return View(new ErrorViewModel
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
         });
     }
-
 }

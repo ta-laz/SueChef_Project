@@ -8,7 +8,14 @@
 @model SueChef.ViewModels.HomePageViewModel
 
 <body class="bg-orange-50">
-
+    @if (TempData["DeleteSuccessMessage"] != null)
+    {
+        <div id="messageZone" class="h-9 flex items-center justify-center mt-3 mb-3">
+            <div id="DeleteSuccess" class="bg-red-50 border border-red-400 text-red-700 rounded p-3 text-sm">
+                @TempData["DeleteSuccessMessage"]
+            </div>
+        </div>
+    }
     <!-- TOP FEATURED RECIPE SECTION -->
     <section class="mb-8">
         <partial name="_FeaturedRecipePartial" model="Model.TopFeaturedRecipe" />
@@ -25,7 +32,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.EasyRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="easy"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="easy-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="easy-recipes-under-carousel-button">
                 Easy Recipes
             </a>
         </div>
@@ -38,7 +46,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.MediumRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="medium"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="medium-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="medium-recipes-under-carousel-button">
                 Medium Recipes
             </a>
         </div>
@@ -50,7 +59,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.HardRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="hard"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="hard-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="hard-recipes-under-carousel-button">
                 Hard Recipes
             </a>
         </div>
@@ -62,7 +72,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.QuickRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="quick"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="Quick-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="Quick-recipes-under-carousel-button">
                 Quick Meals
             </a>
         </div>
@@ -74,16 +85,22 @@
     </section>
 
     <!-- HIGHLY RATED RECIPES CAROUSEL SECTION -->
-
-    <section class="mb-12 md:mb-4">
-        <partial name="_RecipeCarouselPartial" model="Model.HighlyRatedRecipesCarousel" />
-        <div class="mt-6 flex justify-center">
-            <a asp-controller="categories" asp-action="Index" asp-route-category="highlyrated"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="HighlyRated-recipes-under-carousel-button">
-                Highly Rated Recipes
-            </a>
-        </div>
-    </section>
+@{
+    int count = Model.HighlyRatedRecipesCarousel.Recipes.Count();
+}
+    @if (count > 0)
+    {
+        <section class="mb-12 md:mb-4">
+            <partial name="_RecipeCarouselPartial" model="Model.HighlyRatedRecipesCarousel" />
+            <div class="mt-6 flex justify-center">
+                <a asp-controller="categories" asp-action="Index" asp-route-category="highlyrated"
+                    class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                    data-testid="HighlyRated-recipes-under-carousel-button">
+                    Highly Rated Recipes
+                </a>
+            </div>
+        </section>
+    }
 
     <!-- MOST POPULAR RECIPES CAROUSEL SECTION -->
 
@@ -91,7 +108,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.MostPopularRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="mostpopular"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="MostPopular-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="MostPopular-recipes-under-carousel-button">
                 Most Popular Recipes
             </a>
         </div>
@@ -103,7 +121,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.DairyFreeRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="dairyfree"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="DairyFree-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="DairyFree-recipes-under-carousel-button">
                 Dairy-Free Recipes
             </a>
         </div>
@@ -115,7 +134,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.VegetarianRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="vegetarian"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="Vegetarian-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="Vegetarian-recipes-under-carousel-button">
                 Vegetarian Recipes
             </a>
         </div>
@@ -127,7 +147,8 @@
         <partial name="_RecipeCarouselPartial" model="Model.AllRecipesCarousel" />
         <div class="mt-6 flex justify-center">
             <a asp-controller="categories" asp-action="Index" asp-route-category="allrecipes"
-                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition" data-testid="All-recipes-under-carousel-button">
+                class="items-center bg-orange-500 hover:bg-orange-600 text-white sm:text-sm md:text-md lg:text-md font-medium px-4 py-2 rounded-full transition"
+                data-testid="All-recipes-under-carousel-button">
                 All Recipes
             </a>
         </div>
