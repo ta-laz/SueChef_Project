@@ -177,7 +177,7 @@ public class HomePageService : IHomePageService
         AddCategory("Hard Recipes", "hard", r => r.DifficultyLevel == 3);
         AddCategory("Quick Recipes", "quick", r => r.PrepTime + r.CookTime < 60);
         AddCategory("Top 10 Recipes", "highlyrated", r => r.AverageRating > 4);
-        AddCategory("Most Popular Recipes", "mostpopular", r => r.RatingCount > 5);
+        AddCategory("Most Popular Recipes", "mostpopular", r => r.RatingCount > 0);
         AddCategory("Dairy-Free Recipes", "dairyfree", r => r.IsDairyFree);
         AddCategory("Vegetarian Recipes", "vegetarian", r => r.IsVegetarian);
 
