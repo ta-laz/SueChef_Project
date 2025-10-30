@@ -2,11 +2,11 @@
 
 <!-- Card Container -->
 <div
-    class="relative group hover:shadow-md w-full max-w-4xl bg-white rounded-lg overflow-hidden border-2 border-gray-200 flex flex-col justify-between p-3 md:p-3 transition-all duration-300 h-96">
+    class="relative group hover:shadow-md w-full max-w-4xl bg-white rounded-lg overflow-hidden border-2 border-gray-200 flex flex-col justify-between p-3 md:p-3 transition-all duration-300 h-96" data-testid="meal-plan-container">
 
     <!-- 3 Dots Menu -->
     <div class="absolute top-2 right-2">
-        <button type="button" class="text-gray-500 hover:text-gray-700 p-2 rounded-full transition"
+        <button type="button" class="text-gray-500 hover:text-gray-700 p-2 rounded-full transition" data-testid="three-dots-button-@Model.Id"
             onclick="toggleMenu(this)">
             <i data-lucide="more-horizontal" class="w-5 h-5"></i>
         </button>
@@ -16,7 +16,7 @@
 
             <!-- Edit Button -->
             <button type="button"
-                class="block items-center flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                class="block items-center flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-testid="edit-button-@Model.Id"
                 onclick="openEditForm(@Model.Id, '@Model.MealPlanTitle')">
                 <i data-lucide="pencil" class="w-6 h-6 text-gray-500 object-cover mr-2"></i>
                 <p>Edit</p>
@@ -57,17 +57,17 @@
             {
                 <!-- Just one image fills the whole box: -->
                 <img src="@Model.RecipePicturePaths[0]" alt="Meal Plan Image"
-                    class="w-full h-full object-cover rounded-md border border-gray-300" />
+                    class="w-full h-full object-cover rounded-md border" />
             }
 
             else if (imageCount == 2)
             {
                 <!-- Create 2x1 grid and display both images: -->
-                <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md border border-gray-300 overflow-hidden">
+                <div class="grid grid-cols-2 grid-rows-1 w-full h-full rounded-md border-l border-b overflow-hidden">
                     @foreach (var path in Model.RecipePicturePaths.Take(4))
                     {
                         <div class="w-full h-full">
-                            <img src="@path" alt="Recipe Image" class="w-full h-full object-cover" />
+                            <img src="@path" alt="Recipe Image" class="w-full h-full object-cover border-t border-r" />
                         </div>
                     }
                 </div>
@@ -76,11 +76,11 @@
             else
             {
                 <!-- Create a grid of up to 4 images -->
-                <div class="grid grid-cols-2 grid-rows-2 w-full h-full rounded-md border border-gray-300 overflow-hidden">
+                <div class="grid grid-cols-2 grid-rows-2 w-full h-full border-l border-b overflow-hidden rounded-md">
                     @foreach (var path in Model.RecipePicturePaths.Take(4))
                     {
                         <div class="w-full h-full">
-                            <img src="@path" alt="Recipe Image" class="w-full h-full object-cover" />
+                            <img src="@path" alt="Recipe Image" class="w-full h-full object-cover border-t border-r" />
                         </div>
                     }
 
@@ -107,14 +107,14 @@
     <!-- Title and Info -->
     <div class="px-6 pt-3 flex flex-col justify-between">
         <a asp-controller="MealPlan" asp-action="Show" asp-route-id="@Model.Id"
-            class="block text-2xl font-semibold line-clamp-2 text-gray-800 hover:text-orange-700 truncate">
+            class="block text-2xl font-semibold line-clamp-2 text-gray-800 hover:text-orange-700 truncate" id="meal-plan-title" data-testid="meal-plan-title-@Model.MealPlanTitle">
             @Model.MealPlanTitle
         </a>
     </div>
     <div class="px-6 py-2 flex justify-between">
         <span class="text-gray-500 text-lg md:text-lg">@Model.RecipeCount recipes</span>
 
-        <span class="text-gray-500 text-lg md:text-lg">Updated @Model.UpdatedOn?.ToString("dd/MM/yyyy") ?? "N/A")</span>
+        <span class="text-gray-500 text-lg md:text-lg" data-testid="updated-text-@Model.Id">Updated @Model.UpdatedOn?.ToString("dd/MM/yyyy")</span>
         </div>
 
 
@@ -128,7 +128,7 @@
             <h2 class="text-xl font-semibold mb-4 text-center">Edit Meal Plan</h2>
 
             <input type="text" name="newMealPlanTitle" id="edit-mealplan-input-@Model.Id"
-                data-testid="mealplan-name-input" class="border border-gray-300 rounded-md p-2 w-full text-center focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-400
+                data-testid="mealplan-name-input-@Model.Id" class="border border-gray-300 rounded-md p-2 w-full text-center focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-400
          focus:placeholder-white" placeholder="New Meal Plan Title" />
 
             <div class="flex justify-center gap-3 mt-4">
@@ -136,7 +136,7 @@
                     class="w-28 bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-300 transition">
                     Cancel
                 </button>
-                <button id="submit-newplan" data-testid="submit-newplan" type="submit"
+                <button id="submit-newplan" data-testid="edit-meal-plan-submit" type="submit"
                     class="w-28 bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-orange-500 active:bg-orange-700 transition">
                     Save
                 </button>
