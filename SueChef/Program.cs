@@ -1,17 +1,23 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SueChef.Models;
 using SueChef.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.HttpOverrides;
 
 
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 if (File.Exists(envPath)) { Env.Load(envPath); Console.WriteLine("Loaded .env"); }
 
 var builder = WebApplication.CreateBuilder(args);
+
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -53,6 +59,13 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<SueChef.ActionFilters.AuthenticationFilter>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var connectionString = ConnectionStringResolver.ResolveNpgsql(builder.Configuration);
 
 builder.Services.AddDbContext<SueChefDbContext>(options =>
@@ -61,15 +74,7 @@ builder.Services.AddDbContext<SueChefDbContext>(options =>
 
 var app = builder.Build();
 
-var fwd = new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-};
-// Trust all proxies/networks (Render’s proxy IPs are dynamic)
-fwd.KnownNetworks.Clear();
-fwd.KnownProxies.Clear();
-app.UseForwardedHeaders(fwd);
-
+app.UseForwardedHeaders();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
@@ -95,7 +100,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
