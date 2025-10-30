@@ -24,7 +24,8 @@ public class Recipe
 
     public ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
     public ICollection<MealPlanRecipe> MealPlanRecipes { get; set; } = new List<MealPlanRecipe>();
-
-
     public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
 }

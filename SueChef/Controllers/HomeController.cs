@@ -19,7 +19,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-
+        var currentUserId = HttpContext.Session.GetInt32("user_id");
         // Only retrieve the data you want from the Recipes table and convert them into RecipeCardViewModel Objects:
         var recipeCards = await _db.Recipes
         .OrderBy(r => Guid.NewGuid())
@@ -38,8 +38,11 @@ public class HomeController : Controller
 
             RatingCount = _db.Ratings.Count(rt => rt.RecipeId == r.Id && rt.Stars.HasValue),
             AverageRating = _db.Ratings
-            .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
-            .Average(rt => (double?)rt.Stars) ?? 0
+                .Where(rt => rt.RecipeId == r.Id && rt.Stars.HasValue)
+                .Average(rt => (double?)rt.Stars) ?? 0,
+
+            // Sees if recipe is currently favourited or not by signed in user
+            IsFavourite = currentUserId != null && _db.Favourites.Any(f => f.UserId == currentUserId && f.RecipeId == r.Id && !f.IsDeleted)
         })
         .ToListAsync();
 
@@ -287,8 +290,31 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(int? statusCode = null)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        // Set a descriptive title based on status code
+        ViewData["Title"] = statusCode switch
+        {
+            404 => "Page Not Found",
+            500 => "Server Error",
+            _ => "Error"
+        };
+
+        // Optionally, show friendly messages or log based on status
+        if (statusCode == 404)
+        {
+            ViewData["ErrorMessage"] = "The page you are looking for doesn't exist or has been moved.";
+        }
+        else if (statusCode == 500)
+        {
+            ViewData["ErrorMessage"] = "Something went wrong on our end. Please try again later.";
+        }
+
+        // Return the standard Error view model
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        });
     }
+
 }

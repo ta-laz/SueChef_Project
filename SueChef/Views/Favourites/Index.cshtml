@@ -1,0 +1,51 @@
+<!-- VIEW FOR ALL FAVOURITES -->
+
+@model SueChef.ViewModels.FavouritesPageViewModel
+
+<div class="justify-center p-3">
+
+    <!-- Main central container -->
+    <div class="w-full max-w-4xl mx-auto">
+
+     @* Success Message for Removing Recipe from Favourites *@
+        <section>
+            @if(TempData["Success"]!= null) 
+            {
+                <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-2 rounded-md shadow mb-6">
+                    <svg class="w-8 h-8 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-medium">@TempData["DeletedRecipeName"] @TempData["Success"]</span>
+                    @if (TempData["DeletedRecipeId"] != null)
+                    {
+                        <a asp-action="UndoDeleteFavourite" asp-route-id="@TempData["DeletedRecipeId"]" class="alert-link">
+                            <button class="bg-orange-600 text-white text-sm font-medium w-20 px-3 py-1 rounded-md hover:bg-orange-400 m-2">
+                                Undo
+                            </button>
+                        </a>
+                    }
+                </div>
+            }
+            
+            @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-message bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+        </section>
+
+        <section class="mb-8">
+            <div class="mb-2">
+                <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">Your Favourite Recipes: (@Model.Favourites.Count())</h2>
+            </div>
+
+            <!-- Each recipe card: -->
+            @foreach (SueChef.ViewModels.FavouritesViewModel recipe in Model.Favourites)
+            {
+                <partial name="_FavouritesRecipeCardPartial" model="recipe" />
+            }
+            
+        </section>
+    </div>
+</div>

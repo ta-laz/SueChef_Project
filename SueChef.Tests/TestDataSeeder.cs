@@ -31,11 +31,25 @@ namespace SueChef.Test
       try
       {
         // Clean slate
+        // await db.Database.ExecuteSqlRawAsync("""
+        //             TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
+        //             "Ratings","MealPlanRecipes", "Favourites", "Comments" "MealPlans","Users"
+        //             RESTART IDENTITY CASCADE;
+        //         """);
         await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
-                    "Ratings","MealPlanRecipes","MealPlans","Users"
-                    RESTART IDENTITY CASCADE;
-                """);
+          TRUNCATE TABLE
+            "RecipeIngredients",
+            "MealPlanRecipes",
+            "Favourites",
+            "Ratings",
+            "Comments",
+            "MealPlans",
+            "Recipes",
+            "Ingredients",
+            "Chefs",
+            "Users"
+          RESTART IDENTITY CASCADE;
+          """);
 
         // 1) Chefs (keep your names)
         var chefs = new List<Chef>
@@ -141,7 +155,7 @@ namespace SueChef.Test
 
         // Meal Plans (0–2 per user)
         var mealPlans = new List<MealPlan>();
-        var today = new DateOnly(2025, 10, 26);
+        var today = new DateTime(2025, 10, 26, 0, 0, 1, DateTimeKind.Utc);
         for (int i = 0; i < users.Count; i++)
         {
           var u = users[i];
@@ -154,8 +168,8 @@ namespace SueChef.Test
             {
               UserId = u.Id,
               MealPlanTitle = $"{u.UserName} Plan {j + 1}",
-              CreatedOn = created,
-              UpdatedOn = created.AddDays(1)
+              CreatedOn = created.ToUniversalTime(),
+              UpdatedOn = created.AddDays(1).ToUniversalTime()
             });
           }
         }
@@ -213,24 +227,24 @@ namespace SueChef.Test
         await db.SaveChangesAsync();
 
         // Favorites (each user has 2–4)
-        // var favorites = new List<Favorite>();
-        // foreach (var u in users)
-        // {
-        //     var picked = new HashSet<int>();
-        //     int favCount = 2 + (u.Id % 3);
-        //     for (int j = 0; j < favCount; j++)
-        //     {
-        //         int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
-        //         if (!picked.Add(rid)) continue;
-        //         favorites.Add(new Favorite
-        //         {
-        //             UserId = u.Id,
-        //             RecipeId = rid
-        //         });
-        //     }
-        // }
-        // db.Favorites.AddRange(favorites);
-        // await db.SaveChangesAsync();
+        var favourites = new List<Favourite>();
+        foreach (var u in users)
+        {
+            var picked = new HashSet<int>();
+            int favCount = 2 + (u.Id % 3);
+            for (int j = 0; j < favCount; j++)
+            {
+                int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
+                if (!picked.Add(rid)) continue;
+                favourites.Add(new Favourite
+                {
+                    UserId = u.Id,
+                    RecipeId = rid
+                });
+            }
+        }
+        db.Favourites.AddRange(favourites);
+        await db.SaveChangesAsync();
 
 //---------- Comments ----------
         int totalUsers = await db.Users.CountAsync();

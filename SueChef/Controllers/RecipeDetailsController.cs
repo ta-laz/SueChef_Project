@@ -35,6 +35,7 @@ public class RecipeDetailsController : Controller
         int TotalRatings = ratings.Count(); //Counts total ratings 
 
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        bool isLoggedIn = currentUserId != null; // If the user is logged in, this variable is True
         var userRating = currentUserId != null //If the user is logged in - get the rating from the database, otherwise use the default  
                                         ? await _db.Ratings
                                             .Where(r => r.RecipeId == id && r.UserId == currentUserId.Value)
@@ -45,6 +46,14 @@ public class RecipeDetailsController : Controller
 
         if (recipe == null)
             return NotFound();//Return not found page if no recipe is found 
+
+        // Logic for checking is current user has favourited this recipe:
+        bool isFavourited = false;
+        if (currentUserId.HasValue)
+        {
+            isFavourited = await _db.Favourites
+                .AnyAsync(f => f.RecipeId == id && f.UserId == currentUserId && !f.IsDeleted);
+        }
 
         //Calories per serving logic, Dividing calories by 100 so we have the calorie per g and then multiplying by the quantity in the recipe. 
         decimal caloriesPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Calories / 100m) * ri.Quantity);
@@ -104,10 +113,26 @@ public class RecipeDetailsController : Controller
             // })
             // .ToListAsync();
 
+
+        // Logic to collect all ACTIVE Meal Plans belonging to signed in user
+        var mealPlans = await _db.MealPlans
+            .Where(mp => mp.UserId == currentUserId && !mp.IsDeleted)
+            .OrderByDescending(mp => mp.UpdatedOn)
+            .Select(mp => new MealPlanViewModel
+            {
+                Id = mp.Id,
+                MealPlanTitle = mp.MealPlanTitle,
+                UpdatedOn = mp.UpdatedOn
+            })
+            .ToListAsync();
+
         var AllViewModels = new IndividualRecipePageViewModel
         {
             IndividualRecipe = viewModel,
             CommentsList = comments,
+            IsFavourited = isFavourited,
+            UserMealPlans = mealPlans,
+            IsLoggedIn = isLoggedIn
         };
         return View(AllViewModels);
 

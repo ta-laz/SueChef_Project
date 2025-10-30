@@ -2,11 +2,8 @@
 @using System.Diagnostics.Eventing.Reader
 @using System.Timers
   <body class="bg-orange-50 text-gray-700">
-
-          </div>
-
-    </main>
-    <main class="max-w-3xl mx-auto p-6 space-y-8">
+    <main class="max-w-3xl mx-auto p-6 ">
+      
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
@@ -14,59 +11,139 @@
             <div class="md:w-[100%] mx-auto flex items-center justify-between gap-4 text-left text-lg text-gray-700">
               <h2 class="font-medium items-center">By @Model.IndividualRecipe.ChefName</h2>
 
-              <div class="inline-flex rounded-lg shadow">
 
-               <!-- Quick Add Button SVG is a heart-->
-              <button class="rounded-l-lg bg-orange-700 text-white px-4 py-2 hover:bg-amber-500 transition w-48 text-sm font-bold flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>Favourite</button>
 
+              <!-- FAVOURITE / DROPDOWN BUTTON -->
+               <div class="relative inline-flex rounded-lg shadow">
+
+               <!-- Favourite Button SVG is a heart-->
+                <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
+                  <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
+                  <button id="favourite_button" class="rounded-l-lg bg-orange-700 text-white px-4 py-2 h-10 w-20 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="@(Model.IsFavourited ? "white" : "none")" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                  </button>
+                </form>
+
+                      
+                <!-- Hidden Dropdown List -->
+                <form asp-controller="MealPlan" asp-action="AddRecipe" method="post" id="saveMealPlanForm">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" /> 
+                  <div id="dropdownMenu" class="hidden absolute right-0 z-20 mt-10 bg-white rounded-lg shadow-lg w-full overflow-scroll scrollbar-hidden scrollbar-hover max-h-60 p-2">
+                      
+                      <ul id="mealPlansList">
+                        @foreach (var plan in Model.UserMealPlans)
+                        {
+                            <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
+                                <label class="flex items-center gap-2 cursor-pointer w-full">
+                                    <input type="checkbox" name="mealPlanIds" value="@plan.Id" class="hidden peer" />
+                                    <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
+                                    <span class="text-gray-700 text-sm truncate max-w-[80%]">@plan.MealPlanTitle</span>
+                                </label>
+                            </li>
+                        }
+                      </ul>
+                  </div>
+
+                  <!-- Save to Meal Plans button --> 
+                  <button id="save_mealplan_button" class="hidden h-10 rounded-l-lg bg-orange-700 text-white px-3 py-2 hover:bg-orange-600 transition w-20 text-sm font-bold flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save
+                  </button>
+                </form>
+                  
+              
+              <!-- + Create New Meal Plan Button --> 
+                <button type="button" id="showNewPlanForm" class="relative bg-orange-700 text-white border-l border-r border-orange-50 px-4 py-2 hover:bg-orange-600 transition h-10 w-20 text-sm font-bold flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+                <!-- Input box, hidden by default -->
+                  <div id="newMealPlanForm" class="hidden absolute right-0 z-20 mt-10 bg-white rounded-lg shadow-lg w-full p-2">
+                    <form id="addNewMealPlan" asp-controller="MealPlan" asp-action="Create" class="flex flex-col gap-2" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="text" id="newMealPlanTitle" name="mealPlanTitle" placeholder="Create New Meal Plan"
+                            class="flex-1 border border-orange-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400" />
+                      <button type="button" id="saveNewMealPlan" class="text-sm text-right font-semibold text-orange-700 hover:underline text-left">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+                  <p id="newMealPlanError" class="text-xs text-red-600 hidden"></p>
+            
               <!-- Dropdown Toggle -->
-              <div class="relative">
-                <button  id="dropdownButton" class="bg-orange-700 text-white px-3 py-2 hover:bg-amber-500 transition h-full flex items-center justify-center rounded-r-lg">
+              <div class="relative w-20">
+                <button  id="dropdownButton" data-logged-in="@Model.IsLoggedIn.ToString().ToLower()" class="text-white px-3 py-2 bg-orange-700 hover:bg-orange-600 transition h-full flex items-center justify-center rounded-r-lg w-20">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-
-                <!-- Dropdown Menu -->
-                <ul id="dropdownMenu" class="hidden absolute right-0 mt-1 w-48 bg-orange-50 border border-orange-300 rounded-lg shadow-lg z-10 max-h-64">
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0"><!-- Each drop down -->                 
-                    <label class="flex items-center gap-2 cursor-pointer"><!-- It's linking label -->
-                      <input type="checkbox" value="mp1" class="hidden peer"><!-- Checkbox with mealplan linked -->
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span><!-- Styling for the checkbox -->
-                      <span class="text-gray-700 text-sm">Meal Plan 1</span><!-- Text all repeated below likely will just need one with a foreach meal plan loop  -->
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 2</span>
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 3</span>
-                    </label>
-                  </li>
-                  <li class="flex items-center px-3 py-2 border-b border-orange-200 last:border-b-0">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" value="mp1" class="hidden peer">
-                      <span class="w-4 h-4 rounded-full border-2 border-orange-700 peer-checked:bg-orange-700 transition"></span>
-                      <span class="text-gray-700 text-sm">Meal Plan 4</span>
-                    </label>
-                  </li>
-                </ul>
               </div>
             </div>
-        <!-- </div> -->
-        </header>
-                    <!-- Recipe Description for boss sarah-->
+            </div>
 
+        </header>
+              
+
+  <!-- MESSAGES: -->
+
+  <div id="messageZone" class="h-9 flex items-center justify-end mt-3">
+      @* Error Message for clicking toggle dropdown when not signed in *@
+      <div id="loginError" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          You must be signed in to save recipes to your meal plans.
+      </div>
+
+      @* Error Message for clicking favourite dropdown when not signed in *@
+      <div id="loginError2" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          You must be signed in to favourite recipes.
+      </div>
+
+      @* Error Message for clicking + dropdown when not signed in *@
+      <div id="loginError3" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          You must be signed in to create meal plans.
+      </div>
+
+      @* Error Message for when user has no meal plans: *@
+      <div id="noMealPlansError" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          You do not have any meal plans yet. Please create one first!
+      </div>
+
+      @* Error Message for when user has not selected any meal plans: *@
+      <div id="noMealPlansSelectedError" class="hidden bg-red-50 border border-red-400 text-red-700 rounded mb-2 p-3 text-sm">
+          No meal plan selected!
+      </div>
+
+      @* Success Message for Adding to Meal Plan *@
+      <div class="flex justify-center mt-3">
+        @if(TempData["Success"]!= null) 
+          {
+            <div class="alert-message flex items-center max-w-80 max-h-10 justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                  </svg>
+                    <span class="font-medium truncate ">@Html.Raw(TempData["Success"])</span>
+                </div>
+          }
+        
+        @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-message bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+      </div>
+  </div>
+      
+    <!-- RECIPE DETAILS SECTION: -->
+
+    <div class="space-y-8">
+      <!-- Recipe Description for boss sarah-->
         <section class="leading-relaxed text-gray-700">
           <p>@Model.IndividualRecipe.Description</p>
           </section>
@@ -94,46 +171,7 @@
               
         </section>
 
-
-            <!-- Add to plan / Select Plan placeholders Non functional -->
-
-      <section class="bg-orange-100 border-l-4 border-orange-700 p-4 rounded shadow">
-        <p class="font-medium">Add to Meal Plan</p>
-        <form asp-action="AddRecipe" asp-controller="MealPlan" method="post" asp-route-id="id">
-          <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
-          <input type="hidden" name="id" value="1" />
-          <button type="submit" class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
-            Add to Plan
-          </button>
-        </form>
-        <button class="mt-2 bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition">
-          Select Plan
-        </button>
-      </section>
-
-      @* Success Message for Adding to Meal Plan *@
-      <section>
-        @if(TempData["Success"]!= null) 
-          {
-            <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
-                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
-                  </svg>
-                    <span class="font-medium">@TempData["Success"]</span>
-                </div>
-          }
-        
-        @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-message bg-red-50 border border-red-400 text-red-700 rounded p-3 mb-4 text-sm">
-                    @TempData["ErrorMessage"]
-                </div>
-            }
-      </section>
-
-
-            <!-- Toggle buttons for ingredients and nutrition -->
-
+      <!-- Toggle buttons for ingredients and nutrition -->
       <section class="border-l-4 border-orange-700 bg-orange-100 p-4 rounded-lg shadow">
         <div class="inline-flex w-full rounded-lg overflow-hidden border-2 border-orange-700 mb-3">
           <button data-testid="recipe-tab-toggle" id="ingredientsButton" class="flex-1 py-2 bg-orange-700 text-white font-semibold ">Ingredients</button>
@@ -154,36 +192,36 @@
               <p data-testid="fats" class="p-2 mb-1 border-b-2 border-orange-700 "><strong>Fats</strong> <span id="fatsPerServing">@Model.IndividualRecipe.FatsPerServing.ToString("0.0")g</span></p>
           </div>
       </section>
-              <!-- Logic to split the method and change it into step: 1, etc. -->
-
-      @{
-        var method = Model.IndividualRecipe.Method;
-        var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
-        var counter = 1;
-      }
-      <section data-testid="method-steps">
-        <h2 class="text-xl font-semibold mb-2">Method</h2>
-        <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
-        @foreach(var step in steps)
-        { 
-          <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
-          counter++;
-        }
-        </ul>
-      </section>
       
+        <!-- Logic to split the method and change it into step: 1, etc. -->
+        @{
+          var method = Model.IndividualRecipe.Method;
+          var steps = method.Split(new[] {"; "}, StringSplitOptions.RemoveEmptyEntries);
+          var counter = 1;
+        }
+        <section data-testid="method-steps">
+          <h2 class="text-xl font-semibold mb-2">Method</h2>
+          <ul class="list-decimal list-inside space-y-2 leading-relaxed text-gray-700">
+          @foreach(var step in steps)
+          { 
+            <p class="">Step @counter: @(char.ToUpper(step.Trim()[0]) + step.Trim().Substring(1))</p>//Taking the first character, Capitalising, joining with remainder of the text 
+            counter++;
+          }
+          </ul>
+        </section>
+      </div>
 
-            <!-- Rate this recipe section  -->
+      <!-- RATE THIS RECIPE SECTION  -->
 
-            @if (TempData["SuccessMessage"] != null)
-            {
-              <div class="alert-message flex items-center justify-center bg-green-100 border-l-2 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
-                  <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
-                  </svg>
-                    <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
-                </div>
-            }
+      @if (TempData["SuccessMessage"] != null)
+      {
+        <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
+            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+            </svg>
+              <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
+          </div>
+      }
       
       <div class="text-center p-4 border-t">
               <h2 data-testid="Rate-the-recipe"class="text-xl font-semibold mb-2">Rate this recipe</h2>
@@ -275,4 +313,27 @@
 
 
   </body>
+
+  <!-- Hide scrollbar utility -->
+<style>
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
+/* Only used when scrollable */
+.scrollbar-visible:hover {
+  -ms-overflow-style: auto;
+  scrollbar-width: thin;
+}
+
+.scrollbar-visible:hover::-webkit-scrollbar {
+  display: block;
+  width: 4px;       /* Adjust thickness */
+}
+</style>
 

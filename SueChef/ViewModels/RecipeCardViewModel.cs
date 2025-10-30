@@ -39,5 +39,6 @@ namespace SueChef.ViewModels
         public int? MealPlanRecipeId { get; set; }
         public List<IndividualRecipeIngredientViewModel>? Ingredients { get; set; }    
         
+        public bool IsFavourite { get; set; }
     }
 }

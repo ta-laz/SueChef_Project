@@ -24,7 +24,6 @@ public class PlaywrightRecipeTests : PageTest
     [SetUp]
     public async Task SetupDb()
     {
-        await Page.GotoAsync($"{BaseUrl}/");
         await using var context = DbFactory.Create();
         await TestDataSeeder.ResetAndSeedAsync(context);
     }
