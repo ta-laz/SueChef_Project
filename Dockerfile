@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 # (Better layer caching) copy project files first
-COPY SueChef_Project/*.csproj SueChef/
+COPY ./*.csproj SueChef/
 # COPY any other .csproj if you have multiple projects/layers
 RUN dotnet restore SueChef_Project/SueChef.csproj
 # now copy the rest
