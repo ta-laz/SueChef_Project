@@ -258,22 +258,15 @@
             @Html.AntiForgeryToken()
                 <textarea name="content" required maxlength = "300"
                     class="w-full resize-none border p-1 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2, focus:ring-opacity-25 transition-shadow duration-200" oninput="autoResize(this)"
-                    name="Content" placeholder="Comment here!"></textarea>
-                <div class="flex-direction justify-between items-center mt-0">
+                    name="Content" placeholder="Send Sue a comment!"></textarea>
+                <div class="flex justify-end items-center mt-0">
                     <button data-testid="comment-submit" type="submit"
-                        class=" bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-xl hover:bg-yellow-500">
+                        class=" bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-yellow-500">
                         Submit
                     </button>
                 </div>
             </form>
         </div>
-    <!--stretches the add a comment box to suit how much content is in the box-->
-    <script>
-  function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-  }
-</script>
     <!--displays the number of comments -->
     <div class="text-left p-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -340,4 +333,14 @@
   width: 4px;       /* Adjust thickness */
 }
 </style>
+
+
+
+    <!--stretches the add a comment box to suit how much content is in the box-->
+    <script>
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+</script>
 
