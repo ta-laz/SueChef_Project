@@ -274,9 +274,9 @@
                                 </button>
 
                                 @foreach (var option in new[] {
-                                    new { Value = "under20", Label = "< 20 min" },
-                                    new { Value = "20to40", Label = "20–40 min" },
-                                    new { Value = "over40", Label = "> 40 min" }
+                                    new { Value = "under20", Label = "Under 20 mins" },
+                                    new { Value = "20to40", Label = "Between 20–40 mins" },
+                                    new { Value = "over40", Label = "Over 40 mins" }
                                 })
                                 {
                                     var isSelected = Model.DurationBucket == option.Value;
