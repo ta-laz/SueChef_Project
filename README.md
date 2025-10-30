@@ -176,7 +176,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 | **Favourites** | Soft-deletable user-to-recipe favourites list. |
 | **ShoppingList** | Tracks items generated from meal plans. |
 
-### 3.3 Relationships
+### Relationships
 
 - **User ↔ Session/Auth**
   - Users sign up, sign in, and maintain a server-side session (custom authentication filter).
@@ -205,7 +205,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 
 ---
 
-### 3.4 ER Diagram
+### ER Diagram
 
 ```mermaid
 erDiagram
@@ -226,85 +226,6 @@ erDiagram
 
   MEALPLAN ||--o{ MEALPLANRECIPES : "contains"
   
-  %% Junctions / Associatives
-  RECIPEINGREDIENT {
-    int RecipeId
-    int IngredientId
-    decimal Quantity
-    string Unit
-  }
-
-  MEALPLANRECIPES {
-    int MealPlanId
-    int RecipeId
-    string DayOrSlot  // optional if present
-  }
-
-  %% Core entities
-  USER {
-    int Id
-    string Username
-    string Email
-    string PasswordHash
-  }
-
-  CHEF {
-    int Id
-    string Name
-  }
-
-  RECIPE {
-    int Id
-    string Title
-    int TotalMinutes
-    int Difficulty  // 1=Easy,2=Medium,3=Hard
-    int ChefId
-    string Category  // if modelled as a scalar field
-  }
-
-  INGREDIENT {
-    int Id
-    string Name
-  }
-
-  COMMENT {
-    int Id
-    int UserId
-    int RecipeId
-    datetime CreatedOn
-    string Content
-  }
-
-  RATING {
-    int Id
-    int UserId
-    int RecipeId
-    int Stars
-  }
-
-  MEALPLAN {
-    int Id
-    int UserId
-    string Name
-    datetime CreatedOn
-  }
-
-  FAVOURITES {
-    int Id
-    int UserId
-    int RecipeId
-    bool IsDeleted
-    datetime CreatedOn
-  }
-
-  SHOPPINGLIST {
-    int Id
-    int UserId
-    string Ingredient
-    decimal Quantity
-    string Unit
-    bool Purchased
-  }
 ```
 
 
