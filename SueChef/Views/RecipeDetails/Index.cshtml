@@ -167,7 +167,7 @@
           </div>
           <!-- Rating -->
           <div class="flex items-center space-x-1"><strong class="text-gray-700">Rating:</strong><span class="text-yellow-400 text-lg leading-none">&#9733;</span>
-            <p class="text-sm font-bold text-gray-700">@Model.IndividualRecipe.AverageRating</p><p class="text-sm font-medium text-gray-700 ">(@Model.IndividualRecipe.RatingCount)</p>
+            <p class="text-sm font-bold text-gray-700">@($"{Model.IndividualRecipe.AverageRating ?? 0:0.0}")</p><p class="text-sm font-medium text-gray-700 ">(@Model.IndividualRecipe.RatingCount)</p>
           </div>
           <!-- Prep Time in mins (do we want hours for longer?)-->
           <div class="flex items-center"><strong class="text-gray-700 mr-1">Prep Time:</strong><span>@Model.IndividualRecipe.PrepTime mins</span></div>
