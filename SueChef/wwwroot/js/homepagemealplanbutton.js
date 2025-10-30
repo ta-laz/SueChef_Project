@@ -78,7 +78,7 @@ async function toggleFavourite(button) {
             }
 
             // Show inline message
-            showFavouriteMessage("You must be signed in to favourite recipes.");
+            showFavouriteMessage("Please sign in to favourite recipes.");
             return;
         }
 

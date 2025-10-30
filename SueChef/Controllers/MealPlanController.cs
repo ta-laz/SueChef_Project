@@ -66,7 +66,7 @@ public class MealPlanController : Controller
                 });
 
                 await _db.SaveChangesAsync();
-                TempData["Success"] = "New Meal Plan created";
+                TempData["Success_mealplan"] = "New Meal Plan created";
                 return Redirect(Request.Headers["Referer"].ToString()); // Changed this so that you stay on the current page, allows new meal plans to be created elsewhere
 
             }
