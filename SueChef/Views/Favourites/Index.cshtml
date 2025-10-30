@@ -36,7 +36,12 @@
         </section>
 
         <section class="mb-8">
-            <div class="mb-2">
+            <div class="mb-2 flex">
+                        <a asp-controller="Home" asp-action="Index"class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm mr-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 3.172l8 6.364V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9.536l8-6.364z"/>
+                        </svg>
+                        </a>
                 <h2 class="inline text-2xl font-semibold text-gray-800 mb-4 trackling-tight">Your Favourite Recipes: (@Model.Favourites.Count())</h2>
             </div>
 
