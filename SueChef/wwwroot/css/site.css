@@ -81,18 +81,6 @@ body {
         }
 
 
-
-        /* Hides the errors until there are errors */
-        .validation-summary-valid {
-            display: none;
-        }
-
-        .validation-summary-errors {
-            display: block;
-            /* adds the errors */
-        }
- 
-
         /* <!-- Ensures boxes have consistent backgrounds regardless of input and browser settings --> */
 
     input, select, textarea {
