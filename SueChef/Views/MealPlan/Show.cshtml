@@ -39,20 +39,20 @@
 
         <section class="text-center mb-8">
             <!-- Meal Plan Title -->
-<div class="flex items-center justify-center gap-3 mb-4">
-    <!-- Back Home Button -->
-    <a asp-controller="Home" asp-action="Index"
-       class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M15 18l-6-6 6-6"/>
-        </svg>
-    </a>
+        <div class="flex items-center justify-center gap-3 mb-4">
+            <!-- Back Home Button -->
+            <a asp-controller="Home" asp-action="Index"
+            class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </a>
 
-    <!-- Meal Plan Title -->
-    <h2 class="text-2xl font-semibold text-gray-800 tracking-tight">
-        @Model.MealPlan.MealPlanTitle - Recipes
-    </h2>
-</div>
+            <!-- Meal Plan Title -->
+            <h2 class="text-2xl font-semibold text-gray-800 tracking-tight">
+                @Model.MealPlan.MealPlanTitle - Recipes
+            </h2>
+        </div>
 
             <!-- Action Buttons -->
             <div class="flex flex-row justify-center items-center gap-1 mb-6">
