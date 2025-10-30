@@ -134,18 +134,6 @@ body {
         border-color: #e11d48;
     }
 
-    /* add red asterisk to the label right before the invalid input */
-    label+input.input-validation-error,
-    label+select.input-validation-error,
-    label+textarea.input-validation-error {}
-
-    label:has(+ input.input-validation-error)::after,
-    label:has(+ select.input-validation-error)::after,
-    label:has(+ textarea.input-validation-error)::after {
-        content: " *";
-        color: #e11d48;
-        font-weight: bold;
-    }
 
 
     /* <!-- Ensures boxes have consistent backgrounds regardless of input and browser settings --> */

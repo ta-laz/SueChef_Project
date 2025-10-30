@@ -77,7 +77,15 @@ public class UsersController : Controller
         return new RedirectResult("/");
     }
 
-    [Route("/signin-google")]
+    [HttpGet("/login/google")]
+    public IActionResult GoogleLogin()
+    {
+        var redirectUrl = Url.Action("GoogleResponse", "Users");
+        var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
+    [HttpGet("/google-response")]
     public async Task<IActionResult> GoogleResponse()
     {
         var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -86,7 +94,7 @@ public class UsersController : Controller
         var name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
         if (email == null)
-            return Redirect("/signup"); // fallback
+            return Redirect("/signup");
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null)
@@ -103,13 +111,6 @@ public class UsersController : Controller
 
         HttpContext.Session.SetInt32("user_id", user.Id);
         return Redirect("/");
-    }
-
-    [HttpGet("/login/google")]
-    public IActionResult GoogleLogin()
-    {
-        var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
 
 
