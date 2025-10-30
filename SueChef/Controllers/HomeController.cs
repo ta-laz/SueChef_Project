@@ -290,8 +290,31 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(int? statusCode = null)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        // Set a descriptive title based on status code
+        ViewData["Title"] = statusCode switch
+        {
+            404 => "Page Not Found",
+            500 => "Server Error",
+            _ => "Error"
+        };
+
+        // Optionally, show friendly messages or log based on status
+        if (statusCode == 404)
+        {
+            ViewData["ErrorMessage"] = "The page you are looking for doesn't exist or has been moved.";
+        }
+        else if (statusCode == 500)
+        {
+            ViewData["ErrorMessage"] = "Something went wrong on our end. Please try again later.";
+        }
+
+        // Return the standard Error view model
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        });
     }
+
 }
