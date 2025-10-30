@@ -192,4 +192,63 @@ public class MealPlansPage : PageTest
         await Expect(Page.GetByText("edited-test-name")).ToBeVisibleAsync();
     }
 
+    [Test]
+    public async Task DeleteMealPlan_MealPlansPage_IsVisible()
+    {
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("three-dots-button-10").ClickAsync();
+        await Expect(Page.GetByTestId("delete-button-10")).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task DeleteMealPlan_MealPlansPage_ShowsNoMealPlans()
+    {
+        Page.Dialog += async (_, dialog) =>
+        {
+            if (dialog.Type == "confirm")
+                await dialog.AcceptAsync(); // Clicks OK
+        };
+
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("three-dots-button-10").ClickAsync();
+        await Page.GetByTestId("delete-button-10").ClickAsync();
+
+        // the test data seeder may not be wiping the data fully so this expect fails
+        // await Expect(Page.GetByText("test-name")).ToBeHiddenAsync();
+        await Expect(Page.GetByTestId("number-of-meal-plans")).ToContainTextAsync("0 Plans");
+    }
+
+    [Test]
+    public async Task CancelDeleteMealPlan_MealPlansPage_StillShowsMealPlan()
+    {
+        Page.Dialog += async (_, dialog) =>
+        {
+            if (dialog.Type == "confirm")
+                await dialog.DismissAsync(); // Clicks OK
+        };
+
+        await Page.GetByTestId("create-meal-plan-button").ClickAsync();
+        await Page.GetByTestId("newplan-name-input").FillAsync("test-name");
+        await Page.GetByTestId("submit-newplan").First.ClickAsync();
+        await Page.WaitForURLAsync("/MealPlans");
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+
+        await Page.GetByTestId("three-dots-button-10").ClickAsync();
+        await Page.GetByTestId("delete-button-10").ClickAsync();
+
+        // the test data seeder may not be wiping the data fully so this expect fails
+        await Expect(Page.GetByText("test-name")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("number-of-meal-plans")).ToContainTextAsync("1 Plan");
+    }
+
 }

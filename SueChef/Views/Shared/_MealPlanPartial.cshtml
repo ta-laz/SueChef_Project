@@ -23,21 +23,21 @@
             </button>
 
 
-            <!-- Shopping List Button -->
+            @* <!-- Shopping List Button -->
             <form asp-controller="MealPlan" asp-action="ShowShoppingList" asp-route-id="@Model.Id" method="get">
                 <button type="submit"
                     class="block items-center flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <i data-lucide="clipboard-list" class="w-6 h-6 text-gray-500 object-cover mr-2"></i>
                     <p class="">Shopping List</p>
                 </button>
-            </form>
+            </form> *@
 
             <!-- Delete Button -->
             <form asp-controller="MealPlan" asp-action="DeleteMealPlan" asp-route-id="@Model.Id" method="post"
                 onsubmit="return confirm('Are you sure you want to delete this meal plan?');">
                 @Html.AntiForgeryToken()
                 <button type="submit"
-                    class="block items-center flex w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    class="block items-center flex w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-testid="delete-button-@Model.Id">
                     <i data-lucide="trash-2" class="w-6 h-6 text-gray-500 object-cover mr-2"></i>
                     <p class="">Delete</p>
                 </button>
@@ -145,43 +145,3 @@
         </form>
     </div>
 </div>
-
-
-<script>
-
-    function toggleMenu(button) {
-        const menu = button.nextElementSibling;
-        document.querySelectorAll('.group .absolute.right-0').forEach(m => {
-            if (m !== menu) m.classList.add('hidden');
-        });
-        menu.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.group')) {
-            document.querySelectorAll('.group .absolute.right-0').forEach(m => m.classList.add('hidden'));
-        }
-    });
-</script>
-
-<script>
-    function openEditForm(id, currentTitle) {
-        const modal = document.getElementById(`editModal-${id}`);
-        const input = document.getElementById(`edit-mealplan-input-${id}`);
-        modal.classList.remove('hidden');
-        input.value = currentTitle; // prefill with current title
-        input.focus();
-    }
-
-    function closeEditForm(id) {
-        const modal = document.getElementById(`editModal-${id}`);
-        modal.classList.add('hidden');
-    }
-
-    document.addEventListener('click', (e) => {
-        const modal = e.target.closest('[id^="editModal-"]');
-        if (modal && e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
-</script>
