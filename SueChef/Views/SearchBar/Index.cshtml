@@ -24,7 +24,7 @@
                     </button>
 
                     <!-- Right: Search + Reset buttons -->
-                    <div class="flex gap-3">
+                    <div class="flex gap-3" id="ButtonToPressWhenSelectedACategory">
                         <button type="submit"
                             class="w-28 h-9 rounded-lg bg-orange-600 font-medium text-white outline-none hover:opacity-80 focus:ring">
                             Search
@@ -314,8 +314,8 @@
         <!-- Text that says what the search was and how many results -->
         @if (Model.HasSearch)
         {
-            <div class="text-left mb-4 pl-2 md:pl-6">
-                <p class="text-2xl font-semibold text-gray-700">
+            <div class="text-left mb-4 pl-2 md:pl-6" datatest-id="testingForCertainCategories">
+                <p class="text-2xl font-semibold text-gray-700" >
                     Search results
                     @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
                     {

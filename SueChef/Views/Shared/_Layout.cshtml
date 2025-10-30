@@ -55,12 +55,12 @@
 
             <!-- Search on right with the expanding search for web -->
             <div class="flex items-center ml-auto space-x-2">
-                <form method="get" action="/search" id="desktopSearch"
+                <form method="get" action="/search" id="desktopSearch" 
                     class="hidden md:block ml-2 overflow-hidden transition-all duration-300 ease-in-out w-0">
                     <input type="text" id="navbarSearchInput" name="searchQuery" placeholder="Search recipes..."
                         class="p-2 w-full rounded-md text-gray-900 focus:outline-none focus:ring-1 focus:ring-rose-900" />
                 </form>
-                <button id="searchButton" class="p-2 rounded-full hover:bg-rose-900">
+                <button id="searchButton" data-testid="testingForSearchButton" class="p-2 rounded-full hover:bg-rose-900">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24"
                         fill="currentColor">
                         <path
