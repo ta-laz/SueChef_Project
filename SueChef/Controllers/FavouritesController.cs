@@ -59,7 +59,7 @@ public class FavouritesController : Controller
         // If the user is not signed in:
         if (currentUserId == null)
         {
-            TempData["ErrorMessage"] = "You must be signed in to favourite recipes.";
+            TempData["ErrorMessage"] = "Please sign in to favourite recipes.";
         }
         // If the user is signed in:
         // Check if a recipe already exists in favourites table (including soft-deleted)
@@ -142,7 +142,7 @@ public class FavouritesController : Controller
             return Unauthorized(new
             {
                 success = false,
-                message = "You must be signed in to favourite recipes."
+                message = "Please sign in to favourite recipes."
             });
         }
 
