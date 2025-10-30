@@ -175,17 +175,32 @@ public class MealPlanController : Controller
         int addedCount = 0;
         foreach (var plan in mealPlans)
         {
-            // Skip if recipe already exists in plan
-            bool exists = plan.MealPlanRecipes.Any(mpr => mpr.RecipeId == recipeId && !mpr.IsDeleted);
-            if (exists)
-                continue;
-            // Otherwise, add recipe to meal plan
-            plan.MealPlanRecipes.Add(new MealPlanRecipe
+            var exists = plan.MealPlanRecipes
+                .FirstOrDefault(mpr => mpr.RecipeId == recipeId);
+
+            if (exists != null)
             {
-                RecipeId = recipeId,
-                MealPlanId = plan.Id,
-            });
-            addedCount++;
+                if (exists.IsDeleted)
+                {
+                    exists.IsDeleted = false; // restore it
+                    addedCount++;
+                }
+                else
+                {
+                    // already exists and not deleted — skip it
+                    continue;
+                }
+            }
+            else
+            {
+                // Doesn't exist at all — create a new link
+                plan.MealPlanRecipes.Add(new MealPlanRecipe
+                {
+                    RecipeId = recipeId,
+                    MealPlanId = plan.Id
+                });
+                addedCount++;
+            }
         }
         // If you have added recipes to meal plans:
         if (addedCount > 0)
