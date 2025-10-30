@@ -6,7 +6,7 @@ namespace SueChef.ActionFilters
   public class AuthenticationFilter : IActionFilter {
     public void OnActionExecuting(ActionExecutingContext context) {
       int? user_id = context.HttpContext.Session.GetInt32("user_id");
-      if(user_id == null) {
+      if(user_id == null && context.HttpContext.Request.Method == "GET") {
         context.Result = new RedirectResult("/signin");
         return;
       }
