@@ -4,11 +4,11 @@ WORKDIR /src
 # (Better layer caching) copy project files first
 COPY ./*.csproj SueChef/
 # COPY any other .csproj if you have multiple projects/layers
-RUN dotnet restore SueChef_Project/SueChef.csproj
+RUN dotnet restore ./SueChef.csproj
 # now copy the rest
 COPY . .
 # publish self-contained output to /app (framework-dependent is fine too)
-RUN dotnet publish SueChef_Project/SueChef.csproj -c Release -o /app
+RUN dotnet publish ./SueChef.csproj -c Release -o /app
 # ---- Runtime stage ----
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
