@@ -1,10 +1,11 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SueChef.Models;
 using SueChef.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 
 
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
@@ -12,8 +13,16 @@ if (File.Exists(envPath)) { Env.Load(envPath); Console.WriteLine("Loaded .env");
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IHomePageService, HomePageService>();
+
 
 // Google sign in stuff
 builder.Services.ConfigureApplicationCookie(options =>
@@ -52,6 +61,13 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<SueChef.ActionFilters.AuthenticationFilter>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var connectionString = ConnectionStringResolver.ResolveNpgsql(builder.Configuration);
 
 builder.Services.AddDbContext<SueChefDbContext>(options =>
@@ -59,6 +75,8 @@ builder.Services.AddDbContext<SueChefDbContext>(options =>
 );
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
@@ -99,5 +117,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-
+var renderPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(renderPort))
+{
+    app.Urls.Add($"http://0.0.0.0:{renderPort}");
+    Console.WriteLine($":globe_with_meridians: Bound to Render PORT={renderPort}");
+}
+else
+{
+    Console.WriteLine(":globe_with_meridians: No PORT env var found; using launchSettings.json/local defaults.");
+}
 app.Run();
