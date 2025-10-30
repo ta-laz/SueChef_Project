@@ -24,22 +24,27 @@ function initCarousel(carouselId) {
     const visible = Math.ceil(getVisibleCards()); // round up to fill space
 
     if (!track.dataset.cloned) {
-        // Clone last N to the start
-        originalCards.slice(-visible).forEach(card => {
-            const clone = card.cloneNode(true);
-            clone.classList.add("clone");
-            track.insertBefore(clone, track.firstChild);
-        });
+    const visible = Math.ceil(getVisibleCards());
+    const originalCards = Array.from(track.children);
 
-        // Clone first N+1 to the end to ensure no white gap
-        originalCards.slice(0, visible + 1).forEach(card => {
-            const clone = card.cloneNode(true);
-            clone.classList.add("clone");
-            track.appendChild(clone);
-        });
+    // Clone last N to the start
+    originalCards.slice(-visible).forEach(card => {
+        const clone = card.cloneNode(false); // shallow clone
+        clone.innerHTML = card.innerHTML;    // just the visuals
+        clone.classList.add("clone", "pointer-events-none"); // prevent click
+        track.insertBefore(clone, track.firstChild);
+    });
 
-        track.dataset.cloned = "true";
-    }
+    // Clone first N+1 to the end
+    originalCards.slice(0, visible + 1).forEach(card => {
+        const clone = card.cloneNode(false);
+        clone.innerHTML = card.innerHTML;
+        clone.classList.add("clone", "pointer-events-none");
+        track.appendChild(clone);
+    });
+
+    track.dataset.cloned = "true";
+}
 
     const cardWidth = getCardWidth();
     const allCards = Array.from(track.children);
