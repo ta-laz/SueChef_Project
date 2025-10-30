@@ -90,11 +90,15 @@
             }
 
             else{
-
+                <button type="submit" hidden
+                    class="h-8 w-18 bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-3 rounded-md shadow-md leading-none">
+                    Remove
+                </button>
                     <!-- Recipe Cards  -->
                     <section class="max-w-6xl mx-auto px-5">
                         @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
-                        {
+                        {   
+                            <button hidden type="submit"></button> 
                             <partial name="_MealPlanRecipeCardPartial" model="recipe" />
                         }
                     </section>
