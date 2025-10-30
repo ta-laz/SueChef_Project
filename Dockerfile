@@ -1,14 +1,14 @@
-# ---- Build stage ----
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-# (Better layer caching) copy project files first
-COPY SueChef/*.csproj SueChef/
-# COPY any other .csproj if you have multiple projects/layers
-RUN dotnet restore SueChef/SueChef.csproj
-# now copy the rest
-COPY . .
+# (Better layer caching) copy solution and project files first
+COPY SueChef_Project.sln ./
+COPY SueChef/SueChef.csproj SueChef/
+# Restore using the actual project path inside the repo
+RUN dotnet restore ./SueChef/SueChef.csproj
+# now copy the rest of the source
+COPY SueChef/. ./SueChef/
 # publish self-contained output to /app (framework-dependent is fine too)
-RUN dotnet publish SueChef/SueChef.csproj -c Release -o /app
+RUN dotnet publish ./SueChef/SueChef.csproj -c Release -o /app
 # ---- Runtime stage ----
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
