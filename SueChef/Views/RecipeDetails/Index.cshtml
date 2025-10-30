@@ -212,7 +212,7 @@
       </div>
 
       <!-- RATE THIS RECIPE SECTION  -->
-
+      <a id="rating-anchor"></a>
       <div class="text-center p-4 border-t">
       @if (TempData["SuccessMessage"] != null)
       {
@@ -347,3 +347,15 @@
 }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('scroll') === 'rating') {
+      const el = document.getElementById('rating-anchor');
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 50; // adjust offset (100px here)
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  });
+</script>
