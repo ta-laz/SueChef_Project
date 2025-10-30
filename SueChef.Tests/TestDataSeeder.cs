@@ -31,11 +31,25 @@ namespace SueChef.Test
       try
       {
         // Clean slate
+        // await db.Database.ExecuteSqlRawAsync("""
+        //             TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
+        //             "Ratings","MealPlanRecipes", "Favourites", "Comments" "MealPlans","Users"
+        //             RESTART IDENTITY CASCADE;
+        //         """);
         await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
-                    "Ratings","MealPlanRecipes","MealPlans","Users"
-                    RESTART IDENTITY CASCADE;
-                """);
+          TRUNCATE TABLE
+            "RecipeIngredients",
+            "MealPlanRecipes",
+            "Favourites",
+            "Ratings",
+            "Comments",
+            "MealPlans",
+            "Recipes",
+            "Ingredients",
+            "Chefs",
+            "Users"
+          RESTART IDENTITY CASCADE;
+          """);
 
         // 1) Chefs (keep your names)
         var chefs = new List<Chef>

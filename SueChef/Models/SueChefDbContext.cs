@@ -79,11 +79,20 @@ public class SueChefDbContext : DbContext
         });
 
         // --- comment table 
-        modelBuilder.Entity<Comment>()
-            .HasOne<User>()
-            .WithMany(u => u.Comment)
+        modelBuilder.Entity<Comment>(b =>
+        {
+            // Comment → User (many-to-one)
+            b.HasOne(c => c.User)
+            .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+            
+            // Comment → Recipe (many-to-one)
+            b.HasOne(c => c.Recipe)
+            .WithMany(r => r.Comments)
+            .HasForeignKey(c => c.RecipeId)
+            .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // --- rating table 
         modelBuilder.Entity<Rating>(r =>
@@ -91,8 +100,15 @@ public class SueChefDbContext : DbContext
             r.HasOne(ra => ra.Recipe)
             .WithMany(r => r.Ratings)
             .HasForeignKey(ri => ri.RecipeId)
-            .HasForeignKey(ri => ri.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            // Rating -> User (many-to-one)
+            r.HasOne(r => r.User)
+            .WithMany(u => u.Ratings)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            r.HasIndex(r => new { r.UserId, r.RecipeId }).IsUnique();
         });
     
         
