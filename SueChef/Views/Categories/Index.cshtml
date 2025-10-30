@@ -5,15 +5,23 @@
 }
 
 <body class="bg-orange-50 min-h-screen flex flex-col">
+
     <main class="flex-1">
+        
         <section id="recipes-container" class="max-w-6xl mx-auto px-5 ">
             <!-- Title -->
-            <header class="max-w-6xl bg-orange-50 backdrop-blur sticky top-16 z-10">
-                <div class="max-w-6xl mx-auto py-3">
-                    <h1 class="text-2xl font-semibold text-gray-800" data-testid="Title-@Model.Title">@Model.Title</h1>
+                <header class="flex max-w-6xl bg-orange-50 backdrop-blur sticky top-16 z-10">
+                    <div class="max-w-6xl py-3 flex items-center gap-3 justify-start">
+                        <a asp-controller="Home" asp-action="Index"class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 3.172l8 6.364V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9.536l8-6.364z"/>
+                        </svg>
+                        </a>
+                        <h1 class="text-2xl font-semibold text-gray-800" data-testid="Title-@Model.Title">@Model.Title</h1>
+                    </div>
+                </header>
 
-                </div>
-            </header>
+
 
             <!-- Recipe List -->
 

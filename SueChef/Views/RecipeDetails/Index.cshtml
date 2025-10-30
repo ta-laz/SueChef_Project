@@ -3,7 +3,11 @@
 @using System.Timers
   <body class="bg-orange-50 text-gray-700">
     <main class="max-w-3xl mx-auto p-6 ">
-      
+        <a asp-controller="Home" asp-action="Index"class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm mb-5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 3.172l8 6.364V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9.536l8-6.364z"/>
+        </svg>
+        </a>
       <!-- Header card containing image and title -->
       <header class="text-center space-y-2">
         <img src="@Model.IndividualRecipe.RecipePicturePath" alt="" class="w-full max-h-96 md:h-full  object-cover rounded-lg shadow"/>
@@ -236,7 +240,7 @@
                       }
                   </div>
                   
-                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">@(Model.IndividualRecipe.UserRating > 0 ? "Update Rating" : "Submit Rating")</button>
               </form> 
       
       <!--add a comment -->
@@ -249,27 +253,20 @@
                 }
 
             
-            <h2 class="text-lg font-semibold mb-2 py-2">Add a comment</h2>
+            <h2 class="text-lg font-semibold mb-2 py-2 text-left">Add a comment</h2>
             <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
             @Html.AntiForgeryToken()
                 <textarea name="content" required maxlength = "300"
                     class="w-full resize-none border p-1 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2, focus:ring-opacity-25 transition-shadow duration-200" oninput="autoResize(this)"
-                    name="Content" placeholder="Comment here!"></textarea>
-                <div class="flex-direction justify-between items-center mt-0">
+                    name="Content" placeholder="Send Sue a comment!"></textarea>
+                <div class="flex justify-end items-center mt-0">
                     <button data-testid="comment-submit" type="submit"
-                        class=" bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-xl hover:bg-yellow-500">
+                        class=" bg-orange-700 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-yellow-500">
                         Submit
                     </button>
                 </div>
             </form>
         </div>
-    <!--stretches the add a comment box to suit how much content is in the box-->
-    <script>
-  function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
-  }
-</script>
     <!--displays the number of comments -->
     <div class="text-left p-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -336,4 +333,14 @@
   width: 4px;       /* Adjust thickness */
 }
 </style>
+
+
+
+    <!--stretches the add a comment box to suit how much content is in the box-->
+    <script>
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+</script>
 

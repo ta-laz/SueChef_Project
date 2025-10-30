@@ -3,7 +3,7 @@
 @model SingleMealPlanPageViewModel
 
 <body class='bg-orange-50 min-h-screen flex flex-col'></body>
-<div class="flex-1 justify-center p-3">
+<div class="flex-1 justify-center p-3 mt-1">
     <!-- Main central container -->
     <div class="w-full max-w-4xl mx-auto">
         <!-- Container for Success Messages: -->
@@ -38,8 +38,20 @@
         </div>
 
         <section class="text-center mb-8">
+        <div class="flex items-center justify-center gap-3 mb-4">
+            <!-- Back Home Button -->
+            <a asp-controller="Home" asp-action="Index"
+            class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </a>
+
             <!-- Meal Plan Title -->
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4 tracking-tight">@Model.MealPlan.MealPlanTitle - Recipes</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 tracking-tight">
+                @Model.MealPlan.MealPlanTitle - Recipes
+            </h2>
+        </div>
 
             <!-- Action Buttons -->
             <div class="flex flex-row justify-center items-center gap-1 mb-6">
@@ -47,7 +59,7 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="MealPlanId" value="@Model.MealPlan.Id" />
                     <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-1 mb-6 px-3">
-                        <button type="submit" class="relative group w-[85%] sm:w-64 h-11 bg-orange-600 text-md text-white font-semibold tracking-wide rounded-lg shadow-lg hover:shadow-lg transition-all duration-300 ease-out">
+                        <button type="submit" class="relative group w-[85%] sm:w-64 h-11 bg-orange-700 text-md text-white font-semibold tracking-wide rounded-lg shadow-lg hover:shadow-lg transition-all duration-300 ease-out">
                         <span class="flex ml-3 items-center justify-start gap-2">
                             Generate Shopping List
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="sm:ml-2 ml-14 w-5 h-5">
@@ -56,9 +68,9 @@
                             </svg>
                         </span>
                     </button>
-                            <div class="flex flex-row sm:flex-row items-center justify-start gap-2 w-[85%] sm:w-64 bg-orange-600 rounded-lg shadow-lg hover:shadow-md transition-all duration-300 h-11">
-                    <div class="bg-orange-600 mr-12 sm:mr-0 text-white font-semibold text-md px-3 text-left sm:text-left">Adjust Servings</div>
-                    <div class="flex items-center justify-end bg-orange-600 rounded-md p-1 ml-6 sm:ml-0">
+                            <div class="flex flex-row sm:flex-row items-center justify-start gap-2 w-[85%] sm:w-64 bg-orange-700 rounded-lg shadow-lg hover:shadow-md transition-all duration-300 h-11">
+                    <div class="bg-orange-700 mr-12 sm:mr-0 text-white font-semibold text-md px-3 text-left sm:text-left">Adjust Servings</div>
+                    <div class="flex items-center justify-end bg-orange-700 rounded-md p-1 ml-6 sm:ml-0">
                         <button type="button" class="px-2 py-1 text-white font-bold text-md transition" onclick="adjustServingsOverall(-1)">−</button>
                         <input type="number" id="serving-overall" name="Servings" min="1" max="12" value="4" class="no-spin w-10 text-center text-white bg-transparent border-none focus:ring-0 text-md font-semibold" />
                         <button type="button" class="px-2 py-1 text-white font-bold text-md transition" onclick="adjustServingsOverall(1)">+</button>
@@ -77,11 +89,15 @@
             }
 
             else{
-
+                <button type="submit" hidden
+                    class="h-8 w-18 bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-3 rounded-md shadow-md leading-none">
+                    Remove
+                </button>
                     <!-- Recipe Cards  -->
                     <section class="max-w-6xl mx-auto px-5">
                         @foreach (SueChef.ViewModels.RecipeCardViewModel recipe in Model.RecipesList)
-                        {
+                        {   
+                            <button hidden type="submit"></button> 
                             <partial name="_MealPlanRecipeCardPartial" model="recipe" />
                         }
                     </section>
@@ -153,4 +169,15 @@ function adjustServingsOverall(delta) {
         input.value = newOverall;
     });
 }
+</script>
+
+
+
+<script>
+    function adjustServings(id, delta) {
+        const input = document.getElementById(`serving-${id}`);
+        const current = parseInt(input.value) || 1;
+        const newValue = Math.min(Math.max(current + delta, input.min), input.max);
+        input.value = newValue;
+    }
 </script>
