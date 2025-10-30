@@ -253,7 +253,7 @@
                 }
 
             
-            <h2 class="text-lg font-semibold mb-2 py-2">Add a comment</h2>
+            <h2 class="text-lg font-semibold mb-2 py-2 text-left">Add a comment</h2>
             <form method="post" asp-route="commentingOnRecipe" asp-route-recipeId="@Model.IndividualRecipe.Id">
             @Html.AntiForgeryToken()
                 <textarea name="content" required maxlength = "300"
