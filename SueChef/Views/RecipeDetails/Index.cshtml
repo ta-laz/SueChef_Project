@@ -236,7 +236,7 @@
                       }
                   </div>
                   
-                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
+                  <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">@(Model.IndividualRecipe.UserRating > 0 ? "Update Rating" : "Submit Rating")</button>
               </form> 
       
       <!--add a comment -->
