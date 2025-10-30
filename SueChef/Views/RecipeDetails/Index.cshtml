@@ -240,7 +240,7 @@
               </form> 
       
       <!--add a comment -->
-      <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
+      <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-xl mt-3 ">
                 @if (TempData["ErrorMessage"] != null)
                 {
                     <div class="bg-red-100 border-l-4  text-red-800 px-4 py-2 rounded-lg mb-3">
@@ -287,10 +287,10 @@
             {
               <div class="min-w-0 flex-1">
               <div class="p-3 tracking-wide mb-1 border-b-2 border-orange-700">
-                <p class="font-bold text-left leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+                <p class="font-bold text-left leading-relaxed break-words">
                   @i.userName
                 </p>
-                <p class="text-left text-sm leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+                <p class="text-left text-sm leading-relaxed break-words">
                   @i.Content
                 </p>
                 <time class="text-right mt-1 block text-xs text-gray-500 dark:text-gray-400">
