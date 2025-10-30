@@ -75,21 +75,23 @@ public class SueChefDbContext : DbContext
             b.HasIndex(ri => new { ri.RecipeId, ri.IngredientId }).IsUnique();
         });
 
+        // --- comment table 
+        modelBuilder.Entity<Comment>()
+            .HasOne<User>()
+            .WithMany(u => u.Comment)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // --- rating table 
         modelBuilder.Entity<Rating>(r =>
         {
             r.HasOne(ra => ra.Recipe)
             .WithMany(r => r.Ratings)
             .HasForeignKey(ri => ri.RecipeId)
-            .HasForeignKey(ri => ri.UserId);
+            .HasForeignKey(ri => ri.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         });
-    
-
-
-
-
-        
-        
+     
         // --- Recipe table configuration
         modelBuilder.Entity<Recipe>()
             .Property(r => r.Title)
