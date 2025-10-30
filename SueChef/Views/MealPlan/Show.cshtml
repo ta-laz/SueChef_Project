@@ -31,7 +31,7 @@
 
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger">
+                <div class="bg-red-100 border-l-4  text-red-800 px-4 py-2 rounded-lg mb-3">
                     @TempData["ErrorMessage"]
                 </div>
             }
@@ -40,7 +40,7 @@
         <section class="text-center mb-8">
         <div class="flex items-center justify-center gap-3 mb-4">
             <!-- Back Home Button -->
-            <a asp-controller="Home" asp-action="Index"
+            <a asp-controller="MealPlan" asp-action="Index"
             class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M15 18l-6-6 6-6"/>
