@@ -26,17 +26,27 @@ public class FavouritesController : Controller
     public async Task<IActionResult> Index()
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+
         var allFavourites = await _db.Favourites
-            .Include(f => f.Recipe)
             .Where(f => f.UserId == currentUserId && !f.IsDeleted)
             .OrderByDescending(f => f.Id)
-            .Select(f => new FavouritesViewModel
+            .Select(f => new RecipeCardViewModel
             {
-                Id = f.Id,
-                UserId = f.UserId,
-                RecipeId = f.RecipeId,
-                Servings = f.Servings,
-                Recipe = f.Recipe
+                Id = f.RecipeId,
+                Title = f.Recipe.Title,
+                Description = f.Recipe.Description,
+                DifficultyLevel = f.Recipe.DifficultyLevel,
+                IsVegetarian = f.Recipe.IsVegetarian,
+                IsDairyFree = f.Recipe.IsDairyFree,
+                RecipePicturePath = f.Recipe.RecipePicturePath,
+                Category = f.Recipe.Category,
+                MealPlanRecipeId = f.Id,
+                PrepTime = f.Recipe.PrepTime,
+                CookTime = f.Recipe.CookTime,
+                RatingCount = _db.Ratings.Count(rt => rt.RecipeId == f.RecipeId && rt.Stars.HasValue),
+                AverageRating = _db.Ratings
+                    .Where(rt => rt.RecipeId == f.RecipeId && rt.Stars.HasValue)
+                    .Average(rt => (double?)rt.Stars) ?? 0,
             })
             .ToListAsync();
 

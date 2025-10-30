@@ -6,6 +6,8 @@
     ViewData["Title"] = "Meal Plans Page";
 }
 
+
+
 <body class="bg-orange-50">
 
     <!-- Main central container -->
@@ -22,8 +24,11 @@
             </div>
 
             <!-- Subtitle: number of plans -->
+            @{
+                string mealPlanCountText = $"{Model.MealPlanCount} Plan{(Model.MealPlanCount != 1 ? "s" : "")}";
+            }
             <p class="text-gray-600 text-lg mt-2" data-testid="number-of-meal-plans">
-                @Model.MealPlanCount Plans
+                @mealPlanCountText
             </p>
         </div>
 
@@ -32,15 +37,18 @@
         <div>
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-2 rounded-md shadow mb-6">
-                    <svg class="w-8 h-8 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M5 13l4 4L19 7" />
+                <div
+                    class="alert alert-success flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-2 rounded-md shadow mb-6">
+                    <svg class="w-8 h-8 mr-2 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     <span class="font-medium">@TempData["SuccessMessage"]</span>
                     @if (TempData["DeletedMealPlanId"] != null)
                     {
                         <a asp-action="UndoDeleteMealPlan" asp-route-id="@TempData["DeletedMealPlanId"]" class="alert-link">
-                            <button class="bg-orange-600 text-white text-sm font-medium w-20 px-3 py-1 rounded-md hover:bg-orange-400 m-2">
+                            <button
+                                class="bg-orange-600 text-white text-sm font-medium w-20 px-3 py-1 rounded-md hover:bg-orange-400 m-2">
                                 Undo
                             </button>
                         </a>
@@ -48,12 +56,12 @@
                 </div>
             }
 
-                @if (TempData["ErrorMessage"] != null)
-                {
-                    <div class="alert alert-danger">
-                        @TempData["ErrorMessage"]
-                    </div>
-                }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
         </div>
 
         @* Error messages to display if post request unsuccessful *@
@@ -100,7 +108,7 @@
             {
                 <!-- No meal plans yet -->
                 <div id="no-meal-plans-card" data-testid="no-meal-plans-card" class="bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col 
-                            p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
+                                    p-12 hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer relative h-96">
                     <div id="no-meal-plans-yet" data-testid="no-meal-plans-text" class="flex flex-col items-center">
                         <i data-lucide="cooking-pot" class="w-20 h-20 mb-8 text-gray-400 object-cover"></i>
                         <span class="text-gray-700 text-lg font-semibold mb-8 text-center">You haven't created any meal
@@ -113,7 +121,7 @@
             else
             {
                 <!-- Existing meal plans -->
-                    
+
                 @foreach (var mealPlan in Model.MealPlans)
                 {
                     <partial name="_MealPlanPartial" model="mealPlan" />

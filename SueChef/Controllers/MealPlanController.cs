@@ -91,7 +91,7 @@ public class MealPlanController : Controller
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-        var recipes = _db.MealPlanRecipes
+        var recipes = await _db.MealPlanRecipes
             .Where(mpr => mpr.MealPlanId == id && !mpr.IsDeleted)
             .Select(mpr => new RecipeCardViewModel
             {
@@ -120,7 +120,7 @@ public class MealPlanController : Controller
                     Quantity = ri.Quantity,
                     Unit = ri.Unit
                 }).ToList(),
-            }).ToList();
+            }).ToListAsync();
         var mealPlan = _db.MealPlans
             .Where(mp => mp.Id == id)
             .Select(mp => new MealPlanViewModel

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class FavouritesPageViewModel
 {
-    public IEnumerable<FavouritesViewModel>? Favourites { get; set; } = new List<FavouritesViewModel>();
+    public IEnumerable<RecipeCardViewModel>? Favourites { get; set; } = new List<RecipeCardViewModel>();
     public FavouritesViewModel? FavouritesViewModel { get; set; }
     public RecipeCardViewModel? RecipeCardViewModel { get; set; }
 }
