@@ -126,7 +126,7 @@
                         <div class="flex items-right space-x-1">
                             <strong>
                                 <input type="number" readonly name="PurchasedIngredientQuantities" data-original="@(( (decimal)ingredient.Value.Item1 ).ToString("0"))" value="@(( (decimal)ingredient.Value.Item1 ).ToString("0"))"
- class="focus:outline-none focus:ring-0 focus:border-inherit text-right ingredient-quantity no-spin items-right w-16 text-center bg-white rounded-md"/>
+                                class="focus:outline-none focus:ring-0 focus:border-inherit text-right ingredient-quantity no-spin items-right w-16 text-center bg-white rounded-md"/>
                                     <input class="focus:outline-none focus:ring-0 focus:border-inherit w-6 -mr-6 font-medium bg-white" name="IngredientUnits" type="text" readonly value="@ingredient.Value.Item2"/>
                                     
                             </strong>
@@ -134,13 +134,18 @@
                     </label>
                 </li>
             }
+            
             </ul>
         }
+        
     }       </div>
-
-        <div id="floating-save-btn"class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
+            <div id="" class="flex justify-center">
+            <button type="submit" class="mt-5 bg-orange-700 hover:bg-orange-600 text-white font-medium px-8 py-3 rounded-full shadow-md transition duration-300 ease-in-out">Save Shopping List!</button>
+            </div>
+@* 
+        <div id="" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
         <button type="submit" class="bg-orange-700 hover:bg-orange-600 text-white font-medium px-8 py-3 rounded-full shadow-md transition duration-300 ease-in-out">Save Shopping List!</button>
-        </div>
+        </div> *@
         </form>
     </section>
         <div style="height: 100px;"></div>
