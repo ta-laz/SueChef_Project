@@ -85,15 +85,15 @@ public class CategoriesController : Controller
                 pageTitle = "Top 10 Recipes";
 
                 var top10recipes = await _db.Recipes
-                .Where(r => topIds.Contains(r.Id))
+                .Where(r => topIds.Contains((int)r.Id))
                 .ToListAsync();
 
-                query = _db.Recipes.Where(r => topIds.Contains(r.Id));
+                query = _db.Recipes.Where(r => topIds.Contains((int)r.Id));
                 break;
             case "mostpopular":
                 pageTitle = "Most Popular Recipes";
 
-                query = _db.Recipes.Where(r => mostPopularIds.Contains(r.Id));
+                query = _db.Recipes.Where(r => mostPopularIds.Contains((int)r.Id));
                 break;
 
             default:

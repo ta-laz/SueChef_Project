@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IHomePageService, HomePageService>();
+
 
 // Google sign in stuff
 builder.Services.ConfigureApplicationCookie(options =>
