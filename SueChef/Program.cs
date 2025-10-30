@@ -110,5 +110,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-
+var renderPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(renderPort))
+{
+    app.Urls.Add($"http://0.0.0.0:{renderPort}");
+    Console.WriteLine($":globe_with_meridians: Bound to Render PORT={renderPort}");
+}
+else
+{
+    Console.WriteLine(":globe_with_meridians: No PORT env var found; using launchSettings.json/local defaults.");
+}
 app.Run();
