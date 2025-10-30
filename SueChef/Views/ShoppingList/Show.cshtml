@@ -1,5 +1,5 @@
 @model Dictionary<string, Dictionary<string, (decimal?, string, bool)>>
-<body class='bg-orange-50'></body>
+<div class='bg-orange-50'></div>
 <div class="justify-center p-3">
     <div class="text-center mb-10">
         <h1 class="text-3xl font-bold text-orange-700 mb-2 flex justify-center items-center mt-6">
@@ -112,7 +112,7 @@
         }
     }       </div>
 
-        <div class="fixed bottom-5 left-1/2 transform -translate-x-1/2">
+        <div id="floating-save-btn"class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
         <button type="submit" class="bg-orange-700 hover:bg-orange-600 text-white font-medium px-8 py-3 rounded-full shadow-md transition duration-300 ease-in-out">Save Shopping List!</button>
         </div>
         </form>
@@ -128,23 +128,52 @@
             </div>
         }     
     </div>
+
+    
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const button = document.getElementById('floating-save-btn');
+    const footer = document.querySelector('footer');
 
-    <script>
-      // For each checkbox, toggle its sibling quantity between original and 0
-      document.querySelectorAll('.ingredient-checkbox').forEach(cb => {
-        const li = cb.closest('li');
-        const qty = li.querySelector('.ingredient-quantity');
-        const original = qty.dataset.original;
+    // in case this page is rendered with ViewData["HideNavAndFooter"] != null
+    if (!button || !footer) return;
 
-        // Ensure initial sync in case DOM/state ever changes before submit
-        const sync = () => { qty.value = cb.checked ? 0 : original; };
+    function updateButtonPosition() {
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const overlap = windowHeight - footerRect.top;
 
-        cb.addEventListener('change', sync);
-        // Optional: run once on load (keeps value correct if markup ever renders unchecked)
-        sync();
-      });
-    </script>
+      if (overlap > 0) {
+        // footer is inside viewport → push button up
+        button.style.transform = `translate(-50%, -${overlap + 20}px)`;
+      } else {
+        // footer not visible → normal spot
+        button.style.transform = 'translate(-50%, 0)';
+      }
+    }
+
+    window.addEventListener('scroll', updateButtonPosition);
+    window.addEventListener('resize', updateButtonPosition);
+    updateButtonPosition();
+  });
+</script>
+
+<script>
+// For each checkbox, toggle its sibling quantity between original and 0
+document.querySelectorAll('.ingredient-checkbox').forEach(cb => {
+    const li = cb.closest('li');
+    const qty = li.querySelector('.ingredient-quantity');
+    const original = qty.dataset.original;
+
+    // Ensure initial sync in case DOM/state ever changes before submit
+    const sync = () => { qty.value = cb.checked ? 0 : original; };
+
+    cb.addEventListener('change', sync);
+    // Optional: run once on load (keeps value correct if markup ever renders unchecked)
+    sync();
+});
+</script>
 
 
