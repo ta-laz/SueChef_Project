@@ -25,7 +25,7 @@ public class CommentController : Controller
 
         if (!currentUserId.HasValue)
         {
-            TempData["ErrorMessage-comment"] = "you must be logged in to write comments!";
+            TempData["ErrorMessage-comment"] = "Please log in to comment on recipes.";
             return Redirect($"/recipe/{recipeId}");
         }
         
