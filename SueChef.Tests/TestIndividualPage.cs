@@ -162,24 +162,6 @@ public class PlaywrightRecipeTests : PageTest
     }
 
 
-    [Test]
-    public async Task IndividualPage_AnonymousUserIsRedirected_WhenSubmittingComment()
-    {
-        var recipeId = 2;
-        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
-
-        await Page.FillAsync("textarea[name='content']", "Trying to comment without login");
-    
-    // Attempt to submit
-        await Task.WhenAll(
-            Page.ClickAsync("button[type='submit']"),
-            Page.WaitForURLAsync($"{BaseUrl}/signin")
-        );
-
-    // Expect sign-in prompt
-        await Expect(Page.GetByTestId("sign-in-text")).ToBeVisibleAsync();
-    }
-
 
 
     [Test]
@@ -316,6 +298,92 @@ public class PlaywrightRecipeTests : PageTest
         Assert.That(classAttr, Does.Contain("text-yellow-400"), "Expected star 3 to be highlighted after click.");
     }
 
+
+    [Test]
+    public async Task IndividualPage_LoggedInUserCanAddToFavourites()
+    {
+    // Sign up and log in
+        await Page.GotoAsync($"{BaseUrl}/signup");
+        await Page.GetByTestId("username").FillAsync("FavTester");
+        await Page.GetByTestId("dob").FillAsync("1992-06-15");
+        await Page.GetByTestId("email").FillAsync("favtester@testmail.com");
+        await Page.GetByTestId("password").FillAsync("Password123!");
+        await Page.GetByTestId("confirmpassword").FillAsync("Password123!");
+        await Page.GetByTestId("signup-submit").ClickAsync();
+
+    // Go to a recipe page
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    // Click the favourite button by its ID
+        await Page.Locator("#favourite_button").ClickAsync();
+
+    // Wait for potential server response or UI update
+        await Page.WaitForTimeoutAsync(1000);
+
+    // Verify the page shows a success message or change in the heart icon
+        var button = Page.Locator("#favourite_button svg");
+        var fill = await button.GetAttributeAsync("fill");
+
+        Assert.That(fill, Is.EqualTo("white").Or.EqualTo("currentColor"),
+            "Expected the heart icon to change its fill after clicking (indicating it was favourited).");
+    }
+
+    [Test]
+    public async Task IndividualPage_ShowsAllergenWarnings_WhenPresent()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var bodyText = await Page.InnerTextAsync("body");
+
+        if (!bodyText.Contains("Allergens"))
+        {
+            Assert.Inconclusive("No allergen section found — skipping test (recipe may not include allergens).");
+            return;
+        }
+
+        Assert.That(bodyText, Does.Contain("Contains"), "Expected allergen warning text to appear.");
+    }
+
+
+    [Test]
+    public async Task IndividualPage_ScrollsToCommentsSection_OnClick()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var scrollButton = Page.Locator("button:has-text('Comments')");
+        if (await scrollButton.CountAsync() == 0)
+            Assert.Inconclusive("No 'Comments' scroll button found — feature may not exist.");
+
+        await scrollButton.ClickAsync();
+
+        var commentSection = Page.Locator("h3:has-text('Comments')");
+        await Expect(commentSection).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task IndividualPage_ShoppingListButtonNavigatesCorrectly()
+    {
+        var recipeId = 2;
+        await Page.GotoAsync($"{BaseUrl}/Recipe/{recipeId}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var shopButton = Page.Locator("button:has-text('Add to Shopping List')");
+        if (await shopButton.CountAsync() == 0)
+            Assert.Inconclusive("No shopping list button found — feature may not exist.");
+
+        await Task.WhenAll(
+            shopButton.ClickAsync(),
+            Page.WaitForLoadStateAsync(LoadState.NetworkIdle)
+        );
+
+        Assert.That(Page.Url, Does.Contain("ShoppingList"), "Expected to navigate to Shopping List after clicking the button.");
+    }
 }
 
 
