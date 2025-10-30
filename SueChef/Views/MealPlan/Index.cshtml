@@ -50,7 +50,7 @@
 
                 @if (TempData["ErrorMessage"] != null)
                 {
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-800 px-4 py-2 rounded-lg mb-3">
+                    <div id="error-message" class="bg-red-100 border-l-4 border-red-500 text-red-800 px-4 py-2 rounded-lg mb-3">
                         @TempData["ErrorMessage"]
                     </div>
                 }
@@ -148,4 +148,17 @@
         });
     </script>
 
+ <script>
+        // Wait for the page to load
+        document.addEventListener("DOMContentLoaded", function() {
+            const msg = document.getElementById("error-message");
+            if (msg) {
+                // Hide after 3 seconds with a fade-out effect
+                setTimeout(() => {
+                    msg.style.opacity = "0";
+                    setTimeout(() => msg.remove(), 500); // wait for fade-out transition
+                }, 3000);
+            }
+        });
+    </script>
 </body>
