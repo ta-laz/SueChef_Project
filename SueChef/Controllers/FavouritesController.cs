@@ -125,7 +125,7 @@ public class FavouritesController : Controller
         }
         recipe.IsDeleted = false;
         await _db.SaveChangesAsync();
-        TempData["SuccessMessage"] = $"Recipe: {recipe.Recipe.Title} restored successfully!";
+        TempData["Success"] = $"Recipe: {recipe.Recipe.Title} restored successfully!";
         return RedirectToAction("Index");
     }
 

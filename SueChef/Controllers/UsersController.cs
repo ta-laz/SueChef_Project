@@ -291,7 +291,7 @@ public class UsersController : Controller
         // clear session and redirect
         HttpContext.Session.Clear();
 
-        TempData["SuccessMessage"] = "Your account has been deleted successfully.";
+        TempData["DeleteSuccessMessage"] = "Your account has been deleted successfully.";
         return Redirect("/");
     }
 

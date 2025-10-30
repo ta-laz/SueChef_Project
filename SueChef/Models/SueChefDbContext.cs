@@ -171,6 +171,39 @@ public class SueChefDbContext : DbContext
 
             b.HasIndex(mpr => new { mpr.MealPlanId, mpr.RecipeId }).IsUnique();
         });
+
+        modelBuilder.Entity<User>(b =>
+        {
+            b.Property(u => u.UserName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            b.Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            // Relationships — cascade deletes ensure linked data is removed with the User
+
+            b.HasMany(u => u.Favourites)
+                .WithOne(f => f.User)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasMany(u => u.Comments)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasMany(u => u.Ratings)
+                .WithOne(r => r.User)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasMany(u => u.MealPlans)
+                .WithOne(mp => mp.User)
+                .HasForeignKey(mp => mp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 
 }

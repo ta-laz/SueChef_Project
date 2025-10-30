@@ -11,9 +11,16 @@
     </div>
 
     <div class="w-full max-w-4xl mx-auto">
+    
         @if (Model != null && Model.Any())
 {
-    <section class="bg-orange-100 border-l-4 border-orange-700 p-5 rounded-lg shadow pt-2 w-full md:w-[75%] mx-auto">
+    <section class="bg-orange-100 border-l-4 border-orange-700 p-5 rounded-lg shadow w-full md:w-[75%] mx-auto">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 3.172l8 6.364V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9.536l8-6.364z"/>
+                    </svg>
+                </a>
+    
         @* <div class="flex justify-between items-center mb-4">
             <section class="bg-orange-100 w-full max-w-3xl mx-auto text-center">
             <h1 class="text-2xl font-semibold text-orange-700">Meal Plan Name Shopping List?</h1> 
@@ -22,7 +29,7 @@
         @Html.AntiForgeryToken()
         @foreach (var category in Model)
         { if(category.Value.Values.All(c => c.Item3)){continue;}           
-            <div class="bg-white backdrop-blur-sm border border-orange-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 mt-8">
+            <div class="bg-white backdrop-blur-sm border border-orange-300 rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6 mt-4">
                 <h2 class="text-xl font-semibold mb-3 text-orange-700 border-b pb-2 mb-3">
                     @char.ToUpper(category.Key[0])@category.Key.Substring(1) 
                 </h2>
