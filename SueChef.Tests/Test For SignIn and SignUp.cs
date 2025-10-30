@@ -374,30 +374,29 @@ public class SignInOutTests : PageTest
 
 
     [Test]
-    public async Task SignUp_ShouldShowError_WhenPasswordTooShortOrWeak()
-    {
-        await Page.GotoAsync($"{BaseUrl}/signup");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+public async Task SignUp_ShouldShowError_WhenPasswordTooShortOrWeak()
+{
+    await Page.GotoAsync($"{BaseUrl}/signup");
+    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
     // Fill form with a weak password (too short, no uppercase/special char)
-        await Page.FillAsync("input[name='UserName']", "weakpassworduser");
-        await Page.FillAsync("input[name='Email']", "weakpass@example.com");
-        await Page.FillAsync("input[name='Password']", "pass"); // invalid
-        await Page.FillAsync("input[name='ConfirmPassword']", "pass");
-        await Page.FillAsync("input[name='DOB']", "1995-03-15");
+    await Page.FillAsync("input[name='UserName']", "weakpassworduser");
+    await Page.FillAsync("input[name='Email']", "weakpass@example.com");
+    await Page.FillAsync("input[name='Password']", "pass"); // invalid
+    await Page.FillAsync("input[name='ConfirmPassword']", "pass");
+    await Page.FillAsync("input[name='DOB']", "1995-03-15");
 
     // Try to submit the form
-        await Page.ClickAsync("button[type='submit']");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    await Page.ClickAsync("button[type='submit']");
+    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
     // Capture body text to inspect server validation messages
-        var bodyText = await Page.InnerTextAsync("body");
-
-        Assert.That(
-            bodyText.Contains("Password must be between 8 and 50 characters and include an uppercase letter and a special character."),
-            $"Expected validation message about weak password, but got:\n\n{bodyText}"
-        );
-    }
+    var bodyText = await Page.InnerTextAsync("body");
+    Assert.That(
+        bodyText.Contains("Password must be 8 characters or more and include an uppercase letter and a special character."),
+        $"Expected validation message about weak password, but got:\n\n{bodyText}"
+    );
+}
 
 
 
