@@ -29,7 +29,7 @@
         <form asp-action="DeleteFavourite" asp-controller="Favourites" method="post">
             <input type="hidden" name="favouriteId" value="@Model.Id" />
             <button type="submit"
-                class="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 transition flex items-center gap-2 text-sm font-semibold">
+                class="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition flex items-center gap-2 text-sm font-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Description -->
-    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
+    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words tracking-tight text-sm mt-1">
         @Model.Description
     </p>
 
