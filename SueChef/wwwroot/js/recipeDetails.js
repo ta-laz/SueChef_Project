@@ -232,6 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (selectedPlans.length === 0) {
             showAlert("noMealPlansSelectedError");
             dropdownMenu.classList.add("hidden");
+            saveMealplanButton.classList.add("hidden");
+            favouriteButton.classList.remove("hidden");
             return;
         }
 

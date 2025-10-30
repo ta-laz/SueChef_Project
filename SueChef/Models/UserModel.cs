@@ -17,6 +17,6 @@ public class User
     public ICollection<MealPlan> MealPlans { get; set; } = new List<MealPlan>();
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
-
+    public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
 
 }
