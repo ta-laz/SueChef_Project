@@ -213,6 +213,7 @@
 
       <!-- RATE THIS RECIPE SECTION  -->
 
+      <div class="text-center p-4 border-t">
       @if (TempData["SuccessMessage"] != null)
       {
         <div class="alert-message flex items-center justify-center bg-green-100 border-l-4 border-green-600 text-green-800 p-4 rounded-md shadow mb-6">
@@ -222,8 +223,17 @@
               <span data-testid="thanks-for-rating"class="font-medium">@TempData["SuccessMessage"]</span>
           </div>
       }
+
+      @if(TempData["RatingErrorMessage"] != null){
+        <div class="alert-message flex items-center justify-center bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded-md shadow mb-6">
+          <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+            <span data-testid="sign-in-for-rating"class="font-medium">@TempData["RatingErrorMessage"]</span>
+        </div>
+
+        }
       
-      <div class="text-center p-4 border-t">
               <h2 data-testid="Rate-the-recipe"class="text-xl font-semibold mb-2">Rate this recipe</h2>
               
               <form method="post" action="@Url.Action("Rate", "RecipeDetails")" id="ratingForm">  

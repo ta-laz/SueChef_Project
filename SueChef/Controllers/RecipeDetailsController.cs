@@ -145,8 +145,9 @@ public class RecipeDetailsController : Controller
 
         if (currentUserId == null) //If user is NOT logged in re-direct to log-in page with error message 
         {
-            TempData["ErrorMessage"] = "Please log in to rate recipes.";
-            return RedirectToAction("New", "Sessions");
+            TempData["RatingErrorMessage"] = "Please log in to rate recipes.";
+            // return RedirectToAction("New", "Sessions");
+            return RedirectToAction("Index", new { id = recipeId });
         }
         var existingRating = await _db.Ratings
                                             .FirstOrDefaultAsync(r => r.RecipeId == recipeId && r.UserId == currentUserId.Value); //Pulling the rating of the user that is logged in (if they're logged in)
