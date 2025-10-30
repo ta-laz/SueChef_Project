@@ -25,7 +25,7 @@ public class CommentController : Controller
 
         if (!currentUserId.HasValue)
         {
-            TempData["ErrorMessage"] = "you must be logged in to write comments!";
+            TempData["ErrorMessage-comment"] = "you must be logged in to write comments!";
             return Redirect($"/recipe/{recipeId}");
         }
         
@@ -38,7 +38,8 @@ public class CommentController : Controller
         });
         await _db.SaveChangesAsync();
 
-        return Redirect($"/recipe/{recipeId}"); // back to details
+        // return Redirect($"/recipe/{recipeId}"); // back to details
+        return RedirectToAction("Index","RecipeDetails", new { id = recipeId, scroll = "comment" });
     }
     
     

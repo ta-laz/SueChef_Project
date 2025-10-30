@@ -37,17 +37,7 @@
             </div>
 
 
-            <style>
-                /* Hides the errors until there are errors */
-                .validation-summary-valid {
-                    display: none;
-                }
-
-                .validation-summary-errors {
-                    display: block;
-                    /* adds the errors */
-                }
-            </style>
+            
 
             <!-- Display Model Errors -->
             <div asp-validation-summary="All"
@@ -69,7 +59,7 @@
 
             <div class="px-12">
                 <label for="dob" class="mb-1 block text-sm text-gray-100"></label>
-                <input asp-for="DOB" id="dob" type="date" data-testid="dob"
+                <input asp-for="DOB" id="dob" type="date" data-testid="dob" min="1900-01-01" max="@DateTime.Today.ToString("yyy-MM-dd")"
                     class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2" />
                 @* <span asp-validation-for="DOB" class="text-gray-100 text-sm font-bold" id="dob-error"></span> *@
             </div>
@@ -168,44 +158,5 @@
     }
 </script>
 
-<style>
-    /* highlight invalid fields */
-    input.input-validation-error {
-        border-color: #e11d48;
-    }
 
-    /* add red asterisk to the label right before the invalid input */
-    label+input.input-validation-error,
-    label+select.input-validation-error,
-    label+textarea.input-validation-error {}
 
-    @* label:has(+ input.input-validation-error)::after,
-    label:has(+ select.input-validation-error)::after,
-    label:has(+ textarea.input-validation-error)::after {
-        content: " *";
-        color: #e11d48;
-        font-weight: bold; *@
-    }
-</style>
-
-<!-- Ensures boxes have consistent backgrounds regardless of input and browser settings -->
-<style>
-    input,
-    select,
-    textarea {
-        background-color: #f9fafb;
-        /* matches Tailwind's gray-50 */
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-        background-color: #f9fafb;
-    }
-
-    /* Prevent Chrome autofill from using yellow background */
-    input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
-        -webkit-text-fill-color: #000 !important;
-    }
-</style>

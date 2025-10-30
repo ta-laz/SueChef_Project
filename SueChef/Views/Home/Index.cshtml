@@ -8,7 +8,13 @@
 @model SueChef.ViewModels.HomePageViewModel
 
 <body class="bg-orange-50">
-
+@if(TempData["DeleteSuccessMessage"] != null){
+<div id="messageZone" class="h-9 flex items-center justify-center mt-3 mb-3">
+    <div id="DeleteSuccess" class="bg-red-50 border border-red-400 text-red-700 rounded p-3 text-sm">
+          @TempData["DeleteSuccessMessage"]
+    </div>
+</div>
+}
     <!-- TOP FEATURED RECIPE SECTION -->
     <section class="mb-8">
         <partial name="_FeaturedRecipePartial" model="Model.TopFeaturedRecipe" />

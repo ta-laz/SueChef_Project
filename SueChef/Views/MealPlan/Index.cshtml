@@ -11,15 +11,27 @@
 <body class="bg-orange-50">
 
     <!-- Main central container -->
-    <section class="relative w-full max-w-4xl mx-auto mb-4 overflow-hidden p-2">
-        <div
-            class=" items-center flex flex-col items-center justify-center w-full mb-6 mt-6 p-2 bg-orange-50  rounded-md">
-            <h2 class="text-4xl tracking-tight text-gray-800" data-testid="meal-plans-page-title">Meal Plans</h2>
+            <section class="relative w-full max-w-4xl mx-auto mb-4 overflow-hidden p-2">
+        <div class="flex flex-col items-center justify-center w-full mb-6 mt-6 p-2 bg-orange-50 rounded-md">
+            <div class="flex items-center justify-center space-x-3">
+                <a asp-controller="Home" asp-action="Index"
+                class="flex items-center justify-center w-9 h-9 rounded-full bg-orange-700 hover:bg-orange-600 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 3.172l8 6.364V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9.536l8-6.364z"/>
+                    </svg>
+                </a>
+                <h2 class="text-4xl tracking-tight text-gray-800" data-testid="meal-plans-page-title">Meal Plans</h2>
+            </div>
+
+            <!-- Subtitle: number of plans -->
             @{
                 string mealPlanCountText = $"{Model.MealPlanCount} Plan{(Model.MealPlanCount != 1 ? "s" : "")}";
             }
-            <p class="text-gray-600 text-lg" data-testid="number-of-meal-plans">@mealPlanCountText</p>
+            <p class="text-gray-600 text-lg mt-2" data-testid="number-of-meal-plans">
+                @mealPlanCountText
+            </p>
         </div>
+
 
         <!-- Container for Success Messages: -->
         <div>
@@ -119,20 +131,6 @@
         </div>
 
     </section>
-
-
-
-    <style>
-        /* Hides the errors until there are errors */
-        .validation-summary-valid {
-            display: none;
-        }
-
-        .validation-summary-errors {
-            display: block;
-            /* adds the errors */
-        }
-    </style>
 
 
     @* Script to unhide form when creating new meal plan  *@
