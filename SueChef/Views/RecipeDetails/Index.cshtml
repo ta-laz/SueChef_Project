@@ -20,7 +20,7 @@
                 <form asp-action="ToggleFavourite" asp-controller="Favourites" method="post">
                   <input type="hidden" name="recipeId" value="@Model.IndividualRecipe.Id" />
                   <input type="hidden" name="servings" value="@Model.IndividualRecipe.Servings ?? 4" />
-                  <button id="favourite_button" class="rounded-l-lg bg-orange-700 text-white px-4 py-2 h-10 w-20 flex items-center justify-center gap-2">
+                  <button id="favourite_button" class="rounded-l-lg bg-orange-700 hover:bg-orange-600 text-white px-4 py-2 h-10 w-20 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="@(Model.IsFavourited ? "white" : "none")" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                     </svg>
@@ -251,10 +251,10 @@
       <a id="comment-anchor"></a>
       <!--add a comment -->
       <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
-                @if (TempData["ErrorMessage"] != null)
+                @if (TempData["ErrorMessage-comment"] != null)
                 {
                     <div class="bg-red-100 border-l-4  text-red-800 px-4 py-2 rounded-lg mb-3">
-                        @TempData["ErrorMessage"]
+                        @TempData["ErrorMessage-comment"]
                     </div>
                 }
 
@@ -324,28 +324,6 @@
 
   </body>
 
-  <!-- Hide scrollbar utility -->
-<style>
-.scrollbar-hidden {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Opera */
-}
-
-/* Only used when scrollable */
-.scrollbar-visible:hover {
-  -ms-overflow-style: auto;
-  scrollbar-width: thin;
-}
-
-.scrollbar-visible:hover::-webkit-scrollbar {
-  display: block;
-  width: 4px;       /* Adjust thickness */
-}
-</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {

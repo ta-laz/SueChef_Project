@@ -155,3 +155,32 @@ function adjustServingsOverall(delta) {
     });
 }
 </script>
+
+
+<script>
+async function removeRecipe(mealPlanRecipeId) {
+    if (!confirm('Are you sure you want to delete this recipe?')) return;
+
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    try {
+        const response = await fetch(`/MealPlans/DeleteRecipe/${mealPlanRecipeId}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': token
+            }
+        });
+
+        if (response.ok) {
+            // Option 1: reload the page to refresh the list
+            location.reload();
+        } else {
+            // Option 2: show an error if the request failed
+            alert('Failed to remove recipe. Please try again.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while deleting the recipe.');
+    }
+}
+</script>
