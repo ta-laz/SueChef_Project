@@ -47,3 +47,135 @@ body {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
+/* Only used when scrollable */
+.scrollbar-visible:hover {
+  -ms-overflow-style: auto;
+  scrollbar-width: thin;
+}
+
+.scrollbar-visible:hover::-webkit-scrollbar {
+  display: block;
+  width: 4px;       /* Adjust thickness */
+}
+
+
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+
+
+        /* Hides the errors until there are errors */
+        .validation-summary-valid {
+            display: none;
+        }
+
+        .validation-summary-errors {
+            display: block;
+            /* adds the errors */
+        }
+ 
+
+        /* <!-- Ensures boxes have consistent backgrounds regardless of input and browser settings --> */
+
+    input, select, textarea {
+        background-color: #f9fafb; /* matches Tailwind's gray-50 */
+    }
+
+    input:focus, select:focus, textarea:focus {
+        background-color: #f9fafb;
+    }
+
+    /* Prevent Chrome autofill from using yellow background */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+
+/* stronger readable text on image overlay */
+.category-card-title {
+  color: #ffffff;                   /* white text */
+  font-weight: 600;                 /* semi-bold */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  /* small outline for better contrast on all browsers (webkit only) */
+  -webkit-text-stroke: 0.35px rgba(0,0,0,0.55);
+}
+
+/* fallback stroke for non-webkit via multiple text shadows (optional) */
+.category-card-title.outline-fallback {
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.75),
+     1px -1px 0 rgba(0,0,0,0.75),
+    -1px  1px 0 rgba(0,0,0,0.75),
+     1px  1px 0 rgba(0,0,0,0.75),
+     0   2px 6px rgba(0,0,0,0.6);
+}
+
+
+                /* Hides the errors until there are errors */
+                .validation-summary-valid {
+                    display: none;
+                }
+
+                .validation-summary-errors {
+                    display: block;
+                    /* adds the errors */
+                }
+
+
+
+    /* highlight invalid fields */
+    input.input-validation-error {
+        border-color: #e11d48;
+    }
+
+    /* add red asterisk to the label right before the invalid input */
+    label+input.input-validation-error,
+    label+select.input-validation-error,
+    label+textarea.input-validation-error {}
+
+    label:has(+ input.input-validation-error)::after,
+    label:has(+ select.input-validation-error)::after,
+    label:has(+ textarea.input-validation-error)::after {
+        content: " *";
+        color: #e11d48;
+        font-weight: bold;
+    }
+
+
+    /* <!-- Ensures boxes have consistent backgrounds regardless of input and browser settings --> */
+    input,
+    select,
+    textarea {
+        background-color: #f9fafb;
+        /* matches Tailwind's gray-50 */
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        background-color: #f9fafb;
+    }
+
+    /* Prevent Chrome autofill from using yellow background */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+        -webkit-text-fill-color: #000 !important;
+    }
