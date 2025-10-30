@@ -98,13 +98,13 @@ public class FavouritesController : Controller
     // Delete favourite - used in Favourites page button
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteFavourite(int favouriteId)
+    public async Task<IActionResult> DeleteFavourite(int recipeId)
     {
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
         var favourite = await _db.Favourites
             .Include(f => f.Recipe)
-            .FirstOrDefaultAsync(f => f.Id == favouriteId && f.UserId == currentUserId);
+            .FirstOrDefaultAsync(f => f.RecipeId == recipeId && f.UserId == currentUserId && !f.IsDeleted);
 
         if (favourite == null)
         {

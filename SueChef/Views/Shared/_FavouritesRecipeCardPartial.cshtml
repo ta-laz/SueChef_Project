@@ -27,7 +27,7 @@
         </a>
 
         <form asp-action="DeleteFavourite" asp-controller="Favourites" method="post">
-            <input type="hidden" name="favouriteId" value="@Model.Id" />
+            <input type="hidden" name="recipeId" value="@Model.Id" />
             <button type="submit"
                 class="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition flex items-center gap-2 text-sm font-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
