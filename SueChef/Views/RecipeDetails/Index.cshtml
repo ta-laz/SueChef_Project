@@ -248,7 +248,7 @@
                   
                   <button data-testid="rating-submit-button" type="submit" id="submitRatingBtn" class="bg-orange-700 text-white px-4 py-2 rounded hover:bg-amber-400 hover:text-white transition mb-4 mt-2">Submit Rating</button>
               </form> 
-      
+      <a id="comment-anchor"></a>
       <!--add a comment -->
       <div class="flex-col h-70 min-screen bg-white rounded-b-lg rounded-xl w-full px-4 py-2 shadow-[0_0_15px_rgba(15,118,110,0.3)] mt-3 ">
                 @if (TempData["ErrorMessage"] != null)
@@ -350,12 +350,20 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('scroll') === 'rating') {
-      const el = document.getElementById('rating-anchor');
+    const scrollTarget = params.get('scroll');
+    const map = {
+      rating: 'rating-anchor',
+      comment: 'comment-anchor'
+    };
+    if (scrollTarget && map[scrollTarget]) {
+      const el = document.getElementById(map[scrollTarget]);
       if (el) {
-        const y = el.getBoundingClientRect().top + window.pageYOffset - 50; // adjust offset (100px here)
+        const offset = 50; // tweak as needed
+        const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
     }
   });
 </script>
+
+

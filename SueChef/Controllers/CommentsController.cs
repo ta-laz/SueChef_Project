@@ -38,7 +38,8 @@ public class CommentController : Controller
         });
         await _db.SaveChangesAsync();
 
-        return Redirect($"/recipe/{recipeId}"); // back to details
+        // return Redirect($"/recipe/{recipeId}"); // back to details
+        return RedirectToAction("Index","RecipeDetails", new { id = recipeId, scroll = "comment" });
     }
     
     
