@@ -132,7 +132,8 @@
     if (params.get('scroll') === 'shopping') {
       const el = document.getElementById('shopping-list-anchor');
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 80; // adjust offset as needed
+        window.scrollTo({ top: y, behavior: 'smooth' });
       }
     }
   });
