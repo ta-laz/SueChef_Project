@@ -183,6 +183,9 @@ namespace SueChef.Migrations
                     b.Property<int?>("RecipeId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("Servings")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
@@ -304,6 +307,45 @@ namespace SueChef.Migrations
                         .IsUnique();
 
                     b.ToTable("RecipeIngredients");
+                });
+
+            modelBuilder.Entity("SueChef.Models.ShoppingList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Additional")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("AdditionalQuantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IngredientName")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsPurchased")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShoppingLists");
                 });
 
             modelBuilder.Entity("SueChef.Models.User", b =>
@@ -441,6 +483,17 @@ namespace SueChef.Migrations
                     b.Navigation("Ingredient");
 
                     b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("SueChef.Models.ShoppingList", b =>
+                {
+                    b.HasOne("SueChef.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SueChef.Models.Chef", b =>

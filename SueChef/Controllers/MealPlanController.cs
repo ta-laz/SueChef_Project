@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SueChef.Models;
 using SueChef.ViewModels;
 using SueChef.ActionFilters;
-
+using Newtonsoft.Json;
 
 namespace SueChef.Controllers;
 
@@ -104,6 +104,12 @@ public class MealPlanController : Controller
                 RecipePicturePath = mpr.Recipe.RecipePicturePath,
                 Category = mpr.Recipe.Category,
                 MealPlanRecipeId = mpr.Id,
+                PrepTime = mpr.Recipe.PrepTime,
+                CookTime = mpr.Recipe.CookTime,
+                RatingCount = _db.Ratings.Count(rt => rt.RecipeId == mpr.RecipeId && rt.Stars.HasValue),
+                AverageRating = _db.Ratings
+                    .Where(rt => rt.RecipeId == mpr.RecipeId && rt.Stars.HasValue)
+                    .Average(rt => (double?)rt.Stars) ?? 0,
                 Ingredients = mpr.Recipe.RecipeIngredients.Select(ri => new IndividualRecipeIngredientViewModel
                 {
                     Name = ri.Ingredient.Name,
@@ -124,13 +130,21 @@ public class MealPlanController : Controller
             })
             .FirstOrDefault();
 
-    var viewModel = new SingleMealPlanPageViewModel
-    {
-        RecipesList = recipes,
-        MealPlan = mealPlan
-    };
 
-    return View(viewModel);
+
+        var viewModel = new SingleMealPlanPageViewModel
+        {
+            RecipesList = recipes,
+            MealPlan = mealPlan
+
+        };
+        
+        if (TempData["ShoppingList"] is string json)
+        {
+            var shoppingList = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, (decimal, string)>>>(json);
+            viewModel.ShoppingList = shoppingList;
+        }
+        return View(viewModel);
     }
 
     [Route("/MealPlans/AddRecipe")]
