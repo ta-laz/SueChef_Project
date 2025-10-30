@@ -43,18 +43,18 @@
             @Html.AntiForgeryToken()
 
             <!-- Display Model Errors -->
-            <div asp-validation-summary="ModelOnly" class="text-gray-100 mb-2"></div>
+            <div asp-validation-summary="ModelOnly" class="w-full border border-gray-400 px-3 py-2 font-semibold text-red-600 text-center outline-none rounded-md mb-1 bg-white"></div>
 
             <!-- Username  -->
             <div>
                 <label for="username" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="UserName" id="username" data-testid="username"
-                    class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-rose-800 outline-none rounded-md"
+                    class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-white outline-none rounded-md"
                     placeholder="Username*" />
                 @if (ViewData.ModelState.TryGetValue(nameof(Model.UserName), out var userNameState) &&
                                 userNameState.Errors.Any())
                 {
-                    <div class="text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage
+                    <div class="bg-white flex justify-center items-center text-red-600 text-sm font-bold mt-1">@userNameState.Errors.First().ErrorMessage
                     </div>
                 }
             </div>
@@ -63,7 +63,7 @@
             <div class="relative">
                 <label for="password" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="Password" data-testid="password" id="password"
-                    class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-rose-800 outline-none rounded-md"
+                    class="w-full border border-gray-400 px-3 py-2 focus:border-2 focus:border-white outline-none rounded-md"
                     placeholder="Password*" />
                 <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-800"
                     onclick="togglePassword()">
