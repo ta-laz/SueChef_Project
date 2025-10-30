@@ -114,6 +114,32 @@ namespace SueChef.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShoppingLists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: true),
+                    IngredientName = table.Column<string>(type: "text", nullable: true),
+                    Quantity = table.Column<decimal>(type: "numeric", nullable: true),
+                    Unit = table.Column<string>(type: "text", nullable: true),
+                    Additional = table.Column<string>(type: "text", nullable: true),
+                    AdditionalQuantity = table.Column<decimal>(type: "numeric", nullable: true),
+                    IsPurchased = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingLists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShoppingLists_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -231,7 +257,8 @@ namespace SueChef.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MealPlanId = table.Column<int>(type: "integer", nullable: true),
                     RecipeId = table.Column<int>(type: "integer", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Servings = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -312,6 +339,11 @@ namespace SueChef.Migrations
                 name: "IX_Recipes_ChefId",
                 table: "Recipes",
                 column: "ChefId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingLists_UserId",
+                table: "ShoppingLists",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -331,6 +363,9 @@ namespace SueChef.Migrations
 
             migrationBuilder.DropTable(
                 name: "RecipeIngredients");
+
+            migrationBuilder.DropTable(
+                name: "ShoppingLists");
 
             migrationBuilder.DropTable(
                 name: "MealPlans");
