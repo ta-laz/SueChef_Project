@@ -1,16 +1,16 @@
-@model SueChef.ViewModels.FavouritesViewModel
+@model SueChef.ViewModels.RecipeCardViewModel
 
 <div class=" flex justify-center">
     <div
         class="hover:shadow-xl w-full max-w-6xl bg-white rounded-md overflow-hidden transition-all duration-300 border-2 border-gray-200 p-3 md:p-6 mb-2 h-full">
-        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Recipe.Id"
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id"
             class="block transition-all duration-300 h-full">
 
             <!-- Left side: picture -->
             <div class="flex md:items-start gap-3 h-full">
                 <!-- Left side: picture -->
                 <div class="w-24 h-24 md:w-48 lg:w-56 flex-shrink-0">
-                    <img src="@Model.Recipe.RecipePicturePath" alt="Recipe Picture"
+                    <img src="@Model.RecipePicturePath" alt="Recipe Picture"
                         class="w-full h-full md:h-36 lg:h-40 object-cover rounded-md border border-gray-300" />
                 </div>
 
@@ -21,91 +21,127 @@
                     <div class="flex justify-between items-start">
                         <h3
                             class="text-2xl text-gray-700 md:text-2xl lg:text-2xl font-medium hover:text-orange-800 transition ">
-                            @Model.Recipe.Title
+                            @Model.Title
                         </h3>
-                        
-                        <form asp-action="DeleteFavourite" asp-controller="Favourites" method="post">
-                            <input type="hidden" name="favouriteId" value="@Model.Id" />
-                            <button type="submit" class="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 transition flex items-center gap-2 text-sm font-semibold">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                Remove
-                            </button>
-                        </form>
-                    </div>
 
-                    <!-- Stars -->
-                    <div class="flex gap-4 items-center mt-2">
-                        <div class="flex items-center gap-1 text-gray-800">
-                            @for (int i = 0; i < 5; i++)
-                            {
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5 md:w-7 md:h-7 lg:w-7 lg:h-7 text-yellow-400">
-                                    <path
-                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.946a1 1 0 00.95.69h4.147c.969 0 1.371 1.24.588 1.81l-3.357 2.44a1 1 0 00-.364 1.118l1.286 3.946c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.347 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.946a1 1 0 00-.364-1.118L2.679 9.373c-.783-.57-.38-1.81.588-1.81h4.147a1 1 0 00.95-.69l1.286-3.946z" />
-                                </svg>
-                            }
-                        </div>
-                        <div class="flex items-center gap-1 text-gray-700 md:text-xl lg:text-lg">
-                            947 ratings
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
-                        @Model.Recipe.Description
-                    </p>
-
-                    <div class="flex-grow"></div>
-
-                    <!-- Categories bar -->
-                    <div class="flex rounded-md justify-around items-center text-center gap-4 mt-2">
-                        <!-- Category -->
-                        <div class="flex flex-col items-center w-1/4">
-                            <img src="@Url.Content("~/images/flag.png")" alt="Category"
-                                class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                            <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">@Model.Recipe.Category</span>
-                        </div>
-
-                        <!-- Vegetarian -->
-                        @if (@Model.Recipe.IsVegetarian)
-                        {
-                            <div class="flex flex-col items-center w-1/4">
-                                <img src="@Url.Content("/images/vegetariancartoon.png")" alt="Vegetarian"
-                                    class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Vegetarian</span>
-                            </div>
-                        }
-
-                        <!-- Dairy Free -->
-                        @if (@Model.Recipe.IsDairyFree)
-                        {
-                            <div class="flex flex-col items-center w-1/4">
-                                <img src="@Url.Content("~/images/dairyfree.png")" alt="Dairy Free"
-                                    class="w-8 h-8 object-fill rounded-full border-1 border-gray-500" />
-                                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate">Dairy Free</span>
-                            </div>
-                        }
-
-                        <!-- Difficulty -->
-                        <div class="flex flex-col items-center w-1/4">
-                            <img src="@Url.Content("~/images/chefshat.png")" alt="Difficulty"
-                                class="w-8 h-8 object-contain rounded-full border-1 border-gray-500" />
-                            <span
-                                class="text-xs font-medium
-                    @(Model.Recipe.DifficultyLevel == 1
-                                        ? "text-green-600 md:text-sm lg:text-md"
-                                        : Model.Recipe.DifficultyLevel == 2
-                                        ? "text-orange-500 md:text-sm lg:text-md"
-                                        : "text-red-600 md:text-sm lg:text-md")">
-                                @(Model.Recipe.DifficultyLevel == 1 ? "Easy" :
-                                                                Model.Recipe.DifficultyLevel == 2 ? "Medium" : "Hard")
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </a>
+
+        <form asp-action="DeleteFavourite" asp-controller="Favourites" method="post">
+            <input type="hidden" name="favouriteId" value="@Model.Id" />
+            <button type="submit"
+                class="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 transition flex items-center gap-2 text-sm font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Remove
+            </button>
+        </form>
     </div>
+
+    <!-- Stars -->
+    <div class="flex items-center gap-1 mb-1 mt-1 text-yellow-400">
+        @{
+            double avg = Model.AverageRating ?? 0;
+            int fullStars = (int)Math.Floor(avg);
+            bool hasHalfStar = (avg - fullStars) >= 0.5;
+        }
+
+        @for (int i = 1; i <= 5; i++)
+        {
+            if (i <= fullStars)
+            {
+                <!-- full star -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-yellow-400 stroke-yellow-400" viewBox="0 0 24 24">
+                    <path
+                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                </svg>
+            }
+            else if (i == fullStars + 1 && hasHalfStar)
+            {
+                <!-- half star -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-yellow-400 stroke-yellow-400" viewBox="0 0 24 24">
+                    <defs>
+                        <linearGradient id="half">
+                            <stop offset="50%" stop-color="currentColor" />
+                            <stop offset="50%" stop-color="transparent" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#half)" stroke="currentColor"
+                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                </svg>
+            }
+            else
+            {
+                <!-- empty star -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-yellow-400" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2">
+                    <path
+                        d="M12 .587l3.668 7.431L24 9.751l-6 5.848 1.416 8.264L12 19.771l-7.416 4.092L6 15.599 0 9.751l8.332-1.733z" />
+                </svg>
+            }
+        }
+
+        @{
+            string ratingText = $"{Model.RatingCount} rating{(Model.RatingCount != 1 ? "s" : "")}";
+        }
+        <div class="flex items-center text-gray-700 md:text-xl lg:text-lg ml-4">
+            @ratingText
+        </div>
+    </div>
+
+    <!-- Description -->
+    <p class="recipe-card__description text-gray-600 line-clamp-2 break-words md:text-lg lg:text-lg mt-2">
+        @Model.Description
+    </p>
+
+    <div class="flex-grow"></div>
+
+    <!-- Tags bar -->
+    <div class="flex rounded-md justify-around items-center text-center gap-4 mt-1 md:mt-2">
+        <!-- Time -->
+        <div class="flex flex-col items-center w-1/4">
+            <i data-lucide="clock" class="w-6 h-6 text-gray-500"></i>
+            <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate"
+                data-testid="recipe-time">@Model.TotalTimeDisplay</span>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="flex flex-col items-center w-1/4">
+            <i data-lucide="chef-hat" class="w-6 h-6 text-gray-500"></i>
+            <span data-testid="difficulty-level"
+                class="text-xs font-medium
+                    @(Model.DifficultyLevel == 1
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ? "text-green-600 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        : Model.DifficultyLevel == 2
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ? "text-orange-500 md:text-sm lg:text-md"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        : "text-red-600 md:text-sm lg:text-md")">
+                @(Model.DifficultyLevel == 1 ? "Easy" :
+                                Model.DifficultyLevel == 2 ? "Medium" : "Hard")
+            </span>
+        </div>
+        <!-- Dairy Free -->
+        @if (Model.IsDairyFree)
+        {
+            <div class="flex flex-col items-center w-1/4">
+                <i data-lucide="milk-off" class="w-6 h-6 text-gray-500"></i>
+                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate" data-testid="dairy-free-tag">Dairy
+                    Free</span>
+            </div>
+        }
+        <!-- Vegetarian -->
+        @if (Model.IsVegetarian)
+        {
+            <div class="flex flex-col items-center w-1/4">
+                <i data-lucide="vegan" class="w-6 h-6 text-gray-500"></i>
+                <span class="text-xs md:text-sm lg:text-md text-gray-500 truncate"
+                    data-testid="vegetarian-tag">Vegetarian</span>
+            </div>
+        }
+
+
+    </div>
+</div>
+</div>
+</div>
 </div>
