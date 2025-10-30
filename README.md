@@ -1,4 +1,4 @@
-# 🍳 SueChef — Full-Stack MVC Meal Planner
+#  SueChef — Full-Stack MVC Meal Planner
 
 > **"Your personalised meal planning companion — like BBC Good Food, but smarter."**
 
@@ -107,7 +107,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 
 ---
 
-## 🚀 Overview
+## Overview
 
 **Local URL:** [`http://localhost:5179`](http://localhost:5179)
 
@@ -123,7 +123,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 | Folder | Description |
 |--------|--------------|
@@ -160,7 +160,7 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 
 ---
 
-## 🗄️ Database Schema & Migrations
+## Database Schema & Migrations
 
 | Model | Purpose |
 |--------|----------|
@@ -246,7 +246,7 @@ dotnet ef database update <MigrationName>
 
 ---
 
-## 🧭 Controllers
+## Controllers
 
 | Controller | Purpose |
 |-------------|----------|
@@ -263,7 +263,7 @@ dotnet ef database update <MigrationName>
 
 ---
 
-## 🧠 ViewModels
+## ViewModels
 
 | ViewModel | Description |
 |------------|--------------|
@@ -288,7 +288,7 @@ dotnet ef database update <MigrationName>
 
 ---
 
-## 🧱 Views & Partials
+## Views & Partials
 
 | File | Function |
 |------|-----------|
@@ -306,7 +306,7 @@ dotnet ef database update <MigrationName>
 
 ---
 
-## 💻 Frontend JavaScript
+## Frontend JavaScript
 
 | Script | Purpose |
 |---------|----------|
@@ -321,7 +321,7 @@ dotnet ef database update <MigrationName>
 
 ---
 
-## 🧪 Testing (xUnit + Playwright)
+## Testing (xUnit + Playwright)
 
 SueChef uses **Playwright** for UI automation and **xUnit** for integration and unit testing.
 
@@ -358,7 +358,7 @@ npx playwright test
 ---
 
 
-## 🙏 Acknowledgements & Documentation
+## Acknowledgements & Documentation
 
 | Technology | Documentation | Purpose |
 |-------------|----------------|----------|
@@ -375,7 +375,7 @@ npx playwright test
 
 ---
 
-## 🧭 Summary of Documentation
+## Summary of Documentation
 
 | Category | Documentation | Use Case |
 |-----------|----------------|----------|
@@ -389,7 +389,7 @@ npx playwright test
 
 ---
 
-## 🧾 License
+## License
 
 This project is released under the MIT License.
 
