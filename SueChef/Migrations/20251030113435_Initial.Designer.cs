@@ -12,8 +12,8 @@ using SueChef.Models;
 namespace SueChef.Migrations
 {
     [DbContext(typeof(SueChefDbContext))]
-    [Migration("20251026181031_AddIsDeletedToMealPlanRecipe")]
-    partial class AddIsDeletedToMealPlanRecipe
+    [Migration("20251030113435_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,66 @@ namespace SueChef.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Chefs");
+                });
+
+            modelBuilder.Entity("SueChef.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("SueChef.Models.Favourite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Servings")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(4);
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("SueChef.Models.Ingredient", b =>
@@ -82,19 +142,22 @@ namespace SueChef.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("CreatedOn")
+                    b.Property<DateTime?>("CreatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("CURRENT_DATE");
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("MealPlanTitle")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<DateOnly?>("UpdatedOn")
+                    b.Property<DateTime?>("UpdatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("CURRENT_DATE");
+                        .HasColumnType("timestamptz")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -155,7 +218,10 @@ namespace SueChef.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UserId", "RecipeId")
+                        .IsUnique();
 
                     b.ToTable("Ratings");
                 });
@@ -271,6 +337,40 @@ namespace SueChef.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SueChef.Models.Comment", b =>
+                {
+                    b.HasOne("SueChef.Models.Recipe", "Recipe")
+                        .WithMany("Comments")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SueChef.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SueChef.Models.Favourite", b =>
+                {
+                    b.HasOne("SueChef.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId");
+
+                    b.HasOne("SueChef.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SueChef.Models.MealPlan", b =>
                 {
                     b.HasOne("SueChef.Models.User", "User")
@@ -302,9 +402,18 @@ namespace SueChef.Migrations
                 {
                     b.HasOne("SueChef.Models.Recipe", "Recipe")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SueChef.Models.User", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Recipe");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
@@ -354,6 +463,8 @@ namespace SueChef.Migrations
 
             modelBuilder.Entity("SueChef.Models.Recipe", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("MealPlanRecipes");
 
                     b.Navigation("Ratings");
@@ -363,7 +474,11 @@ namespace SueChef.Migrations
 
             modelBuilder.Entity("SueChef.Models.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("MealPlans");
+
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

@@ -18,7 +18,7 @@ public class RecipeDetailsController : Controller
         _db = db;
     }
 
-    [Route("/Recipe/{id}")]
+    [Route("/Recipe/{id}", Name = "RecipeDetails")]
     [HttpGet]
     public async Task<IActionResult> Index(int id)
     {
@@ -27,12 +27,15 @@ public class RecipeDetailsController : Controller
                                 .Include(r => r.RecipeIngredients)
                                     .ThenInclude(ri => ri.Ingredient)
                                 .FirstOrDefaultAsync(r => r.Id == id);
+        
+        if (recipe == null) return NotFound();
 
         var ratings = await _db.Ratings.Where(r => r.RecipeId == id).ToListAsync(); //Pulling the ratings from the db
         double? avgRatings = ratings.Any() ? ratings.Average(r => r.Stars) : 0; //Calculates the average for when we need it later if no ratings default to 0 
         int TotalRatings = ratings.Count(); //Counts total ratings 
 
         int? currentUserId = HttpContext.Session.GetInt32("user_id");
+        bool isLoggedIn = currentUserId != null; // If the user is logged in, this variable is True
         var userRating = currentUserId != null //If the user is logged in - get the rating from the database, otherwise use the default  
                                         ? await _db.Ratings
                                             .Where(r => r.RecipeId == id && r.UserId == currentUserId.Value)
@@ -43,6 +46,14 @@ public class RecipeDetailsController : Controller
 
         if (recipe == null)
             return NotFound();//Return not found page if no recipe is found 
+
+        // Logic for checking is current user has favourited this recipe:
+        bool isFavourited = false;
+        if (currentUserId.HasValue)
+        {
+            isFavourited = await _db.Favourites
+                .AnyAsync(f => f.RecipeId == id && f.UserId == currentUserId && !f.IsDeleted);
+        }
 
         //Calories per serving logic, Dividing calories by 100 so we have the calorie per g and then multiplying by the quantity in the recipe. 
         decimal caloriesPerServing = recipe.RecipeIngredients.Sum(ri => ((decimal)ri.Ingredient.Calories / 100m) * ri.Quantity);
@@ -80,15 +91,52 @@ public class RecipeDetailsController : Controller
             AverageRating = avgRatings,
             UserRating = userRating //Passing all the ratings and user rating in the controller so we know if they have or haven't rated. 
         };
+            var comments = await _db.Comments //pulls all comments from db and makes them into a commenting view model
+            .Where(c => c.RecipeId == id && !string.IsNullOrWhiteSpace(c.Content))
+            .OrderByDescending(c => c.CreatedOn)
+            .Select(c => new CommentingViewModel
+            {
+                Id = c.Id,
+                RecipeId = c.RecipeId,
+                userName = c.User.UserName,
+                Content = c.Content,
+                CreatedOn = c.CreatedOn
+            })
+            .ToListAsync();
+
+            // var usernames = await _db.Users //going to pull the username and the the id priamry key 
+            // .Where(u => u.Id == id)
+            // .Select(u => new UserViewModel 
+            // {
+            //     Id = u.Id,
+            //     UserName = u.UserName
+            // })
+            // .ToListAsync();
+
+
+        // Logic to collect all ACTIVE Meal Plans belonging to signed in user
+        var mealPlans = await _db.MealPlans
+            .Where(mp => mp.UserId == currentUserId && !mp.IsDeleted)
+            .OrderByDescending(mp => mp.UpdatedOn)
+            .Select(mp => new MealPlanViewModel
+            {
+                Id = mp.Id,
+                MealPlanTitle = mp.MealPlanTitle,
+                UpdatedOn = mp.UpdatedOn
+            })
+            .ToListAsync();
 
         var AllViewModels = new IndividualRecipePageViewModel
         {
-            IndividualRecipe = viewModel
+            IndividualRecipe = viewModel,
+            CommentsList = comments,
+            IsFavourited = isFavourited,
+            UserMealPlans = mealPlans,
+            IsLoggedIn = isLoggedIn
         };
         return View(AllViewModels);
 
     }
-
 
     [HttpPost]
     public async Task<IActionResult> Rate(int recipeId, int rating)
@@ -129,5 +177,6 @@ public class RecipeDetailsController : Controller
         await _db.SaveChangesAsync();
         return RedirectToAction("Index", new { id = recipeId }); //Re load the page 
     }
+
 
 }

@@ -3,10 +3,10 @@
 <section class="relative w-full max-w-6xl mx-auto mb-4 overflow-hidden shadow-md">
 
         <!-- Background image -->
-        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" data-testid="Featured Recipe @Model.Id"
+        <a asp-controller="RecipeDetails" asp-action="Index" asp-route-id="@Model.Id" data-testid="Featured Recipe @Model.Id" title="@Model.Title"
             class="block transition-all duration-300">
             <img src="@Model.RecipePicturePath" alt="Recipe Picture"
-                class="w-full h-[70vh] object-cover" />
+                class="w-full h-[70vh] object-cover"/>
 
             <!-- Overlay -->
             <div class="absolute inset-0 bg-gradient-to-t to-transparent">
@@ -18,7 +18,7 @@
                 <h2 class="text-3xl font-semibold text-gray-900 mb-2 drop-shadow-md">
                     @Model.Title
                 </h2>
-                <p class="text-gray-800 text-md line-clamp-3 mb-2 drop-shadow-sm">
+                <p class="text-gray-800 text-sm md:text-md line-clamp-3 mb-2 drop-shadow-sm leading-relaxed tracking-tight">
                     @Model.Description
                 </p>
                 <button

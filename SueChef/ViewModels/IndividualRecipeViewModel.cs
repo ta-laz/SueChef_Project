@@ -23,5 +23,6 @@ namespace SueChef.ViewModels
         public int RatingCount { get; set; }
 
         public int? UserRating { get; set; }
+        
     }
 }

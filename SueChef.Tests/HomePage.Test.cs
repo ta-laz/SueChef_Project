@@ -1,6 +1,7 @@
 namespace SueChef.Tests;
 
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
@@ -23,6 +24,11 @@ public class HomePage : PageTest
     {
         await Page.GotoAsync("/");
         await using var context = DbFactory.Create();
+            Console.WriteLine(context.Database.GetDbConnection().ConnectionString);
+            var pending = await context.Database.GetPendingMigrationsAsync();
+            Console.WriteLine("Pending: " + string.Join(", ", pending));
+            var applied = await context.Database.GetAppliedMigrationsAsync();
+            Console.WriteLine("Applied: " + string.Join(", ", applied));
         await TestDataSeeder.ResetAndSeedAsync(context);
     }
     public override BrowserNewContextOptions ContextOptions()

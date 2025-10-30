@@ -1,0 +1,380 @@
+@model SueChef.ViewModels.SearchPageViewModel
+
+<body class="min-h-screen bg-orange-50">
+    <div class="max-w-screen-lg mx-auto p-4">
+        <!-- This bit is the search bar -->
+        <div class="rounded-md border-2 border-gray-200 bg-white p-6 mb-4">
+            <form method="get" action="/search" class="space-y-4">
+                <div class="relative">
+                    <input type="text" name="searchQuery" value="@Model.SearchQuery"
+                        placeholder="Search recipes, ingredients or chefs..."
+                        class="w-full rounded-md border border-gray-200 bg-gray-100 py-3 pl-10 pr-4 shadow-sm focus:border-rose-700 focus:ring focus:ring-rose-200" />
+                        <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707a1 1 0 001.414-1.414l-4.707-4.707A8 8 0 0010 2z" />                   
+                    </svg>
+                </div>
+
+                <!-- Control bar for filters and actions -->
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <!-- Left: Toggle filters -->
+                    <button type="button" id="toggleFiltersBtn"
+                        class="text-sm font-medium text-rose-700 underline hover:text-rose-900 transition">
+                        Hide Filters
+                    </button>
+
+                    <!-- Right: Search + Reset buttons -->
+                    <div class="flex gap-3" id="ButtonToPressWhenSelectedACategory">
+                        <button type="submit"
+                            class="w-28 h-9 rounded-lg bg-orange-600 font-medium text-white outline-none hover:opacity-80 focus:ring">
+                            Search
+                        </button>
+                        <button type="submit" name="clear" value="true"
+                            class="w-28 h-9 rounded-lg bg-gray-200 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- This is to hide the filters on small screens -->
+                <div id="filtersContainer" class="mt-4 transition-all duration-300 ease-in-out">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+
+                        <!-- This bit is where we start with the dropdown filters -->
+                        <div class="flex flex-col relative">
+                            <label class="text-sm font-medium text-gray-700">Category</label>
+                            <!-- Visible trigger -->
+                            <button type="button" id="categoryDropdown" class="flex justify-between items-center w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 text-left focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50 cursor-pointer select-none">
+                                <span id="categorySelectedText" class="truncate">
+                                    @(
+                                        string.IsNullOrWhiteSpace(Model.SearchCategory)
+                                            ? "Any category"
+                                            : Model.SearchCategory
+                                    )
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4 text-gray-600 -mr-2"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- The list of options -->
+                            <div id="categoryList" class="absolute top-full left-0 w-full mt-1 hidden rounded-md border border-gray-100 bg-white shadow-lg max-h-48 overflow-y-auto z-50 text-sm">
+                                <!-- "Any category" / empty option -->
+                                <button type="button" data-value="" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                    <span>Any category</span>
+
+                                    @if (string.IsNullOrWhiteSpace(Model.SearchCategory))
+                                    {
+                                        <span class="text-rose-700 font-semibold">✓</span>
+                                    }
+                                </button>
+
+                                @foreach (var category in Model.AllCategories)
+                                {
+                                    var isSelected = Model.SearchCategory == category;
+                                    <button type="button" data-value="@category" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                        <span>@category</span>
+                                        @if (isSelected)
+                                        {
+                                            <span class="text-rose-700 font-semibold">✓</span>
+                                        }
+
+                                    </button>
+                                }
+                            </div>
+
+                            <!-- Hidden input that will actually be submitted in the form -->
+                            <input type="hidden" id="categoryInput" name="category"
+                                value="@(string.IsNullOrWhiteSpace(Model.SearchCategory) ? "" : Model.SearchCategory)" />
+                        </div>
+
+                        <!-- This one is kinda weird looking because it needs to be multi-select which is a bit more complicated apparently -->
+                        <div class="flex flex-col relative">
+                            <label for="ingredient" class="text-sm font-medium text-gray-700">Ingredient</label>
+
+                            <button type="button" id="ingredientDropdown"
+                                class="flex justify-between items-center w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50 cursor-pointer select-none">
+                                <span id="ingredientPlaceholder" class="truncate text-left">Select ingredients</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 -mr-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div id="ingredientList" class="absolute top-full left-0 w-full mt-1 hidden rounded-md border border-gray-100 bg-white shadow-lg max-h-48 overflow-y-auto z-50">
+                                @foreach (var ingredient in Model.AllIngredients)
+                                {
+                                    <label
+                                        class="flex items-center gap-2 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
+                                        <input type="checkbox" name="ingredients" value="@ingredient"
+                                            class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"@(Model.SelectedIngredients != null && Model.SelectedIngredients.Contains(ingredient) ? "checked" : "")/>
+                                        @ingredient
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                
+                        <!-- Back to regular programming with the Chef's list -->
+                        <div class="flex flex-col relative">
+                            <label class="text-sm font-medium text-gray-700">Chef Name</label>
+
+                            <!-- Button trigger -->
+                            <button
+                                type="button"
+                                id="chefDropdown"
+                                class="flex justify-between items-center w-full rounded-md border border-gray-100 bg-gray-100 
+                                    px-2 py-[9px] h-[42px] shadow-sm text-gray-700 text-left 
+                                    focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50 
+                                    cursor-pointer select-none"
+                            >
+                                <span id="chefSelectedText" class="truncate">
+                                    @(
+                                        string.IsNullOrWhiteSpace(Model.SearchChef)
+                                            ? "Any chef"
+                                            : Model.SearchChef
+                                    )
+                                </span>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 -mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown list -->
+                            <div
+                                id="chefList"
+                                class="absolute top-full left-0 w-full mt-1 hidden rounded-md border border-gray-100 bg-white 
+                                    shadow-lg max-h-48 overflow-y-auto z-50 text-sm"
+                            >
+                                <!-- 'Any chef' option -->
+                                <button type="button" data-value="" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between"
+                                >
+                                    <span>Any chef</span>
+                                    @if (string.IsNullOrWhiteSpace(Model.SearchChef))
+                                    {
+                                        <span class="text-rose-700 font-semibold">✓</span>
+                                    }
+                                </button>
+
+                                <!-- Actual chef options -->
+                                @foreach (var chef in Model.AllChefs)
+                                {
+                                    var isSelected = Model.SearchChef == chef;
+                                    <button type="button" data-value="@chef" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between"
+                                    >
+                                        <span>@chef</span>
+                                        @if (isSelected)
+                                        {
+                                            <span class="text-rose-700 font-semibold">✓</span>
+                                        }
+                                    </button>
+                                }
+                            </div>
+
+                            <!-- Hidden input for form submission -->
+                            <input
+                                type="hidden" id="chefInput" name="chef" value="@(string.IsNullOrWhiteSpace(Model.SearchChef) ? "" : Model.SearchChef)" />
+                        </div>
+
+                        <div class="flex flex-col relative">
+                            <label class="text-sm font-medium text-gray-700">Difficulty</label>
+
+                            <button type="button" id="difficultyDropdown" class="flex justify-between items-center w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 text-left focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50 cursor-pointer select-none"
+                            >
+                                <span id="difficultySelectedText" class="truncate">
+                                    @{
+                                        var difficultyLabel = Model.Difficulty switch
+                                        {
+                                            1 => "Easy",
+                                            2 => "Medium",
+                                            3 => "Hard",
+                                            _ => "Any difficulty"
+                                        };
+                                    }
+                                    @difficultyLabel
+                                </span>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 -mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div
+                                id="difficultyList"
+                                class="absolute top-full left-0 w-full mt-1 hidden rounded-md border border-gray-100 bg-white shadow-lg max-h-48 overflow-y-auto z-50 text-sm"
+                            >
+                                <button type="button" data-value="" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                    <span>Any difficulty</span>
+                                    @if (!Model.Difficulty.HasValue)
+                                    {
+                                        <span class="text-rose-700 font-semibold">✓</span>
+                                    }
+                                </button>
+
+                                @foreach (var option in new[] {
+                                    new { Value = 1, Label = "Easy" },
+                                    new { Value = 2, Label = "Medium" },
+                                    new { Value = 3, Label = "Hard" }
+                                })
+                                {
+                                    var isSelected = Model.Difficulty == option.Value;
+                                    <button type="button" data-value="@option.Value" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                        <span>@option.Label</span>
+                                        @if (isSelected)
+                                        {
+                                            <span class="text-rose-700 font-semibold">✓</span>
+                                        }
+                                    </button>
+                                }
+                            </div>
+
+                            <input type="hidden" id="difficultyInput" name="difficulty"
+                                value="@(Model.Difficulty.HasValue ? Model.Difficulty.ToString() : "")" />
+                        </div>
+
+                        <div class="flex flex-col relative">
+                            <label class="text-sm font-medium text-gray-700">Total Time</label>
+
+                            <button type="button" id="durationDropdown" class="flex justify-between items-center w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-[9px] h-[42px] shadow-sm text-gray-700 text-left focus:border-rose-700 focus:ring focus:ring-rose-200 focus:ring-opacity-50 cursor-pointer select-none"
+                            >
+                                <span id="durationSelectedText" class="truncate">
+                                    @{
+                                        var durationLabel = Model.DurationBucket switch
+                                        {
+                                            "under20" => "< 20 min",
+                                            "20to40" => "20–40 min",
+                                            "over40" => "> 40 min",
+                                            _ => "Any time"
+                                        };
+                                    }
+                                    @durationLabel
+                                </span>
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4 text-gray-600 -mr-2"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div
+                                id="durationList"
+                                class="absolute top-full left-0 w-full mt-1 hidden rounded-md border border-gray-100 bg-white shadow-lg max-h-48 overflow-y-auto z-50 text-sm"
+                            >
+                                <button type="button" data-value="" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                    <span>Any time</span>
+                                    @if (string.IsNullOrWhiteSpace(Model.DurationBucket))
+                                    {
+                                        <span class="text-rose-700 font-semibold">✓</span>
+                                    }
+                                </button>
+
+                                @foreach (var option in new[] {
+                                    new { Value = "under20", Label = "< 20 min" },
+                                    new { Value = "20to40", Label = "20–40 min" },
+                                    new { Value = "over40", Label = "> 40 min" }
+                                })
+                                {
+                                    var isSelected = Model.DurationBucket == option.Value;
+                                    <button type="button" data-value="@option.Value" class="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700 flex justify-between">
+                                        <span>@option.Label</span>
+                                        @if (isSelected)
+                                        {
+                                            <span class="text-rose-700 font-semibold">✓</span>
+                                        }
+                                    </button>
+                                }
+                            </div>
+
+                            <input type="hidden" id="durationInput" name="duration"
+                                value="@(string.IsNullOrWhiteSpace(Model.DurationBucket) ? "" : Model.DurationBucket)" />
+                        </div>
+
+                        <div class="flex sm:flex-row gap-8 md:pt-4 justify-center">
+                            <label class="flex items-center gap-2 text-medium text-gray-700">
+                                <input type="checkbox" name="dietary" value="vegetarian" class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"
+                                    @(Model.DietarySelections.Contains("vegetarian") ? "checked" : "") />
+                                Vegetarian
+                            </label>
+                            <label class="flex items-center gap-2 text-medium text-gray-700">
+                                <input type="checkbox" name="dietary" value="dairyfree" class="accent-rose-700 cursor-pointer rounded focus:ring focus:ring-rose-200"
+                                    @(Model.DietarySelections.Contains("dairyfree") ? "checked" : "") />
+                                Dairy Free
+                            </label>
+                        </div>
+                    </div>
+                </div>       
+            </form>
+        </div>
+
+        <!-- Text that says what the search was and how many results -->
+        @if (Model.HasSearch)
+        {
+            <div class="text-left mb-4 pl-2 md:pl-6" datatest-id="testingForCertainCategories">
+                <p class="text-2xl font-semibold text-gray-700" >
+                    Search results
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+                    {
+                        @:for "<span class='text-rose-700 font-medium'>@Model.SearchQuery</span>"
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchCategory))
+                    {
+                        @: in category "<span class='text-rose-700 font-medium'>@Model.SearchCategory</span>"
+                }
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchChef))
+                    {
+                        @: by chef "<span class='text-rose-700 font-medium'>@Model.SearchChef</span>"
+                    }
+                    @if (Model.Difficulty.HasValue)
+                    {
+                        var difficultyLabel = Model.Difficulty switch
+                        {
+                            1 => "Easy",
+                            2 => "Medium",
+                            3 => "Hard",
+                            _ => ""
+                        };
+                        @: with difficulty "<span class='text-rose-700 font-medium'>@difficultyLabel</span>"
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.DurationBucket))
+                    {
+                        var durationLabel = Model.DurationBucket switch
+                        {
+                            "under20" => "< 20 min",
+                            "20to40" => "20–40 min",
+                            "over40" => "> 40 min",
+                            _ => ""
+                        };
+                        @: taking "<span class='text-rose-700 font-medium'>@durationLabel</span>"
+                    }
+                </p>
+                <p class="text-sm text-gray-500 mt-1">
+                    Showing <span class="font-medium">@Model.Recipes.Count</span> recipe@(Model.Recipes.Count == 1 ? "" : "s")
+                </p>
+            </div>
+        }
+
+    <!-- Printing the recipes IF there was a search query or filter put on -->
+    
+    @if (Model.Recipes.Any())
+    {
+        @foreach (var recipe in Model.Recipes)
+        {
+            <div class="pb-6">
+                <partial name="_RecipeCardHorizontalPartial" model="recipe" />
+            </div>
+        }
+    }
+    else if (Model.HasSearch)
+    {
+        <p class="text-gray-500 text-center mt-6">No recipes found.</p>
+    }
+
+    </div>
+</body>
+
+<script src="~/js/searchpage.js"></script>

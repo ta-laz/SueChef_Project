@@ -4,19 +4,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileSearch = document.getElementById('mobileSearch');
     const desktopSearch = document.getElementById('desktopSearch');
 
+    // get their input fields
+    const mobileInput = mobileSearch?.querySelector('input');
+    const desktopInput = desktopSearch?.querySelector('input');
+
     if (searchButton) {
         searchButton.addEventListener('click', (event) => {
             event.stopPropagation();
 
-            if (window.innerWidth < 768) {
-                mobileSearch?.classList.toggle('hidden');
+            const isMobile = window.innerWidth < 768;
+            const input = isMobile ? mobileInput : desktopInput;
+            const container = isMobile ? mobileSearch : desktopSearch;
+
+            if (!input || !container) return;
+
+            const query = input.value.trim();
+
+            // If there's text, perform the search
+            if (query !== '') {
+                const encoded = encodeURIComponent(query);
+                window.location.href = `/search?searchQuery=${encoded}`;
+                return;
+            }
+
+            // Otherwise toggle visibility
+            if (isMobile) {
+                container.classList.toggle('hidden');
+                if (!container.classList.contains('hidden')) input.focus();
             } else {
-                desktopSearch?.classList.toggle('w-0');
-                desktopSearch?.classList.toggle('w-64');
+                const open = container.classList.contains('w-0');
+                container.classList.toggle('w-0', !open);
+                container.classList.toggle('w-64', open);
+                if (open) input.focus();
             }
         });
     }
 
+    // Close search when clicking outside
     document.addEventListener('click', (event) => {
         const target = event.target;
         const clickInSearch =
@@ -34,6 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Allow pressing Enter to search
+    [mobileInput, desktopInput].forEach((input) => {
+        if (!input) return;
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = input.value.trim();
+                if (query) window.location.href = `/search?searchQuery=${encodeURIComponent(query)}`;
+            }
+        });
+    });
+
 
     // --- Side menus & overlay ---
     const menuButton = document.getElementById('menuButton');            // left opener

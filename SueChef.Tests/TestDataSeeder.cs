@@ -31,11 +31,25 @@ namespace SueChef.Test
       try
       {
         // Clean slate
+        // await db.Database.ExecuteSqlRawAsync("""
+        //             TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
+        //             "Ratings","MealPlanRecipes", "Favourites", "Comments" "MealPlans","Users"
+        //             RESTART IDENTITY CASCADE;
+        //         """);
         await db.Database.ExecuteSqlRawAsync("""
-                    TRUNCATE TABLE "RecipeIngredients","Recipes","Ingredients","Chefs",
-                    "Ratings","MealPlanRecipes","MealPlans","Users"
-                    RESTART IDENTITY CASCADE;
-                """);
+          TRUNCATE TABLE
+            "RecipeIngredients",
+            "MealPlanRecipes",
+            "Favourites",
+            "Ratings",
+            "Comments",
+            "MealPlans",
+            "Recipes",
+            "Ingredients",
+            "Chefs",
+            "Users"
+          RESTART IDENTITY CASCADE;
+          """);
 
         // 1) Chefs (keep your names)
         var chefs = new List<Chef>
@@ -141,7 +155,7 @@ namespace SueChef.Test
 
         // Meal Plans (0–2 per user)
         var mealPlans = new List<MealPlan>();
-        var today = new DateOnly(2025, 10, 26);
+        var today = new DateTime(2025, 10, 26, 0, 0, 1, DateTimeKind.Utc);
         for (int i = 0; i < users.Count; i++)
         {
           var u = users[i];
@@ -154,8 +168,8 @@ namespace SueChef.Test
             {
               UserId = u.Id,
               MealPlanTitle = $"{u.UserName} Plan {j + 1}",
-              CreatedOn = created,
-              UpdatedOn = created.AddDays(1)
+              CreatedOn = created.ToUniversalTime(),
+              UpdatedOn = created.AddDays(1).ToUniversalTime()
             });
           }
         }
@@ -213,78 +227,78 @@ namespace SueChef.Test
         await db.SaveChangesAsync();
 
         // Favorites (each user has 2–4)
-        // var favorites = new List<Favorite>();
-        // foreach (var u in users)
-        // {
-        //     var picked = new HashSet<int>();
-        //     int favCount = 2 + (u.Id % 3);
-        //     for (int j = 0; j < favCount; j++)
-        //     {
-        //         int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
-        //         if (!picked.Add(rid)) continue;
-        //         favorites.Add(new Favorite
-        //         {
-        //             UserId = u.Id,
-        //             RecipeId = rid
-        //         });
-        //     }
-        // }
-        // db.Favorites.AddRange(favorites);
-        // await db.SaveChangesAsync();
+        var favourites = new List<Favourite>();
+        foreach (var u in users)
+        {
+            var picked = new HashSet<int>();
+            int favCount = 2 + (u.Id % 3);
+            for (int j = 0; j < favCount; j++)
+            {
+                int rid = ((u.Id * 19 + j * 5) % totalRecipes) + 1;
+                if (!picked.Add(rid)) continue;
+                favourites.Add(new Favourite
+                {
+                    UserId = u.Id,
+                    RecipeId = rid
+                });
+            }
+        }
+        db.Favourites.AddRange(favourites);
+        await db.SaveChangesAsync();
 
-// ---------- Comments ----------
-        // int totalUsers = await db.Users.CountAsync();
-        // int totalRecipes = await db.Recipes.CountAsync();
+//---------- Comments ----------
+        int totalUsers = await db.Users.CountAsync();
+        int totalRecipes1 = await db.Recipes.CountAsync();
 
-        // if (totalUsers == 0 || totalRecipes == 0)
-        //   throw new InvalidOperationException("Seed users and recipes before comments.");
+        if (totalUsers == 0 || totalRecipes1 == 0)
+          throw new InvalidOperationException("Seed users and recipes before comments.");
 
-        // var users = await db.Users.OrderBy(u => u.Id).ToListAsync();
-        // var comments = new List<Comment>();
-        // var phrases = new[]
-        // {
-    //     "Loved this recipe — turned out amazing!",
-    //     "Made it last night and my family devoured it.",
-    //     "Super easy to follow and packed with flavour.",
-    //     "Will definitely make this again soon.",
-    //     "A bit spicy for me, but still really good.",
-    //     "Added some extra herbs — perfection.",
-    //     "Took longer than expected but worth it.",
-    //     "Brilliant weeknight dinner, thanks!",
-    //     "Used leftovers and it still worked great.",
-    //     "Simple, hearty and delicious."
-    // };
+        var users1 = await db.Users.OrderBy(u => u.Id).ToListAsync();
+        var comments = new List<Comment>();
+        var phrases = new[]
+        {
+        "Loved this recipe — turned out amazing!",
+        "Made it last night and my family devoured it.",
+        "Super easy to follow and packed with flavour.",
+        "Will definitely make this again soon.",
+        "A bit spicy for me, but still really good.",
+        "Added some extra herbs — perfection.",
+        "Took longer than expected but worth it.",
+        "Brilliant weeknight dinner, thanks!",
+        "Used leftovers and it still worked great.",
+        "Simple, hearty and delicious."
+    };
 
-        // var rand1 = new Random(99);
-        // var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
+        var rand1 = new Random(99);
+        var baseTime = new DateTime(2025, 1, 1, 8, 0, 0, DateTimeKind.Utc);
 
-        // foreach (var u in users)
-        // {
-        //   // Each user leaves 3 comments on different recipes
-        //   var picked = new HashSet<int>();
-        //   for (int j = 0; j < 3; j++)
-        //   {
-        //     int rid;
-        //     do
-        //     {
-        //       rid = rand1.Next(1, totalRecipes + 1);
-        //     } while (!picked.Add(rid));
+        foreach (var u in users1)
+        {
+          // Each user leaves 3 comments on different recipes
+          var picked = new HashSet<int>();
+          for (int j = 0; j < 3; j++)
+          {
+            int rid;
+            do
+            {
+              rid = rand1.Next(1, totalRecipes + 1);
+            } while (!picked.Add(rid));
 
-        //     string content = phrases[(u.Id + j + rand.Next(phrases.Length)) % phrases.Length];
-        //     var created = baseTime.AddDays(u.Id * 3 + j).AddMinutes(rand.Next(0, 300));
+            string content = phrases[(u.Id + j + rand.Next(phrases.Length)) % phrases.Length];
+            var created = baseTime.AddDays(u.Id * 3 + j).AddMinutes(rand.Next(0, 300));
 
-        //     comments.Add(new Comment
-        //     {
-        //       UserId = u.Id,
-        //       RecipeId = rid,
-        //       Content = content,
-        //       CreatedOn = created
-        //     });
-        //   }
-        // }
+            comments.Add(new Comment
+            {
+              UserId = u.Id,
+              RecipeId = rid,
+              Content = content,
+              CreatedOn = created
+            });
+          }
+        }
 
-        // db.Comments.AddRange(comments);
-        // await db.SaveChangesAsync();
+        db.Comments.AddRange(comments);
+        await db.SaveChangesAsync();
 
         await tx.CommitAsync();
         Console.WriteLine("✅ Database seeded.");
