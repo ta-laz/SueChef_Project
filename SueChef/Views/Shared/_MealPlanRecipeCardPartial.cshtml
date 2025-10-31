@@ -19,11 +19,11 @@
                     <!-- Recipe Title -->
                     <div class="flex flex-col sm:flex-row justify-between items-start md:items-center gap-3">
                         <h3
-                            class="text-left text-lg text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition flex-1 mr-3 leading-tight line-clamp-2">
+                            class="w-full text-left text-lg text-gray-700 md:text-xl lg:text-xl font-medium hover:text-orange-800 transition flex-1 mr-3 leading-tight line-clamp-2">
                             @Model.Title
                         </h3>
         </a>
-            <div class="mb-1 flex flex-wrap items-center gap-2 md:justify-end order-2 md:order-1 w-[90%] md:w-auto ">
+            <div class="mb-1 flex flex-wrap items-center gap-2 md:justify-end order-2 md:order-1 w-[90%] ">
                 <div class="w-18 flex h-8 items-center border border-orange-400 rounded-lg overflow-hidden bg-orange-50">
                     <button type="button" class="px-1 py-1 text-orange-700 hover:bg-orange-200"
                         onclick="adjustServings('@Model.Id', -1)">−</button>
