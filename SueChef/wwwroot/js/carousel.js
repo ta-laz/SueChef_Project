@@ -22,24 +22,29 @@ function initCarousel(carouselId) {
     let cardWidth = getCardWidth();
 
     function scrollCarousel(direction) {
-    const cards = track.querySelectorAll(".carousel-card");
-    const totalCards = cards.length;
-    const visibleCards = Math.floor(getVisibleCards());
-    const cardWidth = getCardWidth();
+        const cards = track.querySelectorAll(".carousel-card");
+        const totalCards = cards.length;
+        const cardWidth = getCardWidth();
 
-    // The maximum scroll position (no white space beyond last card)
-    const maxScroll = Math.max(0, (totalCards * cardWidth) - track.clientWidth);
+        // Find which card is currently closest to the left edge
+        const currentIndex = Math.round(track.scrollLeft / cardWidth);
 
-    // Calculate the proposed scroll amount
-    let newScroll = track.scrollLeft + (direction * cardWidth * visibleCards);
+        // Determine the new card index
+        let newIndex = currentIndex + direction * Math.floor(getVisibleCards());
 
-    // Clamp to valid range
-    if (newScroll < 0) newScroll = 0;
-    if (newScroll > maxScroll) newScroll = maxScroll;
+        // Clamp to valid range
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex > totalCards - Math.floor(getVisibleCards())) {
+            newIndex = totalCards - Math.floor(getVisibleCards());
+        }
 
-    // Smooth scroll
-    track.scrollTo({ left: newScroll, behavior: "smooth" });
-}
+        // Calculate exact scroll position so a card aligns flush left
+        const newScroll = newIndex * cardWidth;
+
+        // Smooth scroll to the new position
+        track.scrollTo({ left: newScroll, behavior: "smooth" });
+    }
+
 
 
     btnRight.addEventListener("click", () => scrollCarousel(1));
