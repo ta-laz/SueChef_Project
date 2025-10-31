@@ -1,3 +1,10 @@
+#  SueChef — Full-Stack MVC Meal Planner
+
+> **"Your personalised meal planning companion — like BBC Good Food, but smarter."**
+
+SueChef is a full-stack MVC web application developed as a Makers Academy final project. It allows users to browse recipes, plan weekly meals, generate shopping lists, and leave comments. The platform expands on familiar recipe applications by adding user interactivity, smart filtering, and persistent data storage.
+
+
 ## Quickstart
 
 First, clone this repository. Then:
@@ -98,34 +105,25 @@ To rollback the second, you again use `dotnet ef database update` but this time 
 ; dotnet ef database update CreatePostsAndUsers
 ```
 
-# 👨‍🍳 SueChef
+---
+
+## Overview
+
+**Local URL:** [`http://localhost:5179`](http://localhost:5179)
+
+**Tech Stack**
+| Layer | Technology |
+|-------|-------------|
+| Backend | ASP.NET Core MVC (C#) |
+| Database | PostgreSQL — `suechef_development`, `suechef_test` |
+| ORM | Entity Framework Core |
+| Frontend | Razor Views, Tailwind CSS, JavaScript |
+| Testing | Playwright (UI), xUnit (Unit) |
+| Auth | Custom session-based authentication filter |
 
 ---
 
-## 📘 Project Overview
-
-SueChef is a dynamic full-stack web application that allows users to browse and comment on recipes, rate dishes, create meal plans, and automatically generate shopping lists.  
-It expands on the functionality of traditional recipe sites like BBC Good Food by integrating **nutrition tracking**, **serving-size scaling**, and **personalised meal planning** tools.  
-
-This project was developed using **ASP.NET Core MVC**, **Entity Framework Core**, and **PostgreSQL**, styled with **Tailwind CSS**, and supported by **modular JavaScript** for interactivity.  
-SueChef offers a responsive, accessible experience and a modern MVC-based architecture.
-
----
-
-## ⚙️ Tech Stack
-
-- **ASP.NET Core MVC (.NET 8)**
-- **Entity Framework Core**
-- **PostgreSQL**
-- **Razor Views (Tailwind CSS)**
-- **JavaScript (modular scripts)**
-- **xUnit (Testing)**
-- **DotNetEnv (Environment Management)**
-- **Google OAuth + Session Authentication**
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 | Folder | Description |
 |--------|--------------|
@@ -138,25 +136,12 @@ SueChef offers a responsive, accessible experience and a modern MVC-based archit
 | `/ActionFilters` | Session authentication filter |
 
 ---
-
-## 🧩 Architecture & Design
-
-### 2.1 Overview
-
-SueChef follows the **Model–View–Controller (MVC)** pattern using ASP.NET Core.  
-This promotes separation of concerns, scalability, and maintainability.
-
-- **Model:** Defines application data and EF Core relationships.  
-- **View:** Razor templates that dynamically render HTML and Tailwind styling.  
-- **Controller:** Handles routes, processes requests, and connects models to views.
-
-### 2.2 Request Flow
+### Request Flow
 
 ```
 [Browser] → [Controller] → [Model/DbContext] → [Controller] → [View] → [Browser]
 ```
-
-### 2.3 Application Layers
+### Application Layers
 
 | Layer | Purpose | Example Files |
 |--------|----------|----------------|
@@ -165,7 +150,7 @@ This promotes separation of concerns, scalability, and maintainability.
 | **Controller** | Routes and handles logic | `MealPlanController.cs`, `RecipeDetailsController.cs` |
 | **Database Context** | EF Core ORM bridge | `SueChefDbContext.cs` |
 
-### 2.4 Design Principles
+### Design Principles
 
 - **Entity Framework Core** for ORM and migrations  
 - **Tailwind CSS** for clean, responsive UI  
@@ -175,187 +160,205 @@ This promotes separation of concerns, scalability, and maintainability.
 
 ---
 
-## 🍽️ Database Design
+## Database Schema & Migrations
 
-### 3.1 Overview
+| Model | Purpose |
+|--------|----------|
+| **Recipe** | Stores recipe metadata (title, ingredients, cooking time, difficulty, chef). |
+| **MealPlan** | Represents a user's meal plan, linking multiple recipes by day. |
+| **Ingredient** | Ingredient name, unit, and relationship to recipes. |
+| **RecipeIngredient** | Join table for many-to-many between Recipe and Ingredient. |
+| **MealPlanRecipes** | Associates MealPlans with selected Recipes. |
+| **Comment** | Stores user-generated comments per recipe. |
+| **User** | Authenticated users (credentials, preferences). |
+| **Rating** | Star ratings for recipes. |
+| **Chef** | Author attribution for each recipe. |
+| **Favourites** | Soft-deletable user-to-recipe favourites list. |
+| **ShoppingList** | Tracks items generated from meal plans. |
 
-SueChef uses **Entity Framework Core** with PostgreSQL to manage its relational schema.  
-The schema captures relationships between users, recipes, ingredients, comments, and meal plans.
+### Relationships
 
-### 3.2 Entity Summary
+- **User ↔ Session/Auth**
+  - Users sign up, sign in, and maintain a server-side session (custom authentication filter).
+- **MealPlan *—* Recipe (via MealPlanRecipes)**
+  - A meal plan contains many recipes; a recipe can appear in many meal plans (join table `MealPlanRecipes`, typically with day/position metadata).
+- **Recipe *—* Ingredient (via RecipeIngredient)**
+  - A recipe uses many ingredients; an ingredient can be used by many recipes (join table `RecipeIngredient` with quantity/unit).
+- **Recipe —* Comment / User —* Comment**
+  - A recipe has many comments; a user can write many comments. Each comment belongs to exactly one user and one recipe.
+- **Recipe —* Rating / User —* Rating**
+  - A recipe can have many ratings; a user can submit (at most) one rating per recipe (enforced in code or DB unique constraint). Each rating links a user to a recipe with a score.
+- **Recipe *— Chef**
+  - Each recipe is authored by a single chef; a chef can author many recipes.
+- **User *—* Recipe (via Favourites)**
+  - Users can save many favourite recipes; recipes can be favourited by many users. `Favourites` rows may be **soft-deleted** (e.g., `IsDeleted` flag) to support undo/restore.
+- **User —* ShoppingList**
+  - A user can maintain a shopping list consisting of multiple line items (ingredient, quantity, unit, purchased flag). Shopping list lines are independent records tied to the user; they’re often generated from one or more meal plans.
+- **Categories (logical)**
+  - Categories are used for filtering and display (carousels, index). Recipes are associated with one category (or a small set) depending on your model; filtering in the `SearchBarController` projects category/chef/ingredient/difficulty/duration facets into the `SearchPageViewModel`.
 
-| Entity | Description |
-|--------|--------------|
-| **User** | Stores user credentials and links to recipes, comments, and ratings |
-| **Chef** | Represents authors of recipes |
-| **Recipe** | Core entity containing cooking instructions, nutritional data, and relationships |
-| **Ingredient** | Tracks macro values and measurement units |
-| **RecipeIngredient** | Join table linking recipes and ingredients |
-| **Comment** | Stores user comments on recipes |
-| **Rating** | Represents a user’s rating for a recipe |
-| **MealPlan** | User-created collection of recipes with soft-delete functionality |
-| **MealPlanRecipe** | Links recipes to meal plans |
+**Key business rules**
+- Difficulty is stored numerically and rendered via a switch to **Easy/Medium/Hard**.
+- Favourite toggling updates or soft-deletes an existing row rather than creating duplicates.
+- Search combines free text (`searchQuery`) with structured filters (category, ingredients [multi-select], chef, difficulty, duration buckets, and dietary flags) to produce a set of `RecipeCardViewModel`s.
+- Comments and ratings require an authenticated session (guarded by the authentication filter).
 
-### 3.3 Relationships
+---
 
-| Relationship | Type | Description |
-|--------------|------|-------------|
-| User → Recipe | One-to-Many | A user can create multiple recipes |
-| User → Comment | One-to-Many | A user can write multiple comments |
-| User → Rating | One-to-Many | A user can rate multiple recipes |
-| Recipe → Ingredient | Many-to-Many | Recipes include many ingredients |
-| Recipe → Comment | One-to-Many | A recipe can have multiple comments |
-| Recipe → Rating | One-to-Many | A recipe can have multiple ratings |
-| MealPlan → Recipe | Many-to-Many | A meal plan contains multiple recipes |
-
-### 3.4 ER Diagram
+### ER Diagram
 
 ```mermaid
 erDiagram
-  USER ||--o{ RECIPE : creates
-  USER ||--o{ COMMENT : writes
-  USER ||--o{ RATING : rates
-  USER ||--o{ MEALPLAN : owns
+  USER ||--o{ MEALPLAN : "owns"
+  USER ||--o{ COMMENT : "writes"
+  USER ||--o{ RATING : "rates"
+  USER ||--o{ FAVOURITES : "saves"
+  USER ||--o{ SHOPPINGLIST : "has items"
 
-  RECIPE ||--o{ COMMENT : receives
-  RECIPE ||--o{ RATING : receives
-  RECIPE ||--o{ RECIPEINGREDIENT : includes
-  RECIPE ||--o{ MEALPLANRECIPE : "belongs to"
-  RECIPE }o--|| CHEF : "authored by"
+  CHEF ||--o{ RECIPE : "authors"
+
+  RECIPE ||--o{ COMMENT : "receives"
+  RECIPE ||--o{ RATING : "receives"
+  RECIPE ||--o{ RECIPEINGREDIENT : "includes"
+  RECIPE ||--o{ MEALPLANRECIPES : "appears in"
 
   INGREDIENT ||--o{ RECIPEINGREDIENT : "used in"
-  MEALPLAN ||--o{ MEALPLANRECIPE : contains
+
+  MEALPLAN ||--o{ MEALPLANRECIPES : "contains"
+  
+```
+
+
+### Database Migrations
+
+All schema changes are managed with Entity Framework migrations located in `/Migrations`.
+
+```bash
+# Create a new migration
+dotnet ef migrations add AddShoppingListTable
+
+# Apply latest migrations to the development DB
+dotnet ef database update
+
+# Revert to a previous migration
+dotnet ef database update <MigrationName>
 ```
 
 ---
 
-## 🎮 Controllers
+## Controllers
 
-### 4.1 Overview
-
-SueChef’s controllers act as the bridge between frontend requests and backend logic.  
-They manage recipe browsing, meal plan creation, authentication, and commenting.
-
-### 4.2 Controller Summary
-
-| Controller | Description |
-|-------------|-------------|
-| **HomeController** | Renders homepage and category carousels. |
-| **RecipeDetailsController** | Displays recipe details, comments, and ratings. |
-| **CategoriesController** | Filters recipes by difficulty, dietary type, or popularity. |
-| **MealPlanController** | Manages CRUD operations for meal plans and recipe additions. |
-| **UsersController** | Handles registration and Google OAuth authentication. |
-| **SessionsController** | Manages login and logout via session storage. |
-| **CommentsController** | Allows users to post comments on recipes. |
-
-### 4.3 Design Patterns
-
-- **Session Context** – Tracks logged-in user state.  
-- **Service Filters** – `[ServiceFilter(typeof(AuthenticationFilter))]` guards routes.  
-- **LINQ with EF Core** – Efficient data access with eager loading.  
-- **Redirect Flow** – `RedirectToAction()` refreshes views after updates.
+| Controller | Purpose |
+|-------------|----------|
+| `HomeController` | Handles homepage and featured recipe display. |
+| `RecipeDetailsController` | Displays individual recipe details, ratings, and comments. |
+| `MealPlanController` | Handles creation, viewing, and deletion of meal plans. |
+| `CommentsController` | Manages comment submissions with authentication guard. |
+| `CategoriesController` | Lists recipe categories with carousel view models. |
+| `UsersController` | Manages registration and profile settings. |
+| `SessionsController` | Handles login, logout, and authentication state. |
+| `FavouritesController` | Toggles and manages favourite recipes (soft-delete). |
+| `SearchBarController` | Manages complex search logic for recipes, chefs, ingredients, filters. |
+| `ShoppingListController` | Handles creation and update of shopping list items. |
 
 ---
 
-## 🖥️ Frontend / Views
+## ViewModels
 
-### 5.1 Overview
-
-SueChef’s frontend is built with **Razor Views** and **Tailwind CSS**, using modular partials for maintainability.
-
-### 5.2 Page Views
-
-| View | Description |
-|------|--------------|
-| **Home/Index.cshtml** | Displays featured recipes and carousels |
-| **Categories/Index.cshtml** | Lists recipes by filter category |
-| **RecipeDetails/Index.cshtml** | Shows recipe details, nutrition, and comments |
-| **MealPlan/Index.cshtml** | Displays user meal plans |
-| **MealPlan/Show.cshtml** | Renders a single meal plan |
-| **Sessions/New.cshtml** | User sign-in page |
-| **Users/New.cshtml** | Registration page |
-| **Home/Privacy.cshtml** | Privacy policy view |
-
-### 5.3 Shared Layouts
-
-- `_Layout.cshtml` – Global layout, navigation, and footer  
-- `_RecipeCardVerticalPartial.cshtml` / `_RecipeCardHorizontalPartial.cshtml` – Recipe displays  
-- `_CategoryCarouselPartial.cshtml` – Category navigation UI  
-- `_MealPlanPartial.cshtml` / `_MealPlanRecipeCardPartial.cshtml` – Meal plan displays  
-- `_FeaturedRecipePartial.cshtml` – Homepage feature banner  
-- `_ValidationScriptsPartial.cshtml` – Client-side validation  
-- `Error.cshtml` – Application error page  
-
-
-### 5.4 ViewModels
-
-SueChef uses a wide range of ViewModels to handle strongly-typed data between controllers and Razor views.  
-Each ViewModel serves a focused purpose — enabling clean data binding and reducing direct dependency on database models.
-
-| ViewModel | Purpose |
-|------------|----------|
-| **CategoryCardViewModel** | Represents individual category cards with name and image for carousel displays. |
-| **CategoryCarouselViewModel** | Contains a collection of categories for carousel rendering on the homepage. |
-| **CategoryPageViewModel** | Wraps data for the category index page, including recipes filtered by type. |
-| **CommentingViewModel** | Handles comment creation, submission, and binding to individual recipes. |
-| **ErrorViewModel** | Provides exception messages and request IDs for the error page. |
-| **FeaturedRecipeViewModel** | Supplies featured recipe data for homepage highlight sections. |
-| **HomePageViewModel** | Bundles featured recipes, categories, and carousels for the home view. |
-| **IndividualRecipeViewModel** | Provides summary data (title, prep time, image) for listing cards. |
-| **IndividualRecipeIngredientViewModel** | Represents each ingredient within a recipe, including measurement data. |
-| **IndividualRecipePageViewModel** | Aggregates recipe details, ingredients, comments, and ratings for recipe detail pages. |
-| **MealPlanRecipeViewModel** | Represents individual recipes inside a meal plan view. |
-| **MealPlanViewModel** | Contains key data for displaying or editing a single meal plan. |
-| **MealPlansPageViewModel** | Provides all meal plans belonging to a user for the index view. |
-| **RecipeCardViewModel** | Used to render recipes as cards in horizontal or vertical layouts. |
-| **RecipeCarouselViewModel** | Supplies recipes to category and featured carousels. |
-| **SignInViewModel** | Manages user login input fields and validation. |
-| **SignUpViewModel** | Manages new user registration data and validation. |
-| **SingleMealPlanPageViewModel** | Combines a selected meal plan with its associated recipes. |
-
+| ViewModel | Description |
+|------------|--------------|
+| `HomePageViewModel` | Displays featured, recent, and category carousels. |
+| `RecipeCardViewModel` | Represents individual recipe card data. |
+| `RecipeCarouselViewModel` | Groups multiple recipes for carousel rendering. |
+| `IndividualRecipeViewModel` | Core data for single recipe display. |
+| `IndividualRecipePageViewModel` | Combines recipe details, comments, and ratings. |
+| `MealPlanViewModel` | Represents a single meal plan. |
+| `MealPlansPageViewModel` | Aggregates all meal plans for a user. |
+| `MealPlanRecipeViewModel` | Represents individual recipes within a meal plan. |
+| `SignInViewModel` / `SignUpViewModel` | User authentication models. |
+| `CommentingViewModel` | Handles comment creation and validation. |
+| `ErrorViewModel` | Displays handled exceptions gracefully. |
+| `SearchPageViewModel` | Manages all search filter data and resulting recipe cards. |
+| `CategoryPageViewModel` / `CategoryCarouselViewModel` | Used for category listing and display. |
+| `AccountSettingsViewModel` | Aggregates account management forms. |
+| `ChangeUsernameViewModel`, `ChangeEmailViewModel`, `ChangePasswordViewModel`, `DeleteAccountViewModel` | Sub-viewmodels for profile management. |
+| `ShoppingListViewModel` | Represents individual list items and purchased flags. |
+| `FavouritesViewModel` / `FavouritesPageViewModel` | Displays and manages favourite recipes. |
+| `AccountSettingsViewModel` | Includes nested models for user profile updates. |
 
 ---
 
-## 🧠 JavaScript
+## Views & Partials
 
-SueChef’s interactivity is powered by modular scripts located in `/wwwroot/js`.
-
-| Script | Function |
-|---------|-----------|
-| `navbar.js` | Toggles search bar, mobile nav, and overlay drawers |
-| `recipeDetails.js` | Handles ingredient/nutrition toggling and serving scaling |
-| `carousel.js` | Infinite looping recipe carousels |
-| `homepagemealplanbutton.js` | Toggles “Add to Meal Plan” button visuals |
-| `backtotopbutton.js` | Smooth scroll back-to-top functionality |
-| `site.js` | Placeholder for general scripts |
-
----
-
-## 🧪 Testing
-
-SueChef uses **xUnit** for unit testing and supports integration testing through Playwright (optional).
-
-| Framework | Purpose |
-|------------|----------|
-| **xUnit** | Unit and integration tests |
-| **Playwright** | E2E testing (planned) |
-
-**Example Test Files:**  
-`MealPlanController.Tests.cs`, `UserAuthentication.Tests.cs`, `RecipeDetails.Tests.cs`
+| File | Function |
+|------|-----------|
+| `Views/Home/Index.cshtml` | Homepage layout with featured sections. |
+| `Views/RecipeDetails/Index.cshtml` | Recipe display with ingredients, comments, and star ratings. |
+| `Views/MealPlan/Index.cshtml` / `Show.cshtml` | Meal planning interface and detail view. |
+| `Views/SearchBar/Index.cshtml` | Full search interface with dropdown filters. |
+| `Views/Favourites/Index.cshtml` | Lists all saved recipes per user. |
+| `Views/ShoppingList/Show.cshtml` | Displays generated shopping list. |
+| `Views/Shared/_Layout.cshtml` | Global layout (navbar, footer, dark/light mode). |
+| `Views/Shared/_RecipeCardVerticalPartial.cshtml` / `_RecipeCardHorizontalPartial.cshtml` | Recipe card UI. |
+| `Views/Shared/_FeaturedRecipePartial.cshtml` | Featured recipe section. |
+| `Views/Shared/_FavouritesRecipeCardPartial.cshtml` | Favourite recipe listing. |
+| `Views/Shared/_ShoppingListPartial.cshtml` | Shopping list block in meal planner. |
 
 ---
 
-## 🚀 Future Implementations
+## Frontend JavaScript
 
-- Automatic shopping list generation from meal plans  
-- Recipe submission and approval workflow  
-- Profile pages with saved recipes  
-- Admin dashboard for moderation  
-- REST API for mobile app integration  
+| Script | Purpose |
+|---------|----------|
+| `navbar.js` | Controls responsive navigation and expanding search bar. |
+| `searchpage.js` | Toggles dropdown filters (category, chef, ingredient, duration). |
+| `favouritespage.js` | Animates success/failure alerts on favourites page. |
+| `backtotopbutton.js` | Shows scroll-to-top button dynamically. |
+| `homepagemealplanbutton.js` | Links homepage quick meal plan button. |
+| `recipeDetails.js` | Handles star ratings and comment interactivity. |
+| `carousel.js` | Enables auto-scrolling category and recipe carousels. |
+| `site.js` | General-purpose site scripts. |
 
 ---
 
-## 🙏 Acknowledgements & Documentation
+## Testing (xUnit + Playwright)
+
+SueChef uses **Playwright** for UI automation and **xUnit** for integration and unit testing.
+
+| Test File | Coverage |
+|------------|-----------|
+| `HomePage.Test.cs` | Ensures homepage loads with featured recipes and nav. |
+| `CategoryPage.Test.cs` | Validates category page filtering and layout. |
+| `MealPlansPage.Test.cs` | Confirms all meal plan cards and navigation. |
+| `SearchBar.Test.cs` | Tests search filters — keyword, category, chef, difficulty, duration. |
+| `TestIndividualPage.cs` | Verifies recipe detail elements (title, comments, ratings). |
+| `RecipeCardViewModel.Test.cs` | Validates viewmodel binding to partial views. |
+| `Test For SignIn and SignUp.cs` | Tests login, signup validation, and redirects. |
+| `UnitTest1.cs` | Generic baseline test runner. |
+| `TestDataSeeder.cs` | Seeds consistent test data for integration. |
+| `DbFactory.cs` | Configures and injects in-memory test database context. |
+
+### Running the Tests
+
+```bash
+# install playwright dependencies
+npx playwright install
+
+# run tests
+dotnet test
+npx playwright test
+```
+
+### Troubleshooting Playwright
+
+- If browsers not found → run `npx playwright install` again.  
+- If timeouts occur → increase timeout using `.ToBeVisibleAsync(new() { Timeout = 10000 })`.  
+- For flaky selectors → add `await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);` before assertions.
+
+---
+
+
+## Acknowledgements & Documentation
 
 | Technology | Documentation | Purpose |
 |-------------|----------------|----------|
@@ -372,7 +375,7 @@ SueChef uses **xUnit** for unit testing and supports integration testing through
 
 ---
 
-## 🧭 Summary of Documentation
+## Summary of Documentation
 
 | Category | Documentation | Use Case |
 |-----------|----------------|----------|
@@ -386,8 +389,9 @@ SueChef uses **xUnit** for unit testing and supports integration testing through
 
 ---
 
-## 🧾 License
+## License
 
 This project is released under the MIT License.
 
 
+© 2025 SueChef — Makers Academy Final Project
