@@ -16,91 +16,44 @@ function initCarousel(carouselId) {
 
     function getCardWidth() {
         const card = track.querySelector(".carousel-card");
-        return card ? card.offsetWidth + 24 : 0; // +24 for the gap
+        return card ? card.offsetWidth + 24 : 0; // 24px = typical gap
     }
 
-    // --- Clone cards for infinite loop ---
-    const originalCards = Array.from(track.children);
-    const visible = Math.ceil(getVisibleCards()); // round up to fill space
+    let cardWidth = getCardWidth();
 
-    if (!track.dataset.cloned) {
-    const visible = Math.ceil(getVisibleCards());
-    const originalCards = Array.from(track.children);
+    function scrollCarousel(direction) {
+    const cards = track.querySelectorAll(".carousel-card");
+    const totalCards = cards.length;
+    const visibleCards = Math.floor(getVisibleCards());
+    const cardWidth = getCardWidth();
 
-    // Clone last N to the start
-    originalCards.slice(-visible).forEach(card => {
-        const clone = card.cloneNode(false); // shallow clone
-        clone.innerHTML = card.innerHTML;    // just the visuals
-        clone.classList.add("clone", "pointer-events-none"); // prevent click
-        track.insertBefore(clone, track.firstChild);
-    });
+    // The maximum scroll position (no white space beyond last card)
+    const maxScroll = Math.max(0, (totalCards * cardWidth) - track.clientWidth);
 
-    // Clone first N+1 to the end
-    originalCards.slice(0, visible + 1).forEach(card => {
-        const clone = card.cloneNode(false);
-        clone.innerHTML = card.innerHTML;
-        clone.classList.add("clone", "pointer-events-none");
-        track.appendChild(clone);
-    });
+    // Calculate the proposed scroll amount
+    let newScroll = track.scrollLeft + (direction * cardWidth * visibleCards);
 
-    track.dataset.cloned = "true";
+    // Clamp to valid range
+    if (newScroll < 0) newScroll = 0;
+    if (newScroll > maxScroll) newScroll = maxScroll;
+
+    // Smooth scroll
+    track.scrollTo({ left: newScroll, behavior: "smooth" });
 }
 
-    const cardWidth = getCardWidth();
-    const allCards = Array.from(track.children);
-    const totalCards = allCards.length;
-    const realCards = totalCards - (visible * 2 + 1);
-
-    const startScroll = cardWidth * visible;
-
-    // ✅ Wait for DOM layout before initial scroll
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            track.scrollLeft = startScroll;
-        });
-    });
-
-    // --- Scroll handler for infinite wrap ---
-    function handleScroll() {
-        const endScroll = cardWidth * (visible + realCards);
-        if (track.scrollLeft >= endScroll) {
-            // Snap instantly back to start clones (seamless)
-            track.scrollLeft = startScroll;
-        } else if (track.scrollLeft <= 0) {
-            // If scrolled too far left, jump to real end
-            track.scrollLeft = endScroll - cardWidth;
-        }
-    }
-
-    track.addEventListener("scroll", handleScroll);
-
-    // --- Smooth scroll on button click ---
-    function scrollCarousel(direction) {
-        const scrollAmount = cardWidth * Math.floor(getVisibleCards());
-        const endScroll = cardWidth * (visible + realCards);
-        const targetScroll = track.scrollLeft + direction * scrollAmount;
-
-        if (direction > 0 && targetScroll >= endScroll) {
-            // Smoothly scroll to first clones
-            track.scrollTo({ left: startScroll, behavior: "smooth" });
-            return;
-        }
-        if (direction < 0 && targetScroll <= 0) {
-            // Smoothly scroll to end clones
-            track.scrollTo({ left: endScroll - cardWidth, behavior: "smooth" });
-            return;
-        }
-
-        track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
-    }
 
     btnRight.addEventListener("click", () => scrollCarousel(1));
     btnLeft.addEventListener("click", () => scrollCarousel(-1));
+
+    window.addEventListener("resize", () => {
+        cardWidth = getCardWidth();
+    });
 }
 
-// ✅ Auto-init all carousels when DOM is ready
+// ✅ Auto-init all carousels
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-carousel]").forEach(container => {
         initCarousel(container.id);
     });
 });
+
