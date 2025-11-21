@@ -22,7 +22,7 @@
 
     <h2 class="text-center text-gray-100 text-xl font-medium mb-4">Create an account</h2>
 
-    <p class="text-center text-gray-100 text-xs px-12">Create your free SueChef account and receive our
+    <p class="text-center text-gray-100 text-xs px-12 mb-4">Create your free SueChef account and receive our
         exclusive email newsletters</p>
 
     <!-- Sign-up form container -->
@@ -50,12 +50,12 @@
 
             <!-- DOB with validation (more may need adding for auto filling?) -->
 
-            <div class="px-12">
+            @* <div class="px-12">
                 <label for="dob" class="mb-1 block text-sm text-gray-100"></label>
                 <input asp-for="DOB" id="dob" type="date" data-testid="dob" min="1900-01-01" max="@DateTime.Today.ToString("yyy-MM-dd")"
-                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2" />
+                    class="w-full border border-gray-400 focus:border-2 focus:border-white outline-none rounded-md px-3 py-2" /> *@
                 @* <span asp-validation-for="DOB" class="text-gray-100 text-sm font-bold" id="dob-error"></span> *@
-            </div>
+            @* </div> *@
             <!-- email block with validation -->
 
             <div class="px-12">
