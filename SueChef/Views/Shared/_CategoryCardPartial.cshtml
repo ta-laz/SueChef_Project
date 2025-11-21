@@ -1,9 +1,9 @@
 @model SueChef.ViewModels.CategoryCardViewModel
 
-<section
-    class="relative hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 flex-shrink-0 mb-12">
+<div
+    class="relative hover:shadow-md snap-center bg-white overflow-hidden transition-all duration-300 flex-shrink-0">
 
-    <a asp-controller="Categories" asp-action="Index" asp-route-category="@Model.Category" data-testid="category-@Model.Category" class="block w-full h-full">
+    <a asp-controller="Categories" asp-action="Index" asp-route-category="@Model.Category" data-testid="category-@Model.Category" class="block w-full h-full relative">
 
         <img src="@Model.RecipePicturePath" alt="Recipe Picture" class="w-full h-72 sm:h-96 md:h-52 lg:h-52 object-cover" title="Category pages"/>
 
@@ -11,7 +11,7 @@
         <div class="absolute inset-0 bg-gradient-to-t to-transparent z-10">
         </div>
 
-        <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 backdrop-blur-md shadow-lg p-3 h-12 z-20">
+        <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 backdrop-blur-md shadow-lg w-full h-12">
             <!-- Row two: text -->
             <h3
                 class="category-card-title text-lg text-gray-100 md:text-md line-clamp-2 font-medium hover:text-gray-300 transition drop-shadow-sm">
@@ -19,5 +19,6 @@
             </h3>
         </div>
     </a>
-</section>
+</div>
+
 
